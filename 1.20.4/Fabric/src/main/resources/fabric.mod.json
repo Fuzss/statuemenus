@@ -23,10 +23,10 @@
 
   "entrypoints": {
     "main": [
-      "${mainEntryPoint}"
+      "${modGroup}.fabric.impl.StatueMenusFabric"
     ],
     "client": [
-      "${clientEntryPoint}"
+      "${modGroup}.fabric.impl.client.StatueMenusFabricClient"
     ]
   },
 
