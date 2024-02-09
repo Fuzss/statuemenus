@@ -3,9 +3,9 @@ package fuzs.statuemenus.api.v1.client.gui.screens;
 import com.google.common.collect.Lists;
 import fuzs.puzzleslib.api.client.gui.v2.components.ScreenTooltipFactory;
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
+import fuzs.statuemenus.api.v1.client.gui.components.AbstractTooltip;
 import fuzs.statuemenus.api.v1.client.gui.components.NewTextureButton;
 import fuzs.statuemenus.api.v1.client.gui.components.NewTextureSliderButton;
-import fuzs.statuemenus.api.v1.client.gui.components.AbstractTooltip;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
@@ -120,7 +120,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
             this.newValue.accept(toWrappedDegrees(newValue));
         }
 
-        protected static Component getTooltipComponent(double mouseValue) {
+        protected Component getTooltipComponent(double mouseValue) {
             return Component.translatable(DEGREES_TRANSLATION_KEY, ArmorStandPose.ROTATION_FORMAT.format(toWrappedDegrees(mouseValue)));
         }
 
@@ -133,7 +133,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
         }
 
         protected void applyClientValue(double newValue) {
-
+            // NO-OP
         }
 
         @Override
@@ -151,7 +151,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                 public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                     super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
                     double mouseValue = ArmorStandPose.snapValue((mouseX - this.getX()) / (double) this.getWidth(), this.snapInterval);
-                    this.setTooltip(Tooltip.create(getTooltipComponent(mouseValue)));
+                    this.setTooltip(Tooltip.create(RotationWidget.this.getTooltipComponent(mouseValue)));
                 }
 
                 @Override

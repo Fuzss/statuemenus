@@ -32,6 +32,7 @@ public class StatueMenusClient implements ClientModConstructor {
     @Override
     public void onRegisterMenuScreens(MenuScreensContext context) {
         if (!ModLoaderEnvironment.INSTANCE.isDevelopmentEnvironment()) return;
+        // compiler doesn't like method reference :(
         MenuScreens.register((MenuType<ArmorStandMenu>) BuiltInRegistries.MENU.get(StatueMenus.ARMOR_STAND_IDENTIFIER),
                 (ArmorStandMenu menu, Inventory inventory, Component component) -> {
                     return ArmorStandScreenFactory.createLastScreenType(menu, inventory, component);
