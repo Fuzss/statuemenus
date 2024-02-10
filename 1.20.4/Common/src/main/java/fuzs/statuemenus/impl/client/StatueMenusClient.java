@@ -8,7 +8,6 @@ import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
 import fuzs.statuemenus.api.v1.world.inventory.data.PosePartMutator;
 import fuzs.statuemenus.impl.StatueMenus;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -33,7 +32,7 @@ public class StatueMenusClient implements ClientModConstructor {
     public void onRegisterMenuScreens(MenuScreensContext context) {
         if (!ModLoaderEnvironment.INSTANCE.isDevelopmentEnvironment()) return;
         // compiler doesn't like method reference :(
-        MenuScreens.register((MenuType<ArmorStandMenu>) BuiltInRegistries.MENU.get(StatueMenus.ARMOR_STAND_IDENTIFIER),
+        context.registerMenuScreen((MenuType<ArmorStandMenu>) BuiltInRegistries.MENU.get(StatueMenus.ARMOR_STAND_IDENTIFIER),
                 (ArmorStandMenu menu, Inventory inventory, Component component) -> {
                     return ArmorStandScreenFactory.createLastScreenType(menu, inventory, component);
                 }
