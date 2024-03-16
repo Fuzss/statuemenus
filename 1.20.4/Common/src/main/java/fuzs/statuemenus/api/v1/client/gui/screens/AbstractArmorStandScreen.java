@@ -236,9 +236,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     public static <T extends Screen & ArmorStandScreen> boolean handleHotbarKeyPressed(int keyCode, int scanCode, T screen, ArmorStandScreenType[] tabs) {
-        Minecraft minecraft = ScreenHelper.INSTANCE.getMinecraft(screen);
         for (int i = 0; i < Math.min(tabs.length, 9); ++i) {
-            if (minecraft.options.keyHotbarSlots[i].matches(keyCode, scanCode)) {
+            if (screen.minecraft.options.keyHotbarSlots[i].matches(keyCode, scanCode)) {
                 if (openTabScreen(screen, tabs[i], true)) {
                     return true;
                 }
@@ -275,14 +274,14 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     private static <T extends Screen & ArmorStandScreen> boolean openTabScreen(T screen, ArmorStandScreenType screenType, boolean clickSound) {
         if (screenType != screen.getScreenType()) {
-            Minecraft minecraft = ScreenHelper.INSTANCE.getMinecraft(screen);
             if (clickSound) {
                 SimpleSoundInstance sound = SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F);
-                minecraft.getSoundManager().play(sound);
+                screen.minecraft.getSoundManager().play(sound);
             }
-            minecraft.setScreen(screen.createScreenType(screenType));
+            screen.minecraft.setScreen(screen.createScreenType(screenType));
             return true;
         }
+
         return false;
     }
 
