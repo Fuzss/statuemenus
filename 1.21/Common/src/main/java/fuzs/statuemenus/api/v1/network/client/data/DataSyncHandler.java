@@ -2,9 +2,9 @@ package fuzs.statuemenus.api.v1.network.client.data;
 
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.data.*;
-import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -109,7 +109,7 @@ public interface DataSyncHandler {
     }
 
     static void setCustomArmorStandName(ArmorStand armorStand, String name) {
-        name = SharedConstants.filterText(name);
+        name = StringUtil.filterText(name);
         if (name.length() <= 50) {
             boolean remove = name.isBlank() || name.equals(EntityType.ARMOR_STAND.getDescription().getString());
             armorStand.setCustomName(remove ? null : Component.literal(name));

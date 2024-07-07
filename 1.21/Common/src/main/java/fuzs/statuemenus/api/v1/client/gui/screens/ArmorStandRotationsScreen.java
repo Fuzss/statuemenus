@@ -6,13 +6,13 @@ import fuzs.statuemenus.api.v1.client.gui.components.BoxedSliderButton;
 import fuzs.statuemenus.api.v1.client.gui.components.LiveSliderButton;
 import fuzs.statuemenus.api.v1.client.gui.components.NewTextureTickButton;
 import fuzs.statuemenus.api.v1.client.gui.components.VerticalSliderButton;
-import fuzs.statuemenus.impl.client.gui.components.RotationsTooltip;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
 import fuzs.statuemenus.api.v1.world.inventory.data.PosePartMutator;
 import fuzs.statuemenus.impl.StatueMenus;
+import fuzs.statuemenus.impl.client.gui.components.RotationsTooltip;
 import net.minecraft.Util;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,9 +25,9 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -122,16 +122,17 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
 
                 {
                     this.active = isPosePartMutatorActive(mutator, ArmorStandRotationsScreen.this.holder.getArmorStand());
-                    this.setTooltip(new RotationsTooltip(isLeft) {
+                    new RotationsTooltip(this, isLeft) {
+
                         @Override
-                        protected List<Component> getLinesForNextRenderPass() {
-                            List<Component> lines = Lists.newArrayList();
+                        public List<Component> getLinesForNextRenderPass() {
+                            List<Component> lines = new ArrayList<>();
                             lines.add(Component.translatable(mutator.getTranslationKey()));
                             lines.add(mutator.getAxisComponent(ArmorStandRotationsScreen.this.currentPose, 0));
                             lines.add(mutator.getAxisComponent(ArmorStandRotationsScreen.this.currentPose, 1));
                             return lines;
                         }
-                    });
+                    };
                 }
 
                 @Override
@@ -165,16 +166,16 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
 
                 {
                     this.active = isPosePartMutatorActive(mutator, ArmorStandRotationsScreen.this.holder.getArmorStand());
-                    this.setTooltip(new RotationsTooltip(isLeft) {
+                    new RotationsTooltip(this, isLeft) {
 
                         @Override
-                        protected List<Component> getLinesForNextRenderPass() {
-                            List<Component> lines = Lists.newArrayList();
+                        public List<Component> getLinesForNextRenderPass() {
+                            List<Component> lines = new ArrayList<>();
                             lines.add(Component.translatable(mutator.getTranslationKey()));
                             lines.add(mutator.getAxisComponent(ArmorStandRotationsScreen.this.currentPose, 2));
                             return lines;
                         }
-                    });
+                    };
                 }
 
                 @Override
@@ -208,7 +209,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
 
     @Nullable
     private Component getTipComponent() {
-        List<Component> components = Lists.newArrayList();
+        List<Component> components = new ArrayList<>();
         for (int i = 1; Language.getInstance().has(TIP_TRANSLATION_KEY + i); i++) {
             components.add(Component.translatable(TIP_TRANSLATION_KEY + i));
         }

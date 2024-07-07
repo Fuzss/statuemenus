@@ -1,29 +1,41 @@
 package fuzs.statuemenus.impl.client.gui.components;
 
-import fuzs.statuemenus.api.v1.client.gui.components.AbstractTooltip;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
+import fuzs.puzzleslib.api.client.gui.v2.components.tooltip.TooltipComponentImpl;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.MenuTooltipPositioner;
+import net.minecraft.network.chat.FormattedText;
 
-public abstract class RotationsTooltip extends AbstractTooltip {
+import java.util.List;
+
+public abstract class RotationsTooltip extends TooltipComponentImpl {
     private final boolean isLeft;
 
-    protected RotationsTooltip(boolean isLeft) {
+    public RotationsTooltip(AbstractWidget abstractWidget, boolean isLeft) {
+        super(abstractWidget);
         this.isLeft = isLeft;
     }
 
     @Override
-    protected ClientTooltipPositioner createTooltipPositioner(boolean hovering, boolean focused, ScreenRectangle screenRectangle) {
-        ClientTooltipPositioner tooltipPositioner = super.createTooltipPositioner(hovering, focused,
-                screenRectangle
-        );
+    public ClientTooltipPositioner createTooltipPositioner(AbstractWidget abstractWidget) {
+        ClientTooltipPositioner tooltipPositioner = super.createTooltipPositioner(abstractWidget);
         if (tooltipPositioner instanceof MenuTooltipPositioner) {
             return (screenWidth, screenHeight, mouseX, mouseY, tooltipWidth, tooltipHeight) -> {
                 if (this.isLeft) mouseX -= 24 + tooltipWidth;
-                return DefaultTooltipPositioner.INSTANCE.positionTooltip(screenWidth, screenHeight, mouseX, mouseY, tooltipWidth, tooltipHeight);
+                return DefaultTooltipPositioner.INSTANCE.positionTooltip(screenWidth,
+                        screenHeight,
+                        mouseX,
+                        mouseY,
+                        tooltipWidth,
+                        tooltipHeight
+                );
             };
+        } else {
+            return tooltipPositioner;
         }
-        return tooltipPositioner;
     }
+
+    @Override
+    public abstract List<? extends FormattedText> getLinesForNextRenderPass();
 }

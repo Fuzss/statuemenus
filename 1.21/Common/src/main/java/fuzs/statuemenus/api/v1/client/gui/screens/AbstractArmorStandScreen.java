@@ -1,7 +1,6 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
-import fuzs.puzzleslib.api.client.gui.v2.screen.ScreenHelper;
 import fuzs.statuemenus.api.v1.client.gui.components.UnboundedSliderButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
@@ -9,7 +8,6 @@ import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
 import fuzs.statuemenus.impl.StatueMenus;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -181,7 +179,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (!this.disableMenuRendering()) {
-            super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+            this.renderTransparentBackground(guiGraphics);
         }
         this.renderBg(guiGraphics, partialTick, mouseX, mouseY);
     }

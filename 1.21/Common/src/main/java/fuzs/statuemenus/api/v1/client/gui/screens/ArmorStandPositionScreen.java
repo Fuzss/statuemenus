@@ -1,9 +1,8 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import com.google.common.collect.Lists;
-import fuzs.puzzleslib.api.client.gui.v2.components.ScreenTooltipFactory;
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
-import fuzs.statuemenus.api.v1.client.gui.components.AbstractTooltip;
+import fuzs.puzzleslib.api.client.gui.v2.components.tooltip.TooltipComponentImpl;
 import fuzs.statuemenus.api.v1.client.gui.components.NewTextureButton;
 import fuzs.statuemenus.api.v1.client.gui.components.NewTextureSliderButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
@@ -26,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -216,8 +216,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                             this.setActiveIncrement(button, increment);
                         }
                         ));
-                List<Component> lines = Lists.newArrayList(getPixelIncrementComponent(increment), getBlockIncrementComponent(increment));
-                widget.setTooltip(ScreenTooltipFactory.create(lines));
+                new TooltipComponentImpl(widget, getPixelIncrementComponent(increment), getBlockIncrementComponent(increment));
                 this.children.add(widget);
                 if (increment == currentIncrement) {
                     widget.active = false;
@@ -274,24 +273,50 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
             this.editBox.setTextColorUneditable(14737632);
             this.editBox.setValue(BLOCK_INCREMENT_FORMAT.format(this.getPositionValue()));
             this.addChildren(this.editBox);
-            this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 149, posY + 1, 20, 10, 196, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
-                this.setPositionValue(this.getPositionValue() + currentIncrement);
-            }))).setTooltip(new AbstractTooltip() {
+            AbstractWidget incrementButton = this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(
+                    new SpritelessImageButton(posX + 149,
+                            posY + 1,
+                            20,
+                            10,
+                            196,
+                            64,
+                            20,
+                            getArmorStandWidgetsLocation(),
+                            256,
+                            256,
+                            button -> {
+                                this.setPositionValue(this.getPositionValue() + currentIncrement);
+                            }
+                    )));
+            new TooltipComponentImpl(incrementButton) {
 
                 @Override
-                protected List<Component> getLinesForNextRenderPass() {
-                    return List.of(Component.translatable(INCREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)));
+                public List<Component> getLinesForNextRenderPass() {
+                    return Collections.singletonList(Component.translatable(INCREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)));
                 }
-            });
-            this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 149, posY + 11, 20, 10, 216, 74, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
-                this.setPositionValue(this.getPositionValue() - currentIncrement);
-            }))).setTooltip(new AbstractTooltip() {
+            };
+            AbstractWidget decrementButton = this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(
+                    new SpritelessImageButton(posX + 149,
+                            posY + 11,
+                            20,
+                            10,
+                            216,
+                            74,
+                            20,
+                            getArmorStandWidgetsLocation(),
+                            256,
+                            256,
+                            button -> {
+                                this.setPositionValue(this.getPositionValue() - currentIncrement);
+                            }
+                    )));
+            new TooltipComponentImpl(decrementButton) {
 
                 @Override
-                protected List<Component> getLinesForNextRenderPass() {
-                    return List.of(Component.translatable(DECREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)));
+                public List<Component> getLinesForNextRenderPass() {
+                    return Collections.singletonList(Component.translatable(DECREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)));
                 }
-            });
+            };
             this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174, posY + 1, 20, 20, 236, 64, getArmorStandWidgetsLocation(), button -> {
                 ArmorStandPositionScreen.this.setActiveWidget(this);
             })));

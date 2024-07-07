@@ -22,30 +22,30 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
     @Override
     public void sendName(String name) {
         DataSyncHandler.setCustomArmorStandName(this.getArmorStand(), name);
-        StatueMenus.NETWORK.sendToServer(new C2SArmorStandNameMessage(name));
+        StatueMenus.NETWORK.sendToServer(new C2SArmorStandNameMessage(name).toServerboundMessage());
     }
 
     @Override
     public void sendPose(ArmorStandPose pose) {
         pose.applyToEntity(this.getArmorStand());
-        CompoundTag tag = new CompoundTag();
-        pose.serializeAllPoses(tag);
-        StatueMenus.NETWORK.sendToServer(new C2SArmorStandPoseMessage(tag));
+        CompoundTag compoundTag = new CompoundTag();
+        pose.serializeAllPoses(compoundTag);
+        StatueMenus.NETWORK.sendToServer(new C2SArmorStandPoseMessage(compoundTag).toServerboundMessage());
     }
 
     @Override
     public void sendPosition(double posX, double posY, double posZ) {
-        StatueMenus.NETWORK.sendToServer(new C2SArmorStandPositionMessage(posX, posY, posZ));
+        StatueMenus.NETWORK.sendToServer(new C2SArmorStandPositionMessage(posX, posY, posZ).toServerboundMessage());
     }
 
     @Override
     public void sendRotation(float rotation) {
-        StatueMenus.NETWORK.sendToServer(new C2SArmorStandRotationMessage(rotation));
+        StatueMenus.NETWORK.sendToServer(new C2SArmorStandRotationMessage(rotation).toServerboundMessage());
     }
 
     @Override
     public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
         styleOption.setOption(this.getArmorStand(), value);
-        StatueMenus.NETWORK.sendToServer(new C2SArmorStandStyleMessage(styleOption, value));
+        StatueMenus.NETWORK.sendToServer(new C2SArmorStandStyleMessage(styleOption, value).toServerboundMessage());
     }
 }

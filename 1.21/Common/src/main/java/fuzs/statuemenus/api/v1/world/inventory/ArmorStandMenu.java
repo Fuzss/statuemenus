@@ -12,7 +12,6 @@ import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -179,15 +178,15 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             ItemStack itemStack2 = slot.getItem();
             itemStack = itemStack2.copy();
-            EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(itemStack);
+            EquipmentSlot equipmentSlot = player.getEquipmentSlotForItem(itemStack);
             if (index >= 0 && index < 6) {
                 if (!this.moveItemStackTo(itemStack2, 6, 42, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (equipmentSlot.getType() == EquipmentSlot.Type.ARMOR && !this.slots.get(3 - equipmentSlot.getIndex()).hasItem()) {
+            } else if (equipmentSlot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR && !this.slots.get(3 - equipmentSlot.getIndex()).hasItem()) {
                 int i = 3 - equipmentSlot.getIndex();
                 if (!this.moveItemStackTo(itemStack2, i, i + 1, false)) {
                     return ItemStack.EMPTY;

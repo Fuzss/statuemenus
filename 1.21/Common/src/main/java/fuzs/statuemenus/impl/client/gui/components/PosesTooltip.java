@@ -1,30 +1,32 @@
 package fuzs.statuemenus.impl.client.gui.components;
 
 import com.google.common.collect.Lists;
-import fuzs.statuemenus.api.v1.client.gui.components.AbstractTooltip;
+import fuzs.puzzleslib.api.client.gui.v2.components.tooltip.TooltipComponentImpl;
 import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandPosesScreen;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.MenuTooltipPositioner;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.StringUtil;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class PosesTooltip extends AbstractTooltip {
+public class PosesTooltip extends TooltipComponentImpl {
     private final int index;
 
-    public PosesTooltip(int index) {
+    public PosesTooltip(AbstractWidget abstractWidget, int index) {
+        super(abstractWidget);
         this.index = index;
     }
 
-    @Nullable
-    protected List<Component> getLinesForNextRenderPass() {
+    @Override
+    public List<? extends FormattedText> getLinesForNextRenderPass() {
         Optional<ArmorStandPose> optional = ArmorStandPosesScreen.getPoseAt(this.index);
         if (optional.isPresent()) {
             String translationKey = optional.get().getTranslationKey();
@@ -39,14 +41,17 @@ public class PosesTooltip extends AbstractTooltip {
                 return lines;
             }
         }
-        return null;
+
+        return Collections.emptyList();
     }
 
     @Override
-    protected ClientTooltipPositioner createTooltipPositioner(boolean hovering, boolean focused, ScreenRectangle screenRectangle) {
-        ClientTooltipPositioner tooltipPositioner = super.createTooltipPositioner(hovering, focused, screenRectangle);
-        return tooltipPositioner instanceof MenuTooltipPositioner ?
-                DefaultTooltipPositioner.INSTANCE :
-                tooltipPositioner;
+    public ClientTooltipPositioner createTooltipPositioner(AbstractWidget abstractWidget) {
+        ClientTooltipPositioner tooltipPositioner = super.createTooltipPositioner(abstractWidget);
+        if (tooltipPositioner instanceof MenuTooltipPositioner) {
+            return DefaultTooltipPositioner.INSTANCE;
+        } else {
+            return tooltipPositioner;
+        }
     }
 }

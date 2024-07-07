@@ -2,17 +2,18 @@ package fuzs.statuemenus.impl;
 
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.api.core.v1.ModLoaderEnvironment;
+import fuzs.puzzleslib.api.core.v1.utility.ResourceLocationHelper;
 import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
 import fuzs.puzzleslib.api.event.v1.entity.player.PlayerInteractEvents;
 import fuzs.puzzleslib.api.init.v3.registry.RegistryManager;
-import fuzs.puzzleslib.api.network.v2.NetworkHandlerV2;
+import fuzs.puzzleslib.api.network.v3.NetworkHandler;
 import fuzs.statuemenus.api.v1.helper.ArmorStandInteractHelper;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOptions;
 import fuzs.statuemenus.impl.network.client.*;
 import net.minecraft.core.Holder;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -34,22 +35,20 @@ public class StatueMenus implements ModConstructor {
     public static final String MOD_NAME = "Statue Menus";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
-    public static final NetworkHandlerV2 NETWORK = NetworkHandlerV2.build(MOD_ID, true);
+    public static final NetworkHandler NETWORK = NetworkHandler.builder(MOD_ID)
+            .optional()
+            .registerLegacyServerbound(C2SArmorStandNameMessage.class, C2SArmorStandNameMessage::new)
+            .registerLegacyServerbound(C2SArmorStandStyleMessage.class, C2SArmorStandStyleMessage::new)
+            .registerLegacyServerbound(C2SArmorStandPositionMessage.class, C2SArmorStandPositionMessage::new)
+            .registerLegacyServerbound(C2SArmorStandPoseMessage.class, C2SArmorStandPoseMessage::new)
+            .registerLegacyServerbound(C2SArmorStandRotationMessage.class, C2SArmorStandRotationMessage::new);
+    ;
 
     public static final ResourceLocation ARMOR_STAND_IDENTIFIER = id("armor_stand");
 
     @Override
     public void onConstructMod() {
-        registerMessages();
         setupDevelopmentEnvironment();
-    }
-
-    private static void registerMessages() {
-        NETWORK.registerServerbound(C2SArmorStandNameMessage.class, C2SArmorStandNameMessage::new);
-        NETWORK.registerServerbound(C2SArmorStandStyleMessage.class, C2SArmorStandStyleMessage::new);
-        NETWORK.registerServerbound(C2SArmorStandPositionMessage.class, C2SArmorStandPositionMessage::new);
-        NETWORK.registerServerbound(C2SArmorStandPoseMessage.class, C2SArmorStandPoseMessage::new);
-        NETWORK.registerServerbound(C2SArmorStandRotationMessage.class, C2SArmorStandRotationMessage::new);
     }
 
     @SuppressWarnings("unchecked")
@@ -58,9 +57,12 @@ public class StatueMenus implements ModConstructor {
         RegistryManager registry = RegistryManager.from(MOD_ID);
         Object[] holder = new Object[1];
         holder[0] = registry.registerExtendedMenuType(ARMOR_STAND_IDENTIFIER.getPath(),
-                () -> (int containerId, Inventory inventory, FriendlyByteBuf data) -> {
+                () -> (int containerId, Inventory inventory, RegistryFriendlyByteBuf buf) -> {
                     return ArmorStandMenu.create(((Holder.Reference<MenuType<ArmorStandMenu>>) holder[0]).value(),
-                            containerId, inventory, data, null
+                            containerId,
+                            inventory,
+                            buf,
+                            null
                     );
                 }
         );
@@ -71,8 +73,11 @@ public class StatueMenus implements ModConstructor {
         return (Player player, Level level, InteractionHand interactionHand, Entity entity, Vec3 hitVector) -> {
             if (player.getAbilities().mayBuild && entity.getType() == EntityType.ARMOR_STAND &&
                     player.getItemInHand(interactionHand).is(Items.DEBUG_STICK)) {
-                return ArmorStandInteractHelper.tryOpenArmorStatueMenu(player, level, (ArmorStand) entity,
-                        menuType.value(), null
+                return ArmorStandInteractHelper.tryOpenArmorStatueMenu(player,
+                        level,
+                        (ArmorStand) entity,
+                        menuType.value(),
+                        null
                 );
             }
             return EventResultHolder.pass();
@@ -88,6 +93,6 @@ public class StatueMenus implements ModConstructor {
     }
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return ResourceLocationHelper.fromNamespaceAndPath(MOD_ID, path);
     }
 }
