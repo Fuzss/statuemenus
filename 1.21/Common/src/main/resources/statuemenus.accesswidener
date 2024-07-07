@@ -1,0 +1,8 @@
+accessWidener   v2  named
+transitive-accessible   field   net/minecraft/world/SimpleContainer items   Lnet/minecraft/core/NonNullList;
+transitive-mutable  field   net/minecraft/world/SimpleContainer items   Lnet/minecraft/core/NonNullList;
+accessible  field   net/minecraft/world/entity/decoration/ArmorStand    handItems   Lnet/minecraft/core/NonNullList;
+accessible  field   net/minecraft/world/entity/decoration/ArmorStand    armorItems  Lnet/minecraft/core/NonNullList;
+accessible  field   net/minecraft/world/entity/decoration/ArmorStand    disabledSlots   I
+mutable field   net/minecraft/world/entity/decoration/ArmorStand    disabledSlots   I
+accessible  method  net/minecraft/world/entity/decoration/ArmorStand    readPose    (Lnet/minecraft/nbt/CompoundTag;)V
