@@ -1,11 +1,12 @@
 package fuzs.statuemenus.api.v1.world.inventory;
 
 import com.mojang.datafixers.util.Pair;
+import fuzs.puzzleslib.api.container.v1.ContainerMenuHelper;
+import fuzs.puzzleslib.api.container.v1.ListBackedContainer;
 import fuzs.puzzleslib.api.core.v1.CommonAbstractions;
 import fuzs.statuemenus.api.v1.world.entity.decoration.ArmorStandDataProvider;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
 import fuzs.statuemenus.impl.StatueMenus;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.CompoundContainer;
@@ -26,8 +27,22 @@ import java.util.Objects;
 
 public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandHolder {
     public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = StatueMenus.id("item/empty_armor_slot_sword");
-    static final ResourceLocation[] TEXTURE_EMPTY_SLOTS = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD, EMPTY_ARMOR_SLOT_SWORD};
-    public static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
+    static final ResourceLocation[] TEXTURE_EMPTY_SLOTS = new ResourceLocation[]{
+            InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS,
+            InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS,
+            InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE,
+            InventoryMenu.EMPTY_ARMOR_SLOT_HELMET,
+            InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD,
+            EMPTY_ARMOR_SLOT_SWORD
+    };
+    public static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET,
+            EquipmentSlot.MAINHAND,
+            EquipmentSlot.OFFHAND
+    };
 
     private final Container container;
     private final ArmorStand armorStand;
@@ -53,20 +68,13 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
     public static ArmorStandMenu create(MenuType<?> menuType, int containerId, Inventory inventory, ArmorStand armorStand, @Nullable ArmorStandDataProvider dataProvider) {
         // we could also copy all items from the armor stand to a SimpleContainer, then update the armor stand using a listener using LivingEntity::setItemSlot
         // problem is that way we miss out on anything changing with the armor stand entity itself, therefore this approach
-        SimpleContainer handItemsContainer = simpleContainer(armorStand.handItems);
-        handItemsContainer.addListener(container -> {
+        SimpleContainer handItemsContainer = ContainerMenuHelper.createListBackedContainer(armorStand.handItems, (Container container) -> {
             if (container.hasAnyMatching(stack -> !stack.isEmpty())) {
                 ArmorStandStyleOption.setArmorStandData(armorStand, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
             }
         });
-        CompoundContainer container = new CompoundContainer(simpleContainer(armorStand.armorItems), handItemsContainer);
+        CompoundContainer container = new CompoundContainer(ListBackedContainer.of(armorStand.armorItems), handItemsContainer);
         return new ArmorStandMenu(menuType, containerId, inventory, container, armorStand, dataProvider);
-    }
-
-    private static SimpleContainer simpleContainer(NonNullList<ItemStack> items) {
-        SimpleContainer container = new SimpleContainer(items.size());
-        container.items = items;
-        return container;
     }
 
     private ArmorStandMenu(MenuType<?> menuType, int containerId, Inventory inventory, Container container, ArmorStand armorStand, @Nullable ArmorStandDataProvider dataProvider) {
@@ -97,7 +105,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
                         if (isSlotDisabled(armorStand, equipmentslot, 0)) {
                             return false;
                         }
-                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_PUTTING_OFFSET) && !this.hasItem()) {
+                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_PUTTING_OFFSET) &&
+                                !this.hasItem()) {
                             return false;
                         }
                     }
@@ -135,7 +144,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
                         if (isSlotDisabled(armorStand, equipmentslot, 0)) {
                             return false;
                         }
-                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_PUTTING_OFFSET) && !this.hasItem()) {
+                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_PUTTING_OFFSET) &&
+                                !this.hasItem()) {
                             return false;
                         }
                     }
@@ -159,15 +169,7 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
             });
         }
 
-        for (int l = 0; l < 3; ++l) {
-            for (int j1 = 0; j1 < 9; ++j1) {
-                this.addSlot(new Slot(inventory, j1 + (l + 1) * 9, 25 + j1 * 18, 96 + l * 18));
-            }
-        }
-
-        for (int i1 = 0; i1 < 9; ++i1) {
-            this.addSlot(new Slot(inventory, i1, 25 + i1 * 18, 154));
-        }
+        ContainerMenuHelper.addInventorySlots(this, inventory, 25, 96);
     }
 
     public static boolean isSlotDisabled(ArmorStand armorStand, EquipmentSlot slot, int offset) {
@@ -186,7 +188,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
                 if (!this.moveItemStackTo(itemStack2, 6, 42, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (equipmentSlot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR && !this.slots.get(3 - equipmentSlot.getIndex()).hasItem()) {
+            } else if (equipmentSlot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR &&
+                    !this.slots.get(3 - equipmentSlot.getIndex()).hasItem()) {
                 int i = 3 - equipmentSlot.getIndex();
                 if (!this.moveItemStackTo(itemStack2, i, i + 1, false)) {
                     return ItemStack.EMPTY;
