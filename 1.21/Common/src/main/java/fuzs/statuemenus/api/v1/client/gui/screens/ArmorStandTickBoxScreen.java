@@ -14,7 +14,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 
 public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScreen {
-    private EditBox name;
+    protected EditBox name;
     private int inputUpdateTicks;
 
     public ArmorStandTickBoxScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
@@ -47,7 +47,7 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
     @Override
     protected void init() {
         super.init();
-        this.name = new EditBox(this.font, this.leftPos + 16, this.topPos + 32, 66, 9, EntityType.ARMOR_STAND.getDescription());
+        this.name = new EditBox(this.font, this.leftPos + 16, this.topPos + 32, 73, 9, EntityType.ARMOR_STAND.getDescription());
         this.name.setTextColor(0xFFFFFF);
         this.name.setBordered(false);
         this.name.setMaxLength(this.getNameMaxLength());
@@ -74,10 +74,10 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
     protected abstract Component getNameComponent();
 
     @Override
-    public void resize(Minecraft pMinecraft, int pWidth, int pHeight) {
+    public void resize(Minecraft minecraft, int width, int height) {
         this.testNameInputChanged(false);
         String s = this.name.getValue();
-        this.init(pMinecraft, pWidth, pHeight);
+        this.init(minecraft, width, height);
         this.name.setValue(s);
     }
 
