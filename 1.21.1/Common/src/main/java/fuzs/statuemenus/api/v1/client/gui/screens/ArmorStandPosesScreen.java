@@ -6,7 +6,7 @@ import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
 import fuzs.statuemenus.impl.StatueMenus;
-import fuzs.statuemenus.impl.client.gui.components.PosesTooltip;
+import fuzs.statuemenus.impl.client.gui.components.TooltipFactories;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
@@ -44,7 +44,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
             this.poseButtons[i] = this.addRenderableWidget(new SpritelessImageButton(this.leftPos + 83 + i % 2 * 62, this.topPos + 9 + i / 2 * 88, 60, 82, 76, 0, 82, getArmorStandWidgetsLocation(), 256, 256, button -> {
                 getPoseAt(index).ifPresent(this.dataSyncHandler::sendPose);
             }));
-            new PosesTooltip(this.poseButtons[i], index);
+            TooltipFactories.applyPosesTooltip(this.poseButtons[i], index);
         }
         this.toggleCycleButtons(0);
         this.addVanillaTweaksCreditsButton();

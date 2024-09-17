@@ -12,7 +12,7 @@ import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
 import fuzs.statuemenus.api.v1.world.inventory.data.PosePartMutator;
 import fuzs.statuemenus.impl.StatueMenus;
-import fuzs.statuemenus.impl.client.gui.components.RotationsTooltip;
+import fuzs.statuemenus.impl.client.gui.components.TooltipFactories;
 import net.minecraft.Util;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.GuiGraphics;
@@ -122,17 +122,13 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
 
                 {
                     this.active = isPosePartMutatorActive(mutator, ArmorStandRotationsScreen.this.holder.getArmorStand());
-                    new RotationsTooltip(this, isLeft) {
-
-                        @Override
-                        public List<Component> getLinesForNextRenderPass() {
-                            List<Component> lines = new ArrayList<>();
-                            lines.add(Component.translatable(mutator.getTranslationKey()));
-                            lines.add(mutator.getAxisComponent(ArmorStandRotationsScreen.this.currentPose, 0));
-                            lines.add(mutator.getAxisComponent(ArmorStandRotationsScreen.this.currentPose, 1));
-                            return lines;
-                        }
-                    };
+                    TooltipFactories.applyRotationsTooltip(this, isLeft, () -> {
+                        List<Component> lines = new ArrayList<>();
+                        lines.add(Component.translatable(mutator.getTranslationKey()));
+                        lines.add(mutator.getAxisComponent(ArmorStandRotationsScreen.this.currentPose, 0));
+                        lines.add(mutator.getAxisComponent(ArmorStandRotationsScreen.this.currentPose, 1));
+                        return lines;
+                    });
                 }
 
                 @Override
@@ -166,16 +162,12 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
 
                 {
                     this.active = isPosePartMutatorActive(mutator, ArmorStandRotationsScreen.this.holder.getArmorStand());
-                    new RotationsTooltip(this, isLeft) {
-
-                        @Override
-                        public List<Component> getLinesForNextRenderPass() {
-                            List<Component> lines = new ArrayList<>();
-                            lines.add(Component.translatable(mutator.getTranslationKey()));
-                            lines.add(mutator.getAxisComponent(ArmorStandRotationsScreen.this.currentPose, 2));
-                            return lines;
-                        }
-                    };
+                    TooltipFactories.applyRotationsTooltip(this, isLeft, () -> {
+                        List<Component> lines = new ArrayList<>();
+                        lines.add(Component.translatable(mutator.getTranslationKey()));
+                        lines.add(mutator.getAxisComponent(ArmorStandRotationsScreen.this.currentPose, 2));
+                        return lines;
+                    });
                 }
 
                 @Override

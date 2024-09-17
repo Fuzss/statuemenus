@@ -2,7 +2,7 @@ package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import com.google.common.collect.Lists;
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
-import fuzs.puzzleslib.api.client.gui.v2.components.tooltip.TooltipComponentImpl;
+import fuzs.puzzleslib.api.client.gui.v2.components.tooltip.TooltipBuilder;
 import fuzs.statuemenus.api.v1.client.gui.components.NewTextureButton;
 import fuzs.statuemenus.api.v1.client.gui.components.NewTextureSliderButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
@@ -216,7 +216,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                             this.setActiveIncrement(button, increment);
                         }
                         ));
-                new TooltipComponentImpl(widget, getPixelIncrementComponent(increment), getBlockIncrementComponent(increment));
+                TooltipBuilder.create(getPixelIncrementComponent(increment), getBlockIncrementComponent(increment)).build(widget);
                 this.children.add(widget);
                 if (increment == currentIncrement) {
                     widget.active = false;
@@ -288,13 +288,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                                 this.setPositionValue(this.getPositionValue() + currentIncrement);
                             }
                     )));
-            new TooltipComponentImpl(incrementButton) {
-
-                @Override
-                public List<Component> getLinesForNextRenderPass() {
-                    return Collections.singletonList(Component.translatable(INCREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)));
-                }
-            };
+            TooltipBuilder.create().setLines(() -> Collections.singletonList(Component.translatable(INCREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)))).build(incrementButton);
             AbstractWidget decrementButton = this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(
                     new SpritelessImageButton(posX + 149,
                             posY + 11,
@@ -310,13 +304,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                                 this.setPositionValue(this.getPositionValue() - currentIncrement);
                             }
                     )));
-            new TooltipComponentImpl(decrementButton) {
-
-                @Override
-                public List<Component> getLinesForNextRenderPass() {
-                    return Collections.singletonList(Component.translatable(DECREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)));
-                }
-            };
+            TooltipBuilder.create().setLines(() -> Collections.singletonList(Component.translatable(DECREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)))).build(decrementButton);
             this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174, posY + 1, 20, 20, 236, 64, getArmorStandWidgetsLocation(), button -> {
                 ArmorStandPositionScreen.this.setActiveWidget(this);
             })));
