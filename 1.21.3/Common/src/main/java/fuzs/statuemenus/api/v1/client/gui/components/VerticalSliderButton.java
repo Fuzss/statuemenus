@@ -11,9 +11,11 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.CommonInputs;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import java.util.function.DoubleSupplier;
@@ -39,9 +41,11 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
     public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         if (this.active) {
             if (this.isFocused()) {
-                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.slider.usage.focused"));
+                narrationElementOutput.add(NarratedElementType.USAGE,
+                        Component.translatable("narration.slider.usage.focused"));
             } else {
-                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.slider.usage.hovered"));
+                narrationElementOutput.add(NarratedElementType.USAGE,
+                        Component.translatable("narration.slider.usage.hovered"));
             }
         }
     }
@@ -60,9 +64,29 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-        guiGraphics.blit(AbstractArmorStandScreen.getArmorStandWidgetsLocation(), this.getX(), this.getY(), 54, 120, this.width, this.height);
-        guiGraphics.blit(AbstractArmorStandScreen.getArmorStandWidgetsLocation(), this.getX() + 1, this.getY() + 1 + (int) (this.value * (double) (this.height - this.sliderSize - 2)), 151, this.getYImage() * this.sliderSize, this.sliderSize, this.sliderSize);
+        guiGraphics.blit(RenderType::guiTextured,
+                AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                this.getX(),
+                this.getY(),
+                54,
+                120,
+                this.width,
+                this.height,
+                256,
+                256,
+                ARGB.white(this.alpha));
+        guiGraphics.blit(RenderType::guiTextured,
+                AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                this.getX() + 1,
+                this.getY() + 1 + (int) (this.value * (double) (this.height - this.sliderSize - 2)),
+                151,
+                this.getYImage() * this.sliderSize,
+                this.sliderSize,
+                this.sliderSize,
+                256,
+                256,
+                ARGB.white(this.alpha));
+        ;
     }
 
     @Override

@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -47,7 +48,12 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
     @Override
     protected void init() {
         super.init();
-        this.name = new EditBox(this.font, this.leftPos + 16, this.topPos + 32, 73, 9, EntityType.ARMOR_STAND.getDescription());
+        this.name = new EditBox(this.font,
+                this.leftPos + 16,
+                this.topPos + 32,
+                73,
+                9,
+                EntityType.ARMOR_STAND.getDescription());
         this.name.setTextColor(0xFFFFFF);
         this.name.setBordered(false);
         this.name.setMaxLength(this.getNameMaxLength());
@@ -99,15 +105,24 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
             this.onClose();
             return true;
         }
-        return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput() || super.keyPressed(keyCode, scanCode, modifiers);
+        return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput() ||
+                super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         // name edit box background
-        guiGraphics.blit(getArmorStandWidgetsLocation(), this.leftPos + 14, this.topPos + 30, 0, 108, 76, 12);
+        guiGraphics.blit(RenderType::guiTextured,
+                getArmorStandWidgetsLocation(),
+                this.leftPos + 14,
+                this.topPos + 30,
+                0,
+                108,
+                76,
+                12,
+                256,
+                256);
         this.name.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 }

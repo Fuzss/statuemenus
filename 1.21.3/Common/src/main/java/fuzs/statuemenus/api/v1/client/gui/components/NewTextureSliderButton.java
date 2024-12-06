@@ -9,8 +9,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.navigation.CommonInputs;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 public abstract class NewTextureSliderButton extends AbstractSliderButton implements UnboundedSliderButton {
@@ -39,13 +41,45 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        GuiGraphicsHelper.blitNineSliced(guiGraphics, this.textureLocation, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, this.textureX, this.textureY);
-        GuiGraphicsHelper.blitNineSliced(guiGraphics, this.textureLocation, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, 20, 20, 4, 200, 20, this.textureX, this.textureY + (this.getYImage() == 2 ? 40 : 20));
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        GuiGraphicsHelper.blitNineSliced(guiGraphics,
+                RenderType::guiTextured,
+                this.textureLocation,
+                this.getX(),
+                this.getY(),
+                this.getWidth(),
+                this.getHeight(),
+                20,
+                4,
+                20,
+                4,
+                200,
+                20,
+                this.textureX,
+                this.textureY,
+                256,
+                256,
+                ARGB.white(this.alpha));
+        GuiGraphicsHelper.blitNineSliced(guiGraphics,
+                RenderType::guiTextured,
+                this.textureLocation,
+                this.getX() + (int) (this.value * (double) (this.width - 8)),
+                this.getY(),
+                8,
+                20,
+                20,
+                4,
+                20,
+                4,
+                200,
+                20,
+                this.textureX,
+                this.textureY + (this.getYImage() == 2 ? 40 : 20),
+                256,
+                256,
+                ARGB.white(this.alpha));
         int i = this.active ? 16777215 : 10526880;
         this.renderScrollingString(guiGraphics, minecraft.font, 2, i | Mth.ceil(this.alpha * 255.0F) << 24);
     }

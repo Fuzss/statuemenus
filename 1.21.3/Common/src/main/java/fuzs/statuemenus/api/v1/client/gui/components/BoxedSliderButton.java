@@ -12,9 +12,11 @@ import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import java.util.function.DoubleSupplier;
@@ -22,7 +24,7 @@ import java.util.function.DoubleSupplier;
 public abstract class BoxedSliderButton extends AbstractWidget implements UnboundedSliderButton, LiveSliderButton {
     static final double VALUE_KEY_INTERVAL = 0.035;
     private static final int SLIDER_SIZE = 13;
-    
+
     private final DoubleSupplier currentHorizontalValue;
     private final DoubleSupplier currentVerticalValue;
     protected double horizontalValue;
@@ -46,9 +48,11 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
     public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         if (this.active) {
             if (this.isFocused()) {
-                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.slider.usage.focused"));
+                narrationElementOutput.add(NarratedElementType.USAGE,
+                        Component.translatable("narration.slider.usage.focused"));
             } else {
-                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.slider.usage.hovered"));
+                narrationElementOutput.add(NarratedElementType.USAGE,
+                        Component.translatable("narration.slider.usage.hovered"));
             }
         }
     }
@@ -69,17 +73,67 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
         RenderSystem.enableDepthTest();
         final int sliderX = (int) (this.horizontalValue * (double) (this.width - SLIDER_SIZE - 2));
         final int sliderY = (int) (this.verticalValue * (double) (this.height - SLIDER_SIZE - 2));
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-        if (!this.active || !this.isHoveredOrFocused() || !this.horizontalValueLocked() && !this.verticalValueLocked()) {
-            guiGraphics.blit(AbstractArmorStandScreen.getArmorStandWidgetsLocation(), this.getX(), this.getY(), 0, 120, this.width, this.height);
+        if (!this.active || !this.isHoveredOrFocused() ||
+                !this.horizontalValueLocked() && !this.verticalValueLocked()) {
+            guiGraphics.blit(RenderType::guiTextured,
+                    AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                    this.getX(),
+                    this.getY(),
+                    0,
+                    120,
+                    this.width,
+                    this.height,
+                    256,
+                    256,
+                    ARGB.white(this.alpha));
         } else if (this.horizontalValueLocked() && this.verticalValueLocked()) {
-            guiGraphics.blit(AbstractArmorStandScreen.getArmorStandWidgetsLocation(), this.getX() + sliderX, this.getY() + sliderY, 164, 0, SLIDER_SIZE + 2, SLIDER_SIZE + 2);
+            guiGraphics.blit(RenderType::guiTextured,
+                    AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                    this.getX() + sliderX,
+                    this.getY() + sliderY,
+                    164,
+                    0,
+                    SLIDER_SIZE + 2,
+                    SLIDER_SIZE + 2,
+                    256,
+                    256,
+                    ARGB.white(this.alpha));
         } else if (this.horizontalValueLocked()) {
-            guiGraphics.blit(AbstractArmorStandScreen.getArmorStandWidgetsLocation(), this.getX() + sliderX, this.getY(), 54, 120, SLIDER_SIZE + 2, this.height);
+            guiGraphics.blit(RenderType::guiTextured,
+                    AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                    this.getX() + sliderX,
+                    this.getY(),
+                    54,
+                    120,
+                    SLIDER_SIZE + 2,
+                    this.height,
+                    256,
+                    256,
+                    ARGB.white(this.alpha));
         } else {
-            guiGraphics.blit(AbstractArmorStandScreen.getArmorStandWidgetsLocation(), this.getX(), this.getY() + sliderY, 136, 49, this.width, SLIDER_SIZE + 2);
+            guiGraphics.blit(RenderType::guiTextured,
+                    AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                    this.getX(),
+                    this.getY() + sliderY,
+                    136,
+                    49,
+                    this.width,
+                    SLIDER_SIZE + 2,
+                    256,
+                    256,
+                    ARGB.white(this.alpha));
         }
-        guiGraphics.blit(AbstractArmorStandScreen.getArmorStandWidgetsLocation(), this.getX() + 1 + sliderX, this.getY() + 1 + sliderY, 151, this.getYImage() * SLIDER_SIZE, SLIDER_SIZE, SLIDER_SIZE);
+        guiGraphics.blit(RenderType::guiTextured,
+                AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                this.getX() + 1 + sliderX,
+                this.getY() + 1 + sliderY,
+                151,
+                this.getYImage() * SLIDER_SIZE,
+                SLIDER_SIZE,
+                SLIDER_SIZE,
+                256,
+                256,
+                ARGB.white(this.alpha));
     }
 
     @Override
@@ -154,7 +208,8 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
         if (!this.horizontalValueLocked()) {
             this.horizontalValue = Mth.clamp(horizontalValue, 0.0, 1.0);
             if (snapValue) {
-                this.horizontalValue = ArmorStandPose.snapValue(this.horizontalValue, ArmorStandPose.DEGREES_SNAP_INTERVAL);
+                this.horizontalValue = ArmorStandPose.snapValue(this.horizontalValue,
+                        ArmorStandPose.DEGREES_SNAP_INTERVAL);
             }
         }
         if (oldHorizontalValue != this.horizontalValue) {

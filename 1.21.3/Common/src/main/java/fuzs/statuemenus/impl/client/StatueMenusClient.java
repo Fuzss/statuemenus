@@ -23,19 +23,18 @@ public class StatueMenusClient implements ClientModConstructor {
         ArmorStandScreenFactory.register(ArmorStandScreenType.STYLE, ArmorStandStyleScreen::new);
         ArmorStandScreenFactory.register(ArmorStandScreenType.POSES, ArmorStandPosesScreen::new);
         ArmorStandScreenFactory.register(ArmorStandScreenType.POSITION, ArmorStandPositionScreen::new);
-        ArmorStandRotationsScreen.registerPosePartMutatorFilter(PosePartMutator.LEFT_ARM, ArmorStand::isShowArms);
-        ArmorStandRotationsScreen.registerPosePartMutatorFilter(PosePartMutator.RIGHT_ARM, ArmorStand::isShowArms);
+        ArmorStandRotationsScreen.registerPosePartMutatorFilter(PosePartMutator.LEFT_ARM, ArmorStand::showArms);
+        ArmorStandRotationsScreen.registerPosePartMutatorFilter(PosePartMutator.RIGHT_ARM, ArmorStand::showArms);
     }
 
     @SuppressWarnings({"unchecked", "Convert2MethodRef"})
     @Override
     public void onRegisterMenuScreens(MenuScreensContext context) {
-        if (!ModLoaderEnvironment.INSTANCE.isDevelopmentEnvironment()) return;
+        if (!ModLoaderEnvironment.INSTANCE.isDevelopmentEnvironment(StatueMenus.MOD_ID)) return;
         // compiler doesn't like method reference :(
-        context.registerMenuScreen((MenuType<ArmorStandMenu>) BuiltInRegistries.MENU.get(StatueMenus.ARMOR_STAND_IDENTIFIER),
+        context.registerMenuScreen((MenuType<ArmorStandMenu>) BuiltInRegistries.MENU.getValue(StatueMenus.ARMOR_STAND_IDENTIFIER),
                 (ArmorStandMenu menu, Inventory inventory, Component component) -> {
                     return ArmorStandScreenFactory.createLastScreenType(menu, inventory, component);
-                }
-        );
+                });
     }
 }

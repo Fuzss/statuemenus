@@ -16,6 +16,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
@@ -89,9 +90,11 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     @Override
     public <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createScreenType(ArmorStandScreenType screenType) {
-        T screen = ArmorStandScreenFactory.createScreenType(screenType, this.holder, this.inventory, this.title,
-                this.dataSyncHandler
-        );
+        T screen = ArmorStandScreenFactory.createScreenType(screenType,
+                this.holder,
+                this.inventory,
+                this.title,
+                this.dataSyncHandler);
         screen.setMouseX(this.mouseX);
         screen.setMouseY(this.mouseY);
         return screen;
@@ -122,17 +125,24 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
         if (this.withCloseButton()) {
-            this.closeButton = this.addRenderableWidget(
-                    makeCloseButton(this, this.leftPos, this.imageWidth, this.topPos));
+            this.closeButton = this.addRenderableWidget(makeCloseButton(this,
+                    this.leftPos,
+                    this.imageWidth,
+                    this.topPos));
         }
     }
 
     public static AbstractButton makeCloseButton(Screen screen, int leftPos, int imageWidth, int topPos) {
-        return new SpritelessImageButton(leftPos + imageWidth - 15 - 8, topPos + 8, 15, 15, 136, 0,
-                getArmorStandWidgetsLocation(), button -> {
-            screen.onClose();
-        }
-        );
+        return new SpritelessImageButton(leftPos + imageWidth - 15 - 8,
+                topPos + 8,
+                15,
+                15,
+                136,
+                0,
+                getArmorStandWidgetsLocation(),
+                button -> {
+                    screen.onClose();
+                });
     }
 
     protected boolean withCloseButton() {
@@ -154,23 +164,35 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     protected void addVanillaTweaksCreditsButton() {
-        this.addRenderableWidget(new SpritelessImageButton(this.leftPos + 6, this.topPos + 6, 20, 20, 136, 64, 20,
-                getArmorStandWidgetsLocation(), 256, 256, button -> {
-            this.minecraft.setScreen(new ConfirmLinkScreen((bl) -> {
-                if (bl) Util.getPlatform().openUri(VANILLA_TWEAKS_HOMEPAGE);
-                this.minecraft.setScreen(this);
-            }, VANILLA_TWEAKS_HOMEPAGE, true));
-        }, CommonComponents.EMPTY
-        )).setTooltip(Tooltip.create(Component.translatable(CREDITS_TRANSLATION_KEY)));
+        this.addRenderableWidget(new SpritelessImageButton(this.leftPos + 6,
+                this.topPos + 6,
+                20,
+                20,
+                136,
+                64,
+                20,
+                getArmorStandWidgetsLocation(),
+                256,
+                256,
+                button -> {
+                    this.minecraft.setScreen(new ConfirmLinkScreen((bl) -> {
+                        if (bl) Util.getPlatform().openUri(VANILLA_TWEAKS_HOMEPAGE);
+                        this.minecraft.setScreen(this);
+                    }, VANILLA_TWEAKS_HOMEPAGE, true));
+                },
+                CommonComponents.EMPTY)).setTooltip(Tooltip.create(Component.translatable(CREDITS_TRANSLATION_KEY)));
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            if (!this.disableMenuRendering() &&
-                    handleTabClicked((int) mouseX, (int) mouseY, this.leftPos, this.topPos, this.imageHeight, this,
-                            this.dataSyncHandler.getScreenTypes()
-                    )) {
+            if (!this.disableMenuRendering() && handleTabClicked((int) mouseX,
+                    (int) mouseY,
+                    this.leftPos,
+                    this.topPos,
+                    this.imageHeight,
+                    this,
+                    this.dataSyncHandler.getScreenTypes())) {
                 return true;
             }
         }
@@ -181,12 +203,16 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (!this.disableMenuRendering()) {
-            findHoveredTab(this.leftPos, this.topPos, this.imageHeight, mouseX, mouseY,
-                    this.dataSyncHandler.getScreenTypes()
-            ).ifPresent(hoveredTab -> {
-                guiGraphics.renderTooltip(this.font, Component.translatable(hoveredTab.getTranslationKey()), mouseX,
-                        mouseY
-                );
+            findHoveredTab(this.leftPos,
+                    this.topPos,
+                    this.imageHeight,
+                    mouseX,
+                    mouseY,
+                    this.dataSyncHandler.getScreenTypes()).ifPresent(hoveredTab -> {
+                guiGraphics.renderTooltip(this.font,
+                        Component.translatable(hoveredTab.getTranslationKey()),
+                        mouseX,
+                        mouseY);
             });
         }
         this.mouseX = mouseX;
@@ -203,38 +229,62 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         if (!this.disableMenuRendering()) {
-            guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(getArmorStandBackgroundLocation(), this.leftPos, this.topPos, 0, 0, this.imageWidth,
-                    this.imageHeight
-            );
-            drawTabs(guiGraphics, this.leftPos, this.topPos, this.imageHeight, this,
-                    this.dataSyncHandler.getScreenTypes()
-            );
+            guiGraphics.blit(RenderType::guiTextured,
+                    getArmorStandBackgroundLocation(),
+                    this.leftPos,
+                    this.topPos,
+                    0,
+                    0,
+                    this.imageWidth,
+                    this.imageHeight,
+                    256,
+                    256);
+            drawTabs(guiGraphics,
+                    this.leftPos,
+                    this.topPos,
+                    this.imageHeight,
+                    this,
+                    this.dataSyncHandler.getScreenTypes());
             this.renderEntityInInventory(guiGraphics);
         }
     }
 
     private void renderEntityInInventory(GuiGraphics guiGraphics) {
         if (this.renderInventoryEntity()) {
-            guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
             if (this.smallInventoryEntity) {
-                guiGraphics.blit(getArmorStandWidgetsLocation(), this.leftPos + this.inventoryEntityX,
-                        this.topPos + this.inventoryEntityY, 200, 184, 50, 72
-                );
-                this.renderArmorStandInInventory(guiGraphics, this.leftPos + this.inventoryEntityX + 24,
-                        this.topPos + this.inventoryEntityY + 65, 30,
+                guiGraphics.blit(RenderType::guiTextured,
+                        getArmorStandWidgetsLocation(),
+                        this.leftPos + this.inventoryEntityX,
+                        this.topPos + this.inventoryEntityY,
+                        200,
+                        184,
+                        50,
+                        72,
+                        256,
+                        256);
+                this.renderArmorStandInInventory(guiGraphics,
+                        this.leftPos + this.inventoryEntityX + 24,
+                        this.topPos + this.inventoryEntityY + 65,
+                        30,
                         this.leftPos + this.inventoryEntityX + 24 - 10 - this.mouseX,
-                        this.topPos + this.inventoryEntityY + 65 - 44 - this.mouseY
-                );
+                        this.topPos + this.inventoryEntityY + 65 - 44 - this.mouseY);
             } else {
-                guiGraphics.blit(getArmorStandWidgetsLocation(), this.leftPos + this.inventoryEntityX,
-                        this.topPos + this.inventoryEntityY, 0, 0, 76, 108
-                );
-                this.renderArmorStandInInventory(guiGraphics, this.leftPos + this.inventoryEntityX + 38,
-                        this.topPos + this.inventoryEntityY + 98, 45,
+                guiGraphics.blit(RenderType::guiTextured,
+                        getArmorStandWidgetsLocation(),
+                        this.leftPos + this.inventoryEntityX,
+                        this.topPos + this.inventoryEntityY,
+                        0,
+                        0,
+                        76,
+                        108,
+                        256,
+                        256);
+                this.renderArmorStandInInventory(guiGraphics,
+                        this.leftPos + this.inventoryEntityX + 38,
+                        this.topPos + this.inventoryEntityY + 98,
+                        45,
                         (float) (this.leftPos + this.inventoryEntityX + 38 - 5) - this.mouseX,
-                        (float) (this.topPos + this.inventoryEntityY + 98 - 66) - this.mouseY
-                );
+                        (float) (this.topPos + this.inventoryEntityY + 98 - 66) - this.mouseY);
             }
         }
     }
@@ -282,18 +332,26 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         if (super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
             return true;
         } else {
-            return handleMouseScrolled((int) mouseX, (int) mouseY, scrollY, this.leftPos, this.topPos, this.imageHeight,
-                    this, this.dataSyncHandler.getScreenTypes()
-            );
+            return handleMouseScrolled((int) mouseX,
+                    (int) mouseY,
+                    scrollY,
+                    this.leftPos,
+                    this.topPos,
+                    this.imageHeight,
+                    this,
+                    this.dataSyncHandler.getScreenTypes());
         }
     }
 
     public static <T extends Screen & ArmorStandScreen> boolean handleMouseScrolled(int mouseX, int mouseY, double delta, int leftPos, int topPos, int imageHeight, T screen, ArmorStandScreenType[] tabs) {
         delta = Math.signum(delta);
         if (delta != 0.0) {
-            Optional<ArmorStandScreenType> optional = findHoveredTab(leftPos, topPos, imageHeight, mouseX, mouseY,
-                    tabs
-            );
+            Optional<ArmorStandScreenType> optional = findHoveredTab(leftPos,
+                    topPos,
+                    imageHeight,
+                    mouseX,
+                    mouseY,
+                    tabs);
             if (optional.isPresent()) {
                 ArmorStandScreenType screenType = cycleTabs(screen.getScreenType(), tabs, delta > 0.0);
                 return openTabScreen(screen, screenType, false);
@@ -332,11 +390,16 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             ArmorStandScreenType tabType = tabs[i];
             int tabX = leftPos - 32;
             int tabY = topPos + tabsStartY + 27 * i;
-            guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(getArmorStandBackgroundLocation(), tabX, tabY,
+            guiGraphics.blit(RenderType::guiTextured,
+                    getArmorStandBackgroundLocation(),
+                    tabX,
+                    tabY,
                     tabY <= topPos ? 36 : tabY >= topPos + imageHeight - 36 ? 72 : 0,
-                    188 + (tabType == screen.getScreenType() ? 0 : 26), 36, 26
-            );
+                    188 + (tabType == screen.getScreenType() ? 0 : 26),
+                    36,
+                    26,
+                    256,
+                    256);
             guiGraphics.renderItem(tabType.getIcon(), tabX + 10, tabY + 5);
         }
     }
@@ -364,9 +427,11 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             return menu;
         } else {
             // prevent ClassCastException in case some mod like OwoLib calls this
-            return ArmorStandMenu.create(null, 0, this.minecraft.player.getInventory(),
-                    this.getHolder().getArmorStand(), this.getHolder().getDataProvider()
-            );
+            return ArmorStandMenu.create(null,
+                    0,
+                    this.minecraft.player.getInventory(),
+                    this.getHolder().getArmorStand(),
+                    this.getHolder().getDataProvider());
         }
     }
 

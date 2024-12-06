@@ -173,7 +173,7 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
     }
 
     public static boolean isSlotDisabled(ArmorStand armorStand, EquipmentSlot slot, int offset) {
-        return (armorStand.disabledSlots & 1 << slot.getFilterFlag() + offset) != 0;
+        return (armorStand.disabledSlots & 1 << slot.getFilterBit(offset)) != 0;
     }
 
     @Override

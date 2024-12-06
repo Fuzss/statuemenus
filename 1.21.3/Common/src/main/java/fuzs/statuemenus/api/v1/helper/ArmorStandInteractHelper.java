@@ -2,6 +2,7 @@ package fuzs.statuemenus.api.v1.helper;
 
 import fuzs.puzzleslib.api.core.v1.CommonAbstractions;
 import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
+import fuzs.puzzleslib.api.util.v1.InteractionResultHelper;
 import fuzs.statuemenus.api.v1.world.entity.decoration.ArmorStandDataProvider;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
 import net.minecraft.ChatFormatting;
@@ -23,13 +24,14 @@ public class ArmorStandInteractHelper {
 
     public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, InteractionHand interactionHand, ArmorStand entity, MenuType<?> menuType, @Nullable ArmorStandDataProvider dataProvider) {
         ItemStack itemInHand = player.getItemInHand(interactionHand);
-        return itemInHand.isEmpty() ? tryOpenArmorStatueMenu(player, level, entity, menuType, dataProvider) : EventResultHolder.pass();
+        return itemInHand.isEmpty() ? tryOpenArmorStatueMenu(player, level, entity, menuType, dataProvider) :
+                EventResultHolder.pass();
     }
 
     public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, ArmorStand entity, MenuType<?> menuType, @Nullable ArmorStandDataProvider dataProvider) {
         if (player.isShiftKeyDown() && (!entity.isInvulnerable() || player.getAbilities().instabuild)) {
             openArmorStatueMenu(player, entity, menuType, dataProvider);
-            return EventResultHolder.interrupt(InteractionResult.sidedSuccess(level.isClientSide));
+            return EventResultHolder.interrupt(InteractionResultHelper.sidedSuccess(level.isClientSide));
         }
         return EventResultHolder.pass();
     }
@@ -48,6 +50,7 @@ public class ArmorStandInteractHelper {
     public static Component getArmorStandHoverText() {
         Component shiftComponent = Component.keybind("key.sneak").withStyle(ChatFormatting.LIGHT_PURPLE);
         Component useComponent = Component.keybind("key.use").withStyle(ChatFormatting.LIGHT_PURPLE);
-        return Component.translatable(OPEN_SCREEN_TRANSLATION_KEY, shiftComponent, useComponent).withStyle(ChatFormatting.GRAY);
+        return Component.translatable(OPEN_SCREEN_TRANSLATION_KEY, shiftComponent, useComponent)
+                .withStyle(ChatFormatting.GRAY);
     }
 }

@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -40,7 +41,11 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
 
     @Override
     public <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createScreenType(ArmorStandScreenType screenType) {
-        T screen = ArmorStandScreenFactory.createScreenType(screenType, this.menu, this.inventory, this.title, this.dataSyncHandler);
+        T screen = ArmorStandScreenFactory.createScreenType(screenType,
+                this.menu,
+                this.inventory,
+                this.title,
+                this.dataSyncHandler);
         screen.setMouseX(this.mouseX);
         screen.setMouseY(this.mouseY);
         return screen;
@@ -64,13 +69,22 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     @Override
     protected void init() {
         super.init();
-        this.addRenderableWidget(AbstractArmorStandScreen.makeCloseButton(this, this.leftPos, this.imageWidth, this.topPos));
+        this.addRenderableWidget(AbstractArmorStandScreen.makeCloseButton(this,
+                this.leftPos,
+                this.imageWidth,
+                this.topPos));
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            if (AbstractArmorStandScreen.handleTabClicked((int) mouseX, (int) mouseY, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.getScreenTypes())) {
+            if (AbstractArmorStandScreen.handleTabClicked((int) mouseX,
+                    (int) mouseY,
+                    this.leftPos,
+                    this.topPos,
+                    this.imageHeight,
+                    this,
+                    this.dataSyncHandler.getScreenTypes())) {
                 return true;
             }
         }
@@ -82,7 +96,14 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
         if (super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
             return true;
         } else {
-            return AbstractArmorStandScreen.handleMouseScrolled((int) mouseX, (int) mouseY, scrollY, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.getScreenTypes());
+            return AbstractArmorStandScreen.handleMouseScrolled((int) mouseX,
+                    (int) mouseY,
+                    scrollY,
+                    this.leftPos,
+                    this.topPos,
+                    this.imageHeight,
+                    this,
+                    this.dataSyncHandler.getScreenTypes());
         }
     }
 
@@ -91,8 +112,16 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         if (this.menu.getCarried().isEmpty()) {
-            AbstractArmorStandScreen.findHoveredTab(this.leftPos, this.topPos, this.imageHeight, mouseX, mouseY, this.dataSyncHandler.getScreenTypes()).ifPresent(hoveredTab -> {
-                guiGraphics.renderTooltip(this.font, Component.translatable(hoveredTab.getTranslationKey()), mouseX, mouseY);
+            AbstractArmorStandScreen.findHoveredTab(this.leftPos,
+                    this.topPos,
+                    this.imageHeight,
+                    mouseX,
+                    mouseY,
+                    this.dataSyncHandler.getScreenTypes()).ifPresent(hoveredTab -> {
+                guiGraphics.renderTooltip(this.font,
+                        Component.translatable(hoveredTab.getTranslationKey()),
+                        mouseX,
+                        mouseY);
             });
         }
         this.mouseX = mouseX;
@@ -101,20 +130,49 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float pPartialTick, int pX, int pY) {
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(AbstractArmorStandScreen.getArmorStandEquipmentLocation(), this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderType::guiTextured,
+                AbstractArmorStandScreen.getArmorStandEquipmentLocation(),
+                this.leftPos,
+                this.topPos,
+                0,
+                0,
+                this.imageWidth,
+                this.imageHeight,
+                256,
+                256);
         for (int k = 0; k < ArmorStandMenu.SLOT_IDS.length; ++k) {
             Slot slot = this.menu.slots.get(k);
             if (slot.isActive() && isSlotRestricted(this.menu.getArmorStand(), ArmorStandMenu.SLOT_IDS[k])) {
-                guiGraphics.blit(AbstractArmorStandScreen.getArmorStandEquipmentLocation(), this.leftPos + slot.x - 1, this.topPos + slot.y - 1, 210, 0, 18, 18);
+                guiGraphics.blit(RenderType::guiTextured,
+                        AbstractArmorStandScreen.getArmorStandEquipmentLocation(),
+                        this.leftPos + slot.x - 1,
+                        this.topPos + slot.y - 1,
+                        210,
+                        0,
+                        18,
+                        18,
+                        256,
+                        256);
             }
         }
-        AbstractArmorStandScreen.drawTabs(guiGraphics, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.getScreenTypes());
-        this.renderArmorStandInInventory(guiGraphics, this.leftPos + 104, this.topPos + 84, 30, (float) (this.leftPos + 104 - 10) - this.mouseX, (float) (this.topPos + 84 - 44) - this.mouseY);
+        AbstractArmorStandScreen.drawTabs(guiGraphics,
+                this.leftPos,
+                this.topPos,
+                this.imageHeight,
+                this,
+                this.dataSyncHandler.getScreenTypes());
+        this.renderArmorStandInInventory(guiGraphics,
+                this.leftPos + 104,
+                this.topPos + 84,
+                30,
+                (float) (this.leftPos + 104 - 10) - this.mouseX,
+                (float) (this.topPos + 84 - 44) - this.mouseY);
     }
 
     private static boolean isSlotRestricted(ArmorStand armorStand, EquipmentSlot equipmentSlot) {
-        return ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, 0) || ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_TAKING_OFFSET) || ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_PUTTING_OFFSET);
+        return ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, 0) ||
+                ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_TAKING_OFFSET) ||
+                ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_PUTTING_OFFSET);
     }
 
     @Override

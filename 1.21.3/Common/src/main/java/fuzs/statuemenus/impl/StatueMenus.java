@@ -42,7 +42,6 @@ public class StatueMenus implements ModConstructor {
             .registerLegacyServerbound(C2SArmorStandPositionMessage.class, C2SArmorStandPositionMessage::new)
             .registerLegacyServerbound(C2SArmorStandPoseMessage.class, C2SArmorStandPoseMessage::new)
             .registerLegacyServerbound(C2SArmorStandRotationMessage.class, C2SArmorStandRotationMessage::new);
-    ;
 
     public static final ResourceLocation ARMOR_STAND_IDENTIFIER = id("armor_stand");
 
@@ -53,7 +52,7 @@ public class StatueMenus implements ModConstructor {
 
     @SuppressWarnings("unchecked")
     private static void setupDevelopmentEnvironment() {
-        if (!ModLoaderEnvironment.INSTANCE.isDevelopmentEnvironment()) return;
+        if (!ModLoaderEnvironment.INSTANCE.isDevelopmentEnvironment(MOD_ID)) return;
         RegistryManager registry = RegistryManager.from(MOD_ID);
         Object[] holder = new Object[1];
         holder[0] = registry.registerExtendedMenuType(ARMOR_STAND_IDENTIFIER.getPath(),
@@ -62,10 +61,8 @@ public class StatueMenus implements ModConstructor {
                             containerId,
                             inventory,
                             buf,
-                            null
-                    );
-                }
-        );
+                            null);
+                });
         PlayerInteractEvents.USE_ENTITY_AT.register(onUseEntityAt((Holder.Reference<MenuType<?>>) holder[0]));
     }
 
@@ -77,8 +74,7 @@ public class StatueMenus implements ModConstructor {
                         level,
                         (ArmorStand) entity,
                         menuType.value(),
-                        null
-                );
+                        null);
             }
             return EventResultHolder.pass();
         };
