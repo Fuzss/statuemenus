@@ -1,0 +1,8 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "statuemenus:item/empty_armor_slot_sword"
+    }
+  ]
+}
