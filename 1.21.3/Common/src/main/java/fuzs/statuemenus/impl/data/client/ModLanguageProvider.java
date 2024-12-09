@@ -14,7 +14,8 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
 
     @Override
     public void addTranslations(TranslationBuilder builder) {
-        builder.add(ArmorStandInteractHelper.OPEN_SCREEN_TRANSLATION_KEY, "Use %s + %s with an empty hand to open configuration screen.");
+        builder.add(ArmorStandInteractHelper.OPEN_SCREEN_TRANSLATION_KEY,
+                "Use %s + %s with an empty hand to open configuration screen.");
         builder.add(ArmorStandPosesScreen.POSE_SOURCE_TRANSLATION_KEY, "By %s");
         builder.add(ArmorStandPose.ATHENA.getTranslationKey(), "Athena");
         builder.add(ArmorStandPose.BRANDISH.getTranslationKey(), "Brandish");
@@ -50,21 +51,29 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(ArmorStandScreenType.STYLE.getTranslationKey(), "Style");
         builder.add(ArmorStandScreenType.POSES.getTranslationKey(), "Poses");
         builder.add(ArmorStandScreenType.POSITION.getTranslationKey(), "Position");
-        builder.add(ArmorStandStyleScreen.TEXT_BOX_TRANSLATION_KEY, "Set a name to display above the entity if enabled.");
+        builder.add(ArmorStandStyleScreen.TEXT_BOX_TRANSLATION_KEY,
+                "Set a name to display above the entity if enabled.");
         builder.add(ArmorStandStyleOptions.SHOW_ARMS.getTranslationKey(), "Show Arms");
-        builder.add(ArmorStandStyleOptions.SHOW_ARMS.getDescriptionKey(), "Shows the statue's arms, so it may hold items in both hands.");
+        builder.add(ArmorStandStyleOptions.SHOW_ARMS.getDescriptionKey(),
+                "Shows the statue's arms, so it may hold items in both hands.");
         builder.add(ArmorStandStyleOptions.SMALL.getTranslationKey(), "Small");
-        builder.add(ArmorStandStyleOptions.SMALL.getDescriptionKey(), "Makes the statue half it's size like a baby mob.");
+        builder.add(ArmorStandStyleOptions.SMALL.getDescriptionKey(),
+                "Makes the statue half it's size like a baby mob.");
         builder.add(ArmorStandStyleOptions.INVISIBLE.getTranslationKey(), "Invisible");
-        builder.add(ArmorStandStyleOptions.INVISIBLE.getDescriptionKey(), "Makes the statue itself invisible, but still shows all equipped items.");
+        builder.add(ArmorStandStyleOptions.INVISIBLE.getDescriptionKey(),
+                "Makes the statue itself invisible, but still shows all equipped items.");
         builder.add(ArmorStandStyleOptions.NO_BASE_PLATE.getTranslationKey(), "No Base Plate");
-        builder.add(ArmorStandStyleOptions.NO_BASE_PLATE.getDescriptionKey(), "Hide the stone base plate at the statue's feet.");
+        builder.add(ArmorStandStyleOptions.NO_BASE_PLATE.getDescriptionKey(),
+                "Hide the stone base plate at the statue's feet.");
         builder.add(ArmorStandStyleOptions.SHOW_NAME.getTranslationKey(), "Show Name");
-        builder.add(ArmorStandStyleOptions.SHOW_NAME.getDescriptionKey(), "Render the statue's name tag above it's head.");
+        builder.add(ArmorStandStyleOptions.SHOW_NAME.getDescriptionKey(),
+                "Render the statue's name tag above it's head.");
         builder.add(ArmorStandStyleOptions.NO_GRAVITY.getTranslationKey(), "No Gravity");
-        builder.add(ArmorStandStyleOptions.NO_GRAVITY.getDescriptionKey(), "Prevents the statue from falling down, so it may float freely.");
+        builder.add(ArmorStandStyleOptions.NO_GRAVITY.getDescriptionKey(),
+                "Prevents the statue from falling down, so it may float freely.");
         builder.add(ArmorStandStyleOptions.SEALED.getTranslationKey(), "Sealed");
-        builder.add(ArmorStandStyleOptions.SEALED.getDescriptionKey(), "The statue can no longer be broken, equipment cannot be changed. Disallows opening builder menu in survival mode.");
+        builder.add(ArmorStandStyleOptions.SEALED.getDescriptionKey(),
+                "The statue can no longer be broken, equipment cannot be changed. Disallows opening this menu in survival mode.");
         builder.add(ArmorStandPositionScreen.ROTATION_TRANSLATION_KEY, "Rotation:");
         builder.add(ArmorStandPositionScreen.POSITION_X_TRANSLATION_KEY, "X-Position:");
         builder.add(ArmorStandPositionScreen.POSITION_Y_TRANSLATION_KEY, "Y-Position:");
@@ -76,9 +85,11 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(ArmorStandPositionScreen.PIXELS_TRANSLATION_KEY, "%s Pixel(s)");
         builder.add(ArmorStandPositionScreen.BLOCKS_TRANSLATION_KEY, "%s Block(s)");
         builder.add(ArmorStandPositionScreen.CENTERED_TRANSLATION_KEY, "Align Centered");
-        builder.add(ArmorStandPositionScreen.CENTERED_DESCRIPTION_TRANSLATION_KEY, "Align an armor stand in the center of the block position it is placed on.");
+        builder.add(ArmorStandPositionScreen.CENTERED_DESCRIPTION_TRANSLATION_KEY,
+                "Align an armor stand in the center of the block position it is placed on.");
         builder.add(ArmorStandPositionScreen.CORNERED_TRANSLATION_KEY, "Align Cornered");
-        builder.add(ArmorStandPositionScreen.CORNERED_DESCRIPTION_TRANSLATION_KEY, "Align an armor stand at the corner of the block position it is placed on.");
+        builder.add(ArmorStandPositionScreen.CORNERED_DESCRIPTION_TRANSLATION_KEY,
+                "Align an armor stand at the corner of the block position it is placed on.");
         builder.add(ArmorStandPositionScreen.ALIGNED_TRANSLATION_KEY, "Aligned!");
         builder.add(PosePartMutator.HEAD.getTranslationKey(), "Head");
         builder.add(PosePartMutator.BODY.getTranslationKey(), "Body");
@@ -89,8 +100,10 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(PosePartMutator.AXIS_X_TRANSLATION_KEY, "X: %s");
         builder.add(PosePartMutator.AXIS_Y_TRANSLATION_KEY, "Y: %s");
         builder.add(PosePartMutator.AXIS_Z_TRANSLATION_KEY, "Z: %s");
-        builder.add(ArmorStandRotationsScreen.TIP_TRANSLATION_KEY + 1, "Hold any [§dShift§r] or [§dAlt§r] key to lock two-dimensional sliders to a single axis while dragging!");
-        builder.add(ArmorStandRotationsScreen.TIP_TRANSLATION_KEY + 2, "Use arrow keys to move sliders with greater precision than when dragging! Focus a slider first by clicking.");
+        builder.add(ArmorStandRotationsScreen.TIP_TRANSLATION_KEY + 1,
+                "Hold any [§dShift§r] or [§dAlt§r] key to lock two-dimensional sliders to a single axis while dragging!");
+        builder.add(ArmorStandRotationsScreen.TIP_TRANSLATION_KEY + 2,
+                "Use arrow keys to move sliders with greater precision than when dragging! Focus a slider first by clicking.");
         builder.add(ArmorStandRotationsScreen.RESET_TRANSLATION_KEY, "Reset");
         builder.add(ArmorStandRotationsScreen.RANDOMIZE_TRANSLATION_KEY, "Randomize");
         builder.add(ArmorStandRotationsScreen.LIMITED_TRANSLATION_KEY, "Limited Rotations");
@@ -99,13 +112,18 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(ArmorStandRotationsScreen.PASTE_TRANSLATION_KEY, "Paste");
         builder.add(ArmorStandRotationsScreen.MIRROR_TRANSLATION_KEY, "Mirror");
         builder.add(ArmorStandAlignment.BLOCK.getTranslationKey(), "Align Block On Surface");
-        builder.add(ArmorStandAlignment.BLOCK.getDescriptionsKey(), "Align an armor stand placed on a surface so that a block held by it appears on the surface.");
+        builder.add(ArmorStandAlignment.BLOCK.getDescriptionsKey(),
+                "Align an armor stand placed on a surface so that a block held by it appears on the surface.");
         builder.add(ArmorStandAlignment.FLOATING_ITEM.getTranslationKey(), "Align Item On Surface");
-        builder.add(ArmorStandAlignment.FLOATING_ITEM.getDescriptionsKey(), "Align an armor stand placed on a surface so that an item held by it appears upright on the surface.");
+        builder.add(ArmorStandAlignment.FLOATING_ITEM.getDescriptionsKey(),
+                "Align an armor stand placed on a surface so that an item held by it appears upright on the surface.");
         builder.add(ArmorStandAlignment.FLAT_ITEM.getTranslationKey(), "Align Item Flat On Surface");
-        builder.add(ArmorStandAlignment.FLAT_ITEM.getDescriptionsKey(), "Align an armor stand placed on a surface so that a non-tool item held by it appears flat on the surface.");
+        builder.add(ArmorStandAlignment.FLAT_ITEM.getDescriptionsKey(),
+                "Align an armor stand placed on a surface so that a non-tool item held by it appears flat on the surface.");
         builder.add(ArmorStandAlignment.TOOL.getTranslationKey(), "Align Tool Flat On Surface");
-        builder.add(ArmorStandAlignment.TOOL.getDescriptionsKey(), "Align an armor stand placed on a surface so that a tool held by it appears flat on the surface.");
-        builder.add(AbstractArmorStandScreen.CREDITS_TRANSLATION_KEY, "Some content on builder page originates from the Vanilla Tweaks \"Armor Statues\" data pack. Click builder button to go to their website!");
+        builder.add(ArmorStandAlignment.TOOL.getDescriptionsKey(),
+                "Align an armor stand placed on a surface so that a tool held by it appears flat on the surface.");
+        builder.add(AbstractArmorStandScreen.CREDITS_TRANSLATION_KEY,
+                "Some content on this page originates from the Vanilla Tweaks \"Armor Statues\" data pack. Click this button to go to their website!");
     }
 }
