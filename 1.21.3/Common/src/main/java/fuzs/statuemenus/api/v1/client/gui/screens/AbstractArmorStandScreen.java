@@ -42,7 +42,6 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     @Nullable
     static ArmorStandScreenType lastScreenType;
-    static ArmorStandInInventoryRenderer armorStandRenderer = ArmorStandInInventoryRenderer.SIMPLE;
 
     protected final int imageWidth = 210;
     protected final int imageHeight = 188;
@@ -362,7 +361,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     public static <T extends Screen & ArmorStandScreen> boolean handleTabClicked(int mouseX, int mouseY, int leftPos, int topPos, int imageHeight, T screen, ArmorStandScreenType[] tabs) {
         Optional<ArmorStandScreenType> hoveredTab = findHoveredTab(leftPos, topPos, imageHeight, mouseX, mouseY, tabs);
-        return hoveredTab.filter(armorStandScreenType -> openTabScreen(screen, armorStandScreenType, true)).isPresent();
+        return hoveredTab.filter((ArmorStandScreenType type) -> openTabScreen(screen, type, true)).isPresent();
     }
 
     private static <T extends Screen & ArmorStandScreen> boolean openTabScreen(T screen, ArmorStandScreenType screenType, boolean clickSound) {
@@ -373,9 +372,9 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             }
             screen.minecraft.setScreen(screen.createScreenType(screenType));
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     private static ArmorStandScreenType cycleTabs(ArmorStandScreenType currentScreenType, ArmorStandScreenType[] screenTypes, boolean backwards) {

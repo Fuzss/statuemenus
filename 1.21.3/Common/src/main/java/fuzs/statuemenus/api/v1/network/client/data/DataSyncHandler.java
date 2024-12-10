@@ -2,6 +2,7 @@ package fuzs.statuemenus.api.v1.network.client.data;
 
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.data.*;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
@@ -24,10 +25,10 @@ public interface DataSyncHandler {
 
     void sendName(String name);
 
-    void sendPose(ArmorStandPose pose);
+    void sendPose(ArmorStandPose pose, boolean finalize);
 
-    default void sendPose(ArmorStandPose pose, boolean finalize) {
-        this.sendPose(pose);
+    default void sendPose(ArmorStandPose pose) {
+        this.sendPose(pose, true);
     }
 
     @Nullable
@@ -35,22 +36,22 @@ public interface DataSyncHandler {
         return null;
     }
 
-    void sendPosition(double posX, double posY, double posZ);
+    void sendPosition(double posX, double posY, double posZ, boolean finalize);
 
-    default void sendPosition(double posX, double posY, double posZ, boolean finalize) {
-        this.sendPosition(posX, posY, posZ);
+    default void sendPosition(double posX, double posY, double posZ) {
+        this.sendPosition(posX, posY, posZ, true);
     }
 
-    void sendRotation(float rotation);
+    void sendRotation(float rotation, boolean finalize);
 
-    default void sendRotation(float rotation, boolean finalize) {
-        this.sendRotation(rotation);
+    default void sendRotation(float rotation) {
+        this.sendRotation(rotation, true);
     }
 
-    void sendStyleOption(ArmorStandStyleOption styleOption, boolean value);
+    void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize);
 
-    default void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize) {
-        this.sendStyleOption(styleOption, value);
+    default void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
+        this.sendStyleOption(styleOption, value, true);
     }
 
     default void sendAlignment(ArmorStandAlignment alignment) {
@@ -97,7 +98,7 @@ public interface DataSyncHandler {
     }
 
     default void tick() {
-
+        // NO-OP
     }
 
     default boolean shouldContinueTicking() {
@@ -105,7 +106,7 @@ public interface DataSyncHandler {
     }
 
     default void finalizeCurrentOperation() {
-
+        // NO-OP
     }
 
     static void setCustomArmorStandName(ArmorStand armorStand, String name) {

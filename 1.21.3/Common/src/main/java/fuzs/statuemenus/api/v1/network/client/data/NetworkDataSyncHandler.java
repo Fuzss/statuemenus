@@ -22,30 +22,30 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
     @Override
     public void sendName(String name) {
         DataSyncHandler.setCustomArmorStandName(this.getArmorStand(), name);
-        StatueMenus.NETWORK.sendToServer(new C2SArmorStandNameMessage(name).toServerboundMessage());
+        StatueMenus.NETWORK.sendMessage(new C2SArmorStandNameMessage(name).toServerboundMessage());
     }
 
     @Override
-    public void sendPose(ArmorStandPose pose) {
+    public void sendPose(ArmorStandPose pose, boolean finalize) {
         pose.applyToEntity(this.getArmorStand());
         CompoundTag compoundTag = new CompoundTag();
         pose.serializeAllPoses(compoundTag);
-        StatueMenus.NETWORK.sendToServer(new C2SArmorStandPoseMessage(compoundTag).toServerboundMessage());
+        StatueMenus.NETWORK.sendMessage(new C2SArmorStandPoseMessage(compoundTag).toServerboundMessage());
     }
 
     @Override
-    public void sendPosition(double posX, double posY, double posZ) {
-        StatueMenus.NETWORK.sendToServer(new C2SArmorStandPositionMessage(posX, posY, posZ).toServerboundMessage());
+    public void sendPosition(double posX, double posY, double posZ, boolean finalize) {
+        StatueMenus.NETWORK.sendMessage(new C2SArmorStandPositionMessage(posX, posY, posZ).toServerboundMessage());
     }
 
     @Override
-    public void sendRotation(float rotation) {
-        StatueMenus.NETWORK.sendToServer(new C2SArmorStandRotationMessage(rotation).toServerboundMessage());
+    public void sendRotation(float rotation, boolean finalize) {
+        StatueMenus.NETWORK.sendMessage(new C2SArmorStandRotationMessage(rotation).toServerboundMessage());
     }
 
     @Override
-    public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
+    public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize) {
         styleOption.setOption(this.getArmorStand(), value);
-        StatueMenus.NETWORK.sendToServer(new C2SArmorStandStyleMessage(styleOption, value).toServerboundMessage());
+        StatueMenus.NETWORK.sendMessage(new C2SArmorStandStyleMessage(styleOption, value).toServerboundMessage());
     }
 }
