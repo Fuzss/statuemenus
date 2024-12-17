@@ -42,6 +42,12 @@ public interface DataSyncHandler {
         this.sendPosition(posX, posY, posZ, true);
     }
 
+    void sendScale(float scale, boolean finalize);
+
+    default void sendScale(float scale) {
+        this.sendScale(scale, true);
+    }
+
     void sendRotation(float rotation, boolean finalize);
 
     default void sendRotation(float rotation) {

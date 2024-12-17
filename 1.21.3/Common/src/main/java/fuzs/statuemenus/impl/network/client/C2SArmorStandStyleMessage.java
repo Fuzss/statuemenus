@@ -1,18 +1,19 @@
 package fuzs.statuemenus.impl.network.client;
 
+import fuzs.puzzleslib.api.network.v2.WritableMessage;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
-import fuzs.puzzleslib.api.network.v2.MessageV2;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-public class C2SArmorStandStyleMessage implements MessageV2<C2SArmorStandStyleMessage> {
-    private ResourceLocation styleOption;
-    private boolean value;
+public class C2SArmorStandStyleMessage implements WritableMessage<C2SArmorStandStyleMessage> {
+    private final ResourceLocation styleOption;
+    private final boolean value;
 
-    public C2SArmorStandStyleMessage() {
-
+    public C2SArmorStandStyleMessage(FriendlyByteBuf buf) {
+        this.styleOption = buf.readResourceLocation();
+        this.value = buf.readBoolean();
     }
 
     public C2SArmorStandStyleMessage(ArmorStandStyleOption styleOption, boolean value) {
@@ -24,12 +25,6 @@ public class C2SArmorStandStyleMessage implements MessageV2<C2SArmorStandStyleMe
     public void write(FriendlyByteBuf buf) {
         buf.writeResourceLocation(this.styleOption);
         buf.writeBoolean(this.value);
-    }
-
-    @Override
-    public void read(FriendlyByteBuf buf) {
-        this.styleOption = buf.readResourceLocation();
-        this.value = buf.readBoolean();
     }
 
     @Override

@@ -39,8 +39,15 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
+    public void sendScale(float scale, boolean finalize) {
+        StatueMenus.NETWORK.sendMessage(new ServerboundArmorStandPropertyMessage(ServerboundArmorStandPropertyMessage.Type.SCALE,
+                scale));
+    }
+
+    @Override
     public void sendRotation(float rotation, boolean finalize) {
-        StatueMenus.NETWORK.sendMessage(new C2SArmorStandRotationMessage(rotation).toServerboundMessage());
+        StatueMenus.NETWORK.sendMessage(new ServerboundArmorStandPropertyMessage(ServerboundArmorStandPropertyMessage.Type.ROTATION,
+                rotation));
     }
 
     @Override

@@ -74,6 +74,7 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(ArmorStandStyleOptions.SEALED.getTranslationKey(), "Sealed");
         builder.add(ArmorStandStyleOptions.SEALED.getDescriptionKey(),
                 "The statue can no longer be broken, equipment cannot be changed. Disallows opening this menu in survival mode.");
+        builder.add(ArmorStandPositionScreen.SCALE_TRANSLATION_KEY, "Scale:");
         builder.add(ArmorStandPositionScreen.ROTATION_TRANSLATION_KEY, "Rotation:");
         builder.add(ArmorStandPositionScreen.POSITION_X_TRANSLATION_KEY, "X-Position:");
         builder.add(ArmorStandPositionScreen.POSITION_Y_TRANSLATION_KEY, "Y-Position:");

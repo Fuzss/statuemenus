@@ -19,8 +19,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class ArmorStandInteractHelper {
+public final class ArmorStandInteractHelper {
     public static final String OPEN_SCREEN_TRANSLATION_KEY = Items.ARMOR_STAND.getDescriptionId() + ".description";
+
+    private ArmorStandInteractHelper() {
+        // NO-OP
+    }
 
     public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, InteractionHand interactionHand, ArmorStand entity, MenuType<?> menuType, @Nullable ArmorStandDataProvider dataProvider) {
         ItemStack itemInHand = player.getItemInHand(interactionHand);

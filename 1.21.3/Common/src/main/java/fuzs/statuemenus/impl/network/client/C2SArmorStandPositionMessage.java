@@ -1,19 +1,21 @@
 package fuzs.statuemenus.impl.network.client;
 
-import fuzs.puzzleslib.api.network.v2.MessageV2;
+import fuzs.puzzleslib.api.network.v2.WritableMessage;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
 import fuzs.statuemenus.impl.StatueMenus;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 
-public class C2SArmorStandPositionMessage implements MessageV2<C2SArmorStandPositionMessage> {
-    private double posX;
-    private double posY;
-    private double posZ;
+public class C2SArmorStandPositionMessage implements WritableMessage<C2SArmorStandPositionMessage> {
+    private final double posX;
+    private final double posY;
+    private final double posZ;
 
-    public C2SArmorStandPositionMessage() {
-
+    public C2SArmorStandPositionMessage(FriendlyByteBuf buf) {
+        this.posX = buf.readDouble();
+        this.posY = buf.readDouble();
+        this.posZ = buf.readDouble();
     }
 
     public C2SArmorStandPositionMessage(double posX, double posY, double posZ) {
@@ -37,13 +39,6 @@ public class C2SArmorStandPositionMessage implements MessageV2<C2SArmorStandPosi
         buf.writeDouble(this.posX);
         buf.writeDouble(this.posY);
         buf.writeDouble(this.posZ);
-    }
-
-    @Override
-    public void read(FriendlyByteBuf buf) {
-        this.posX = buf.readDouble();
-        this.posY = buf.readDouble();
-        this.posZ = buf.readDouble();
     }
 
     @Override

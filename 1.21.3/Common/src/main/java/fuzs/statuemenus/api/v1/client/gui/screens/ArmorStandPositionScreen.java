@@ -1,10 +1,10 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
-import com.google.common.collect.Lists;
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
 import fuzs.puzzleslib.api.client.gui.v2.components.tooltip.TooltipBuilder;
 import fuzs.statuemenus.api.v1.client.gui.components.NewTextureButton;
 import fuzs.statuemenus.api.v1.client.gui.components.NewTextureSliderButton;
+import fuzs.statuemenus.api.v1.helper.ScaleAttributeHelper;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
@@ -33,6 +33,7 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
+    public static final String SCALE_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.scale";
     public static final String ROTATION_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.rotation";
     public static final String POSITION_X_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.x";
     public static final String POSITION_Y_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.y";
@@ -44,13 +45,44 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
     public static final String DEGREES_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.degrees";
     public static final String MOVE_BY_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.moveBy";
     public static final String CENTERED_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.centered";
-    public static final String CENTERED_DESCRIPTION_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.centered.description";
+    public static final String CENTERED_DESCRIPTION_TRANSLATION_KEY =
+            StatueMenus.MOD_ID + ".screen.centered.description";
     public static final String CORNERED_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.cornered";
-    public static final String CORNERED_DESCRIPTION_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.cornered.description";
+    public static final String CORNERED_DESCRIPTION_TRANSLATION_KEY =
+            StatueMenus.MOD_ID + ".screen.cornered.description";
     public static final String ALIGNED_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.aligned";
-    private static final DecimalFormat BLOCK_INCREMENT_FORMAT = Util.make(new DecimalFormat("#.####"), (decimalFormat) -> {
-        decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
-    });
+    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> SCALE_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
+        return screen.new ScaleWidget(Component.translatable(SCALE_TRANSLATION_KEY),
+                armorStand::getScale,
+                screen.dataSyncHandler::sendScale);
+    };
+    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> ROTATION_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
+        return screen.new RotationWidget(Component.translatable(ROTATION_TRANSLATION_KEY),
+                armorStand::getYRot,
+                screen.dataSyncHandler::sendRotation);
+    };
+    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> POSITION_INCREMENT_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
+        return screen.new PositionIncrementWidget();
+    };
+    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> POSITION_X_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
+        return screen.new PositionComponentWidget(POSITION_X_TRANSLATION_KEY, armorStand::getX, x -> {
+            screen.dataSyncHandler.sendPosition(x, armorStand.getY(), armorStand.getZ());
+        });
+    };
+    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> POSITION_Y_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
+        return screen.new PositionComponentWidget(POSITION_Y_TRANSLATION_KEY, armorStand::getY, y -> {
+            screen.dataSyncHandler.sendPosition(armorStand.getX(), y, armorStand.getZ());
+        });
+    };
+    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> POSITION_Z_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
+        return screen.new PositionComponentWidget(POSITION_Z_TRANSLATION_KEY, armorStand::getZ, z -> {
+            screen.dataSyncHandler.sendPosition(armorStand.getX(), armorStand.getY(), z);
+        });
+    };
+    private static final DecimalFormat BLOCK_INCREMENT_FORMAT = Util.make(new DecimalFormat("#.####"),
+            (decimalFormat) -> {
+                decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
+            });
     private static final double[] INCREMENTS = {0.0625, 0.25, 0.5, 1.0};
 
     private static double currentIncrement = INCREMENTS[0];
@@ -62,19 +94,19 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
     @Override
     protected List<ArmorStandWidget> buildWidgets(ArmorStand armorStand) {
         // only move server-side to prevent rubber banding
-        return Lists.newArrayList(
-                new RotationWidget(Component.translatable(ROTATION_TRANSLATION_KEY), armorStand::getYRot, this.dataSyncHandler::sendRotation),
-                new PositionIncrementWidget(),
-                new PositionComponentWidget(POSITION_X_TRANSLATION_KEY, armorStand::getX, x -> {
-                    this.dataSyncHandler.sendPosition(x, armorStand.getY(), armorStand.getZ());
-                }),
-                new PositionComponentWidget(POSITION_Y_TRANSLATION_KEY, armorStand::getY, y -> {
-                    this.dataSyncHandler.sendPosition(armorStand.getX(), y, armorStand.getZ());
-                }),
-                new PositionComponentWidget(POSITION_Z_TRANSLATION_KEY, armorStand::getZ, z -> {
-                    this.dataSyncHandler.sendPosition(armorStand.getX(), armorStand.getY(), z);
-                })
-        );
+        return buildWidgets(this,
+                armorStand,
+                List.of(SCALE_WIDGET_FACTORY,
+                        ROTATION_WIDGET_FACTORY,
+                        POSITION_INCREMENT_WIDGET_FACTORY,
+                        POSITION_X_WIDGET_FACTORY,
+                        POSITION_Y_WIDGET_FACTORY,
+                        POSITION_Z_WIDGET_FACTORY));
+    }
+
+    @Override
+    protected boolean withCloseButton() {
+        return false;
     }
 
     @Override
@@ -92,6 +124,47 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
 
     private static int getBlockPixelIncrement(double increment) {
         return (int) Math.round(increment * 16.0);
+    }
+
+    protected class ScaleWidget extends RotationWidget {
+        static final double LOGARITHMIC_SCALE = 2.0;
+        static final double LOGARITHMIC_SCALE_POW = Math.pow(10.0, -LOGARITHMIC_SCALE);
+
+        public ScaleWidget(Component title, DoubleSupplier currentValue, Consumer<Float> newValue) {
+            super(title, currentValue, newValue, -1.0);
+        }
+
+        @Override
+        protected double getCurrentValue() {
+            double value = Mth.inverseLerp(this.currentValue.getAsDouble(),
+                    ScaleAttributeHelper.MIN_SCALE,
+                    ScaleAttributeHelper.MAX_SCALE);
+            return (Math.log10(value + LOGARITHMIC_SCALE_POW) + LOGARITHMIC_SCALE) / LOGARITHMIC_SCALE;
+        }
+
+        @Override
+        protected void setNewValue(double newValue) {
+            this.newValue.accept(getScaledValue(newValue));
+        }
+
+        @Override
+        protected Component getTooltipComponent(double mouseValue) {
+            mouseValue = getScaledValue(mouseValue);
+            mouseValue = (int) (mouseValue * 100.0F) / 100.0F;
+            mouseValue = Mth.clamp(mouseValue, ScaleAttributeHelper.MIN_SCALE, ScaleAttributeHelper.MAX_SCALE);
+            return Component.literal(ArmorStandPose.ROTATION_FORMAT.format(mouseValue));
+        }
+
+        @Override
+        protected void applyClientValue(double newValue) {
+            ScaleAttributeHelper.setScale(ArmorStandPositionScreen.this.getHolder().getArmorStand(),
+                    getScaledValue(newValue));
+        }
+
+        public static float getScaledValue(double value) {
+            value = Math.pow(10.0, value * LOGARITHMIC_SCALE - LOGARITHMIC_SCALE) - LOGARITHMIC_SCALE_POW;
+            return (float) Mth.lerp(value, ScaleAttributeHelper.MIN_SCALE, ScaleAttributeHelper.MAX_SCALE);
+        }
     }
 
     protected class RotationWidget extends AbstractArmorStandWidget {
@@ -121,7 +194,8 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
         }
 
         protected Component getTooltipComponent(double mouseValue) {
-            return Component.translatable(DEGREES_TRANSLATION_KEY, ArmorStandPose.ROTATION_FORMAT.format(toWrappedDegrees(mouseValue)));
+            return Component.translatable(DEGREES_TRANSLATION_KEY,
+                    ArmorStandPose.ROTATION_FORMAT.format(toWrappedDegrees(mouseValue)));
         }
 
         protected static double fromWrappedDegrees(double value) {
@@ -144,13 +218,22 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            var sliderButton = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureSliderButton(posX + 76, posY + 1, 90, 20, 0, 184, getArmorStandWidgetsLocation(), CommonComponents.EMPTY, this.getCurrentValue()) {
+            var sliderButton = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureSliderButton(posX + 76,
+                    posY + 1,
+                    90,
+                    20,
+                    0,
+                    184,
+                    getArmorStandWidgetsLocation(),
+                    CommonComponents.EMPTY,
+                    this.getCurrentValue()) {
                 private boolean dirty;
 
                 @Override
                 public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                     super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-                    double mouseValue = ArmorStandPose.snapValue((mouseX - this.getX()) / (double) this.getWidth(), this.snapInterval);
+                    double mouseValue = ArmorStandPose.snapValue((mouseX - this.getX()) / (double) this.getWidth(),
+                            this.snapInterval);
                     this.setTooltip(Tooltip.create(RotationWidget.this.getTooltipComponent(mouseValue)));
                 }
 
@@ -192,9 +275,16 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
             sliderButton.snapInterval = this.snapInterval;
             this.reset = sliderButton::reset;
             this.children.add(sliderButton);
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174, posY + 1, 20, 20, 236, 64, getArmorStandWidgetsLocation(), button -> {
-                ArmorStandPositionScreen.this.setActiveWidget(this);
-            })));
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174,
+                    posY + 1,
+                    20,
+                    20,
+                    236,
+                    64,
+                    getArmorStandWidgetsLocation(),
+                    button -> {
+                        ArmorStandPositionScreen.this.setActiveWidget(this);
+                    })));
         }
     }
 
@@ -209,22 +299,35 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
             super.init(posX, posY);
             for (int i = 0; i < INCREMENTS.length; i++) {
                 double increment = INCREMENTS[i];
-                AbstractWidget widget = ArmorStandPositionScreen.this.addRenderableWidget(
-                        new NewTextureButton(posX + 76 + i * 24 + (i > 1 ? 1 : 0), posY + 1, 20, 20, 0, 184,
-                                getArmorStandWidgetsLocation(),
-                                Component.literal(String.valueOf(getBlockPixelIncrement(increment))), button -> {
+                AbstractWidget widget = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureButton(
+                        posX + 76 + i * 24 + (i > 1 ? 1 : 0),
+                        posY + 1,
+                        20,
+                        20,
+                        0,
+                        184,
+                        getArmorStandWidgetsLocation(),
+                        Component.literal(String.valueOf(getBlockPixelIncrement(increment))),
+                        button -> {
                             this.setActiveIncrement(button, increment);
-                        }
-                        ));
-                TooltipBuilder.create(getPixelIncrementComponent(increment), getBlockIncrementComponent(increment)).build(widget);
+                        }));
+                TooltipBuilder.create(getPixelIncrementComponent(increment), getBlockIncrementComponent(increment))
+                        .build(widget);
                 this.children.add(widget);
                 if (increment == currentIncrement) {
                     widget.active = false;
                 }
             }
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174, posY + 1, 20, 20, 236, 64, getArmorStandWidgetsLocation(), button -> {
-                ArmorStandPositionScreen.this.setActiveWidget(this);
-            })));
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174,
+                    posY + 1,
+                    20,
+                    20,
+                    236,
+                    64,
+                    getArmorStandWidgetsLocation(),
+                    button -> {
+                        ArmorStandPositionScreen.this.setActiveWidget(this);
+                    })));
         }
 
         private void setActiveIncrement(AbstractWidget source, double increment) {
@@ -267,47 +370,63 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            this.editBox = new EditBox(ArmorStandPositionScreen.this.font, posX + 77, posY, 66, 22, EntityType.ARMOR_STAND.getDescription());
+            this.editBox = new EditBox(ArmorStandPositionScreen.this.font,
+                    posX + 77,
+                    posY,
+                    66,
+                    22,
+                    EntityType.ARMOR_STAND.getDescription());
             this.editBox.setMaxLength(50);
             this.editBox.setEditable(false);
             this.editBox.setTextColorUneditable(14737632);
             this.editBox.setValue(BLOCK_INCREMENT_FORMAT.format(this.getPositionValue()));
             this.addChildren(this.editBox);
-            AbstractWidget incrementButton = this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(
-                    new SpritelessImageButton(posX + 149,
-                            posY + 1,
-                            20,
-                            10,
-                            196,
-                            64,
-                            20,
-                            getArmorStandWidgetsLocation(),
-                            256,
-                            256,
-                            button -> {
-                                this.setPositionValue(this.getPositionValue() + currentIncrement);
-                            }
-                    )));
-            TooltipBuilder.create().setLines(() -> Collections.singletonList(Component.translatable(INCREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)))).build(incrementButton);
-            AbstractWidget decrementButton = this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(
-                    new SpritelessImageButton(posX + 149,
-                            posY + 11,
-                            20,
-                            10,
-                            216,
-                            74,
-                            20,
-                            getArmorStandWidgetsLocation(),
-                            256,
-                            256,
-                            button -> {
-                                this.setPositionValue(this.getPositionValue() - currentIncrement);
-                            }
-                    )));
-            TooltipBuilder.create().setLines(() -> Collections.singletonList(Component.translatable(DECREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)))).build(decrementButton);
-            this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174, posY + 1, 20, 20, 236, 64, getArmorStandWidgetsLocation(), button -> {
-                ArmorStandPositionScreen.this.setActiveWidget(this);
-            })));
+            AbstractWidget incrementButton = this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(
+                    posX + 149,
+                    posY + 1,
+                    20,
+                    10,
+                    196,
+                    64,
+                    20,
+                    getArmorStandWidgetsLocation(),
+                    256,
+                    256,
+                    button -> {
+                        this.setPositionValue(this.getPositionValue() + currentIncrement);
+                    })));
+            TooltipBuilder.create()
+                    .setLines(() -> Collections.singletonList(Component.translatable(INCREMENT_TRANSLATION_KEY,
+                            getPixelIncrementComponent(currentIncrement))))
+                    .build(incrementButton);
+            AbstractWidget decrementButton = this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(
+                    posX + 149,
+                    posY + 11,
+                    20,
+                    10,
+                    216,
+                    74,
+                    20,
+                    getArmorStandWidgetsLocation(),
+                    256,
+                    256,
+                    button -> {
+                        this.setPositionValue(this.getPositionValue() - currentIncrement);
+                    })));
+            TooltipBuilder.create()
+                    .setLines(() -> Collections.singletonList(Component.translatable(DECREMENT_TRANSLATION_KEY,
+                            getPixelIncrementComponent(currentIncrement))))
+                    .build(decrementButton);
+            this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174,
+                    posY + 1,
+                    20,
+                    20,
+                    236,
+                    64,
+                    getArmorStandWidgetsLocation(),
+                    button -> {
+                        ArmorStandPositionScreen.this.setActiveWidget(this);
+                    })));
         }
 
         private double getPositionValue() {
@@ -317,7 +436,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
         private static double roundWithPrecision(double toRound, double roundingPrecision, int decimalPlaces) {
             toRound = Math.round(toRound * roundingPrecision) / roundingPrecision;
             final double power = Math.pow(10, decimalPlaces);
-            return  Math.round(toRound * power) / power;
+            return Math.round(toRound * power) / power;
         }
 
         private void setPositionValue(double newValue) {

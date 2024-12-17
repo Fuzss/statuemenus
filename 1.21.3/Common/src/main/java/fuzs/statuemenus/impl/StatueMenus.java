@@ -41,7 +41,7 @@ public class StatueMenus implements ModConstructor {
             .registerLegacyServerbound(C2SArmorStandStyleMessage.class, C2SArmorStandStyleMessage::new)
             .registerLegacyServerbound(C2SArmorStandPositionMessage.class, C2SArmorStandPositionMessage::new)
             .registerLegacyServerbound(C2SArmorStandPoseMessage.class, C2SArmorStandPoseMessage::new)
-            .registerLegacyServerbound(C2SArmorStandRotationMessage.class, C2SArmorStandRotationMessage::new);
+            .registerServerbound(ServerboundArmorStandPropertyMessage.class);
 
     public static final ResourceLocation ARMOR_STAND_IDENTIFIER = id("armor_stand");
 

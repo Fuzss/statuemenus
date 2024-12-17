@@ -1,6 +1,5 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import fuzs.statuemenus.api.v1.client.gui.components.NewTextureButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
@@ -16,18 +15,25 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
+    protected static final int WIDGET_HEIGHT = 22;
+
     protected final List<ArmorStandWidget> widgets;
     @Nullable
     private ArmorStandWidgetsScreen.ArmorStandWidget activeWidget;
 
     public ArmorStandWidgetsScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
-        this.widgets = ImmutableList.copyOf(this.buildWidgets(holder.getArmorStand()));
+        this.widgets = this.buildWidgets(holder.getArmorStand());
     }
 
     protected abstract List<ArmorStandWidget> buildWidgets(ArmorStand armorStand);
+
+    protected static <T extends ArmorStandWidgetsScreen> List<ArmorStandWidget> buildWidgets(T screen, ArmorStand armorStand, List<ArmorStandWidgetFactory<? super T>> widgetFactories) {
+        return widgetFactories.stream().map(factory -> factory.apply(screen, armorStand)).toList();
+    }
 
     private Collection<ArmorStandWidget> getActivePositionComponentWidgets() {
         if (this.activeWidget != null) {
@@ -77,14 +83,23 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
     @Override
     protected void init() {
         super.init();
-        int startY = (this.imageHeight - this.widgets.size() * 22 - (this.widgets.size() - 1) * 7) / 2;
+        int fullWidgetsHeight =
+                this.widgets.size() * WIDGET_HEIGHT + (this.widgets.size() - 1) * this.getWidgetRenderOffset();
+        int startY = (this.imageHeight - fullWidgetsHeight) / 2;
         for (int i = 0; i < this.widgets.size(); i++) {
-            this.widgets.get(i).init(this.leftPos + 8, this.topPos + startY + this.getWidgetRenderOffset() + i * 29);
+            this.widgets.get(i)
+                    .init(this.leftPos + 8,
+                            this.topPos + startY + this.getWidgetTopOffset() +
+                                    i * (WIDGET_HEIGHT + this.getWidgetRenderOffset()));
         }
     }
 
     protected int getWidgetRenderOffset() {
         return 7;
+    }
+
+    protected int getWidgetTopOffset() {
+        return this.withCloseButton() ? 7 : 0;
     }
 
     @Override
@@ -93,6 +108,11 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
         for (ArmorStandWidget widget : this.getActivePositionComponentWidgets()) {
             widget.render(guiGraphics, mouseX, mouseY, partialTick);
         }
+    }
+
+    @FunctionalInterface
+    protected interface ArmorStandWidgetFactory<T extends ArmorStandWidgetsScreen> extends BiFunction<T, ArmorStand, ArmorStandWidget> {
+
     }
 
     protected interface ArmorStandWidget {
@@ -134,14 +154,14 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
                 }
             }
         }
-        
+
         protected boolean shouldTick() {
             return false;
         }
 
         @Override
         public void reset() {
-
+            // NO-OP
         }
 
         @Override
@@ -166,9 +186,21 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
         @Override
         public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             if (ArmorStandWidgetsScreen.this.disableMenuRendering()) {
-                NewTextureButton.drawCenteredString(guiGraphics, ArmorStandWidgetsScreen.this.font, this.title, this.posX + 36, this.posY + 6, 0xFFFFFFFF, true);
+                NewTextureButton.drawCenteredString(guiGraphics,
+                        ArmorStandWidgetsScreen.this.font,
+                        this.title,
+                        this.posX + 36,
+                        this.posY + 6,
+                        0xFFFFFFFF,
+                        true);
             } else {
-                NewTextureButton.drawCenteredString(guiGraphics, ArmorStandWidgetsScreen.this.font, this.title, this.posX + 36, this.posY + 6, 0x404040, false);
+                NewTextureButton.drawCenteredString(guiGraphics,
+                        ArmorStandWidgetsScreen.this.font,
+                        this.title,
+                        this.posX + 36,
+                        this.posY + 6,
+                        0x404040,
+                        false);
             }
         }
 
