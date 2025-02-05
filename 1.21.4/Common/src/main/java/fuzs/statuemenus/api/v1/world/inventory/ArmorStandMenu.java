@@ -1,6 +1,5 @@
 package fuzs.statuemenus.api.v1.world.inventory;
 
-import com.mojang.datafixers.util.Pair;
 import fuzs.puzzleslib.api.container.v1.ContainerMenuHelper;
 import fuzs.puzzleslib.api.container.v1.ListBackedContainer;
 import fuzs.puzzleslib.api.core.v1.CommonAbstractions;
@@ -26,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandHolder {
-    public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = StatueMenus.id("item/empty_armor_slot_sword");
+    static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = StatueMenus.id("container/slot/sword");
     static final ResourceLocation[] TEXTURE_EMPTY_SLOTS = new ResourceLocation[]{
             InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS,
             InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS,
@@ -68,12 +67,14 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
     public static ArmorStandMenu create(MenuType<?> menuType, int containerId, Inventory inventory, ArmorStand armorStand, @Nullable ArmorStandDataProvider dataProvider) {
         // we could also copy all items from the armor stand to a SimpleContainer, then update the armor stand using a listener using LivingEntity::setItemSlot
         // problem is that way we miss out on anything changing with the armor stand entity itself, therefore this approach
-        SimpleContainer handItemsContainer = ContainerMenuHelper.createListBackedContainer(armorStand.handItems, (Container container) -> {
-            if (container.hasAnyMatching(stack -> !stack.isEmpty())) {
-                ArmorStandStyleOption.setArmorStandData(armorStand, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
-            }
-        });
-        CompoundContainer container = new CompoundContainer(ListBackedContainer.of(armorStand.armorItems), handItemsContainer);
+        SimpleContainer handItemsContainer = ContainerMenuHelper.createListBackedContainer(armorStand.handItems,
+                (Container container) -> {
+                    if (container.hasAnyMatching(stack -> !stack.isEmpty())) {
+                        ArmorStandStyleOption.setArmorStandData(armorStand, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
+                    }
+                });
+        CompoundContainer container = new CompoundContainer(ListBackedContainer.of(armorStand.armorItems),
+                handItemsContainer);
         return new ArmorStandMenu(menuType, containerId, inventory, container, armorStand, dataProvider);
     }
 
@@ -127,8 +128,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
                 }
 
                 @Override
-                public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                    return Pair.of(InventoryMenu.BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS[equipmentslot.getIndex()]);
+                public ResourceLocation getNoItemIcon() {
+                    return TEXTURE_EMPTY_SLOTS[equipmentslot.getIndex()];
                 }
             });
         }
@@ -163,8 +164,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
                 }
 
                 @Override
-                public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                    return Pair.of(InventoryMenu.BLOCK_ATLAS, slotTexture);
+                public ResourceLocation getNoItemIcon() {
+                    return slotTexture;
                 }
             });
         }
