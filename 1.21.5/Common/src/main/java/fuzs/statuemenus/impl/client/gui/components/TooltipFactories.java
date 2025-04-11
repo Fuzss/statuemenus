@@ -1,7 +1,7 @@
 package fuzs.statuemenus.impl.client.gui.components;
 
 import com.google.common.collect.Lists;
-import fuzs.puzzleslib.api.client.gui.v2.components.tooltip.TooltipBuilder;
+import fuzs.puzzleslib.api.client.gui.v2.tooltip.TooltipBuilder;
 import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandPosesScreen;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import net.minecraft.ChatFormatting;
@@ -71,7 +71,12 @@ public final class TooltipFactories {
             if (clientTooltipPositioner instanceof MenuTooltipPositioner) {
                 return (screenWidth, screenHeight, mouseX, mouseY, tooltipWidth, tooltipHeight) -> {
                     if (isLeft) mouseX -= 24 + tooltipWidth;
-                    return DefaultTooltipPositioner.INSTANCE.positionTooltip(screenWidth, screenHeight, mouseX, mouseY, tooltipWidth, tooltipHeight);
+                    return DefaultTooltipPositioner.INSTANCE.positionTooltip(screenWidth,
+                            screenHeight,
+                            mouseX,
+                            mouseY,
+                            tooltipWidth,
+                            tooltipHeight);
                 };
             } else {
                 return clientTooltipPositioner;

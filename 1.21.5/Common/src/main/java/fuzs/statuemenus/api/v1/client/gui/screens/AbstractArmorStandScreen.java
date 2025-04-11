@@ -23,6 +23,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.apache.commons.lang3.ArrayUtils;
@@ -426,11 +427,9 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             return menu;
         } else {
             // prevent ClassCastException in case some mod like OwoLib calls this
-            return ArmorStandMenu.create(null,
-                    0,
-                    this.minecraft.player.getInventory(),
-                    this.getHolder().getArmorStand(),
-                    this.getHolder().getDataProvider());
+            Inventory inventory1 = this.minecraft.player.getInventory();
+            ArmorStand armorStand = this.getHolder().getArmorStand();
+            return new ArmorStandMenu(null, 0, inventory1, armorStand, this.getHolder().getDataProvider());
         }
     }
 

@@ -1,6 +1,5 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -26,8 +25,6 @@ public class TickBoxButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.enableBlend();
-        RenderSystem.enableDepthTest();
         guiGraphics.blit(RenderType::guiTextured,
                 AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                 this.getX() + 2,

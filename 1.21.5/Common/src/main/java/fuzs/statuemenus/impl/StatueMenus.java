@@ -2,11 +2,11 @@ package fuzs.statuemenus.impl;
 
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.api.core.v1.ModLoaderEnvironment;
+import fuzs.puzzleslib.api.core.v1.context.PayloadTypesContext;
 import fuzs.puzzleslib.api.core.v1.utility.ResourceLocationHelper;
 import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
 import fuzs.puzzleslib.api.event.v1.entity.player.PlayerInteractEvents;
 import fuzs.puzzleslib.api.init.v3.registry.RegistryManager;
-import fuzs.puzzleslib.api.network.v3.NetworkHandler;
 import fuzs.statuemenus.api.v1.helper.ArmorStandInteractHelper;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
@@ -35,14 +35,6 @@ public class StatueMenus implements ModConstructor {
     public static final String MOD_NAME = "Statue Menus";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
-    public static final NetworkHandler NETWORK = NetworkHandler.builder(MOD_ID)
-            .optional()
-            .registerLegacyServerbound(C2SArmorStandNameMessage.class, C2SArmorStandNameMessage::new)
-            .registerLegacyServerbound(C2SArmorStandStyleMessage.class, C2SArmorStandStyleMessage::new)
-            .registerLegacyServerbound(C2SArmorStandPositionMessage.class, C2SArmorStandPositionMessage::new)
-            .registerLegacyServerbound(C2SArmorStandPoseMessage.class, C2SArmorStandPoseMessage::new)
-            .registerServerbound(ServerboundArmorStandPropertyMessage.class);
-
     public static final ResourceLocation ARMOR_STAND_IDENTIFIER = id("armor_stand");
 
     @Override
@@ -57,7 +49,7 @@ public class StatueMenus implements ModConstructor {
         Object[] holder = new Object[1];
         holder[0] = registry.registerExtendedMenuType(ARMOR_STAND_IDENTIFIER.getPath(),
                 () -> (int containerId, Inventory inventory, RegistryFriendlyByteBuf buf) -> {
-                    return ArmorStandMenu.create(((Holder.Reference<MenuType<ArmorStandMenu>>) holder[0]).value(),
+                    return new ArmorStandMenu(((Holder.Reference<MenuType<ArmorStandMenu>>) holder[0]).value(),
                             containerId,
                             inventory,
                             buf,
@@ -86,6 +78,18 @@ public class StatueMenus implements ModConstructor {
         for (ArmorStandStyleOptions styleOption : ArmorStandStyleOptions.values()) {
             ArmorStandStyleOption.register(id(styleOption.getName().toLowerCase(Locale.ROOT)), styleOption);
         }
+    }
+
+    @Override
+    public void onRegisterPayloadTypes(PayloadTypesContext context) {
+        context.optional();
+        context.playToServer(ServerboundArmorStandNameMessage.class, ServerboundArmorStandNameMessage.STREAM_CODEC);
+        context.playToServer(ServerboundArmorStandStyleMessage.class, ServerboundArmorStandStyleMessage.STREAM_CODEC);
+        context.playToServer(ServerboundArmorStandPositionMessage.class,
+                ServerboundArmorStandPositionMessage.STREAM_CODEC);
+        context.playToServer(ServerboundArmorStandPoseMessage.class, ServerboundArmorStandPoseMessage.STREAM_CODEC);
+        context.playToServer(ServerboundArmorStandPropertyMessage.class,
+                ServerboundArmorStandPropertyMessage.STREAM_CODEC);
     }
 
     public static ResourceLocation id(String path) {

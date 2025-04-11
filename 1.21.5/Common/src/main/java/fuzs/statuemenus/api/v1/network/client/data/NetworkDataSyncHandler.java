@@ -1,9 +1,9 @@
 package fuzs.statuemenus.api.v1.network.client.data;
 
+import fuzs.puzzleslib.api.network.v4.MessageSender;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
-import fuzs.statuemenus.impl.StatueMenus;
 import fuzs.statuemenus.impl.network.client.*;
 import net.minecraft.nbt.CompoundTag;
 
@@ -22,7 +22,7 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
     @Override
     public void sendName(String name) {
         DataSyncHandler.setCustomArmorStandName(this.getArmorStand(), name);
-        StatueMenus.NETWORK.sendMessage(new C2SArmorStandNameMessage(name).toServerboundMessage());
+        MessageSender.broadcast(new ServerboundArmorStandNameMessage(name));
     }
 
     @Override
@@ -30,29 +30,29 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
         pose.applyToEntity(this.getArmorStand());
         CompoundTag compoundTag = new CompoundTag();
         pose.serializeAllPoses(compoundTag);
-        StatueMenus.NETWORK.sendMessage(new C2SArmorStandPoseMessage(compoundTag).toServerboundMessage());
+        MessageSender.broadcast(new ServerboundArmorStandPoseMessage(compoundTag));
     }
 
     @Override
     public void sendPosition(double posX, double posY, double posZ, boolean finalize) {
-        StatueMenus.NETWORK.sendMessage(new C2SArmorStandPositionMessage(posX, posY, posZ).toServerboundMessage());
+        MessageSender.broadcast(new ServerboundArmorStandPositionMessage(posX, posY, posZ));
     }
 
     @Override
     public void sendScale(float scale, boolean finalize) {
-        StatueMenus.NETWORK.sendMessage(new ServerboundArmorStandPropertyMessage(ServerboundArmorStandPropertyMessage.Type.SCALE,
+        MessageSender.broadcast(new ServerboundArmorStandPropertyMessage(ServerboundArmorStandPropertyMessage.DataType.SCALE,
                 scale));
     }
 
     @Override
     public void sendRotation(float rotation, boolean finalize) {
-        StatueMenus.NETWORK.sendMessage(new ServerboundArmorStandPropertyMessage(ServerboundArmorStandPropertyMessage.Type.ROTATION,
+        MessageSender.broadcast(new ServerboundArmorStandPropertyMessage(ServerboundArmorStandPropertyMessage.DataType.ROTATION,
                 rotation));
     }
 
     @Override
     public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize) {
         styleOption.setOption(this.getArmorStand(), value);
-        StatueMenus.NETWORK.sendMessage(new C2SArmorStandStyleMessage(styleOption, value).toServerboundMessage());
+        MessageSender.broadcast(new ServerboundArmorStandStyleMessage(styleOption, value));
     }
 }

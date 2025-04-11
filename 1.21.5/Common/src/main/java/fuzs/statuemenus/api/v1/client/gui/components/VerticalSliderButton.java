@@ -1,7 +1,6 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import net.minecraft.client.InputType;
@@ -61,9 +60,6 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
         guiGraphics.blit(RenderType::guiTextured,
                 AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                 this.getX(),

@@ -4,6 +4,7 @@ import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
+import fuzs.statuemenus.impl.world.inventory.ArmorStandSlot;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -140,19 +141,22 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
                 this.imageHeight,
                 256,
                 256);
-        for (int k = 0; k < ArmorStandMenu.SLOT_IDS.length; ++k) {
-            Slot slot = this.menu.slots.get(k);
-            if (slot.isActive() && isSlotRestricted(this.menu.getArmorStand(), ArmorStandMenu.SLOT_IDS[k])) {
-                guiGraphics.blit(RenderType::guiTextured,
-                        AbstractArmorStandScreen.getArmorStandEquipmentLocation(),
-                        this.leftPos + slot.x - 1,
-                        this.topPos + slot.y - 1,
-                        210,
-                        0,
-                        18,
-                        18,
-                        256,
-                        256);
+        for (int i = 0, j = 0; i < ArmorStandMenu.SLOT_IDS.length; ++i) {
+            EquipmentSlot equipmentSlot = ArmorStandMenu.SLOT_IDS[i];
+            if (equipmentSlot != null) {
+                Slot slot = this.menu.slots.get(j++);
+                if (slot.isActive() && isSlotRestricted(this.menu.getArmorStand(), equipmentSlot)) {
+                    guiGraphics.blit(RenderType::guiTextured,
+                            AbstractArmorStandScreen.getArmorStandEquipmentLocation(),
+                            this.leftPos + slot.x - 1,
+                            this.topPos + slot.y - 1,
+                            210,
+                            0,
+                            18,
+                            18,
+                            256,
+                            256);
+                }
             }
         }
         AbstractArmorStandScreen.drawTabs(guiGraphics,
@@ -170,14 +174,14 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     private static boolean isSlotRestricted(ArmorStand armorStand, EquipmentSlot equipmentSlot) {
-        return ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, 0) ||
-                ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_TAKING_OFFSET) ||
-                ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_PUTTING_OFFSET);
+        return ArmorStandSlot.isSlotDisabled(armorStand, equipmentSlot, 0) ||
+                ArmorStandSlot.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_TAKING_OFFSET) ||
+                ArmorStandSlot.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_PUTTING_OFFSET);
     }
 
     @Override
     protected void renderLabels(GuiGraphics poseStack, int mouseX, int mouseY) {
-
+        // NO-OP
     }
 
     @Override
@@ -187,23 +191,6 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
             AbstractArmorStandScreen.handleHotbarKeyPressed(keyCode, scanCode, this, tabs);
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    private boolean shouldHandleHotbarSlotKeys(int keyCode, int scanCode, ArmorStandScreenType[] tabs) {
-        if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null) {
-            if (this.hoveredSlot.hasItem()) {
-                return false;
-            } else {
-                for (int i = 0; i < Math.min(tabs.length, 9); ++i) {
-                    if (this.minecraft.options.keyHotbarSlots[i].matches(keyCode, scanCode)) {
-                        if (!this.minecraft.player.getInventory().getItem(i).isEmpty()) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        return true;
     }
 
     @Override

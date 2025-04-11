@@ -1,8 +1,7 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
-import fuzs.puzzleslib.api.client.gui.v2.components.GuiGraphicsHelper;
+import fuzs.puzzleslib.api.client.gui.v2.GuiGraphicsHelper;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
@@ -41,9 +40,6 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
         GuiGraphicsHelper.blitNineSliced(guiGraphics,
                 RenderType::guiTextured,
                 this.textureLocation,

@@ -1,6 +1,5 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -32,8 +31,6 @@ public class NewTextureButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.enableBlend();
-        RenderSystem.enableDepthTest();
         int i = this.getYImage();
         guiGraphics.blit(RenderType::guiTextured,
                 this.textureLocation,

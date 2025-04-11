@@ -1,7 +1,6 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import net.minecraft.client.InputType;
@@ -68,9 +67,6 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
         final int sliderX = (int) (this.horizontalValue * (double) (this.width - SLIDER_SIZE - 2));
         final int sliderY = (int) (this.verticalValue * (double) (this.height - SLIDER_SIZE - 2));
         if (!this.active || !this.isHoveredOrFocused() ||

@@ -1,34 +1,40 @@
 package fuzs.statuemenus.impl.network.client;
 
-import fuzs.puzzleslib.api.network.v3.ServerMessageListener;
-import fuzs.puzzleslib.api.network.v3.ServerboundMessage;
+import fuzs.puzzleslib.api.network.v4.codec.ExtraStreamCodecs;
+import fuzs.puzzleslib.api.network.v4.message.MessageListener;
+import fuzs.puzzleslib.api.network.v4.message.play.ServerboundPlayMessage;
 import fuzs.statuemenus.api.v1.helper.ScaleAttributeHelper;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
-public record ServerboundArmorStandPropertyMessage(Type type,
-                                                   float value) implements ServerboundMessage<ServerboundArmorStandPropertyMessage> {
+public record ServerboundArmorStandPropertyMessage(DataType dataType, float value) implements ServerboundPlayMessage {
+    public static final StreamCodec<ByteBuf, ServerboundArmorStandPropertyMessage> STREAM_CODEC = StreamCodec.composite(
+            ExtraStreamCodecs.fromEnum(DataType.class),
+            ServerboundArmorStandPropertyMessage::dataType,
+            ByteBufCodecs.FLOAT,
+            ServerboundArmorStandPropertyMessage::value,
+            ServerboundArmorStandPropertyMessage::new);
 
     @Override
-    public ServerMessageListener<ServerboundArmorStandPropertyMessage> getHandler() {
-        return new ServerMessageListener<>() {
-
+    public MessageListener<Context> getListener() {
+        return new MessageListener<Context>() {
             @Override
-            public void handle(ServerboundArmorStandPropertyMessage message, MinecraftServer minecraftServer, ServerGamePacketListenerImpl serverGamePacketListener, ServerPlayer serverPlayer, ServerLevel serverLevel) {
-                if (serverPlayer.containerMenu instanceof ArmorStandMenu menu && menu.stillValid(serverPlayer)) {
+            public void accept(Context context) {
+                if (context.player().containerMenu instanceof ArmorStandMenu menu &&
+                        menu.stillValid(context.player())) {
                     ArmorStand armorStand = menu.getArmorStand();
-                    switch (message.type) {
+                    float value = ServerboundArmorStandPropertyMessage.this.value;
+                    switch (ServerboundArmorStandPropertyMessage.this.dataType) {
                         case ROTATION -> {
-                            armorStand.setYRot(message.value);
-                            // not sure if this is necessary...
-                            armorStand.setYBodyRot(message.value);
+                            armorStand.setYRot(value);
+                            // might not be necessary
+                            armorStand.setYBodyRot(value);
                         }
                         case SCALE -> {
-                            ScaleAttributeHelper.setScale(armorStand, message.value);
+                            ScaleAttributeHelper.setScale(armorStand, value);
                         }
                     }
                 }
@@ -36,7 +42,7 @@ public record ServerboundArmorStandPropertyMessage(Type type,
         };
     }
 
-    public enum Type {
+    public enum DataType {
         SCALE,
         ROTATION
     }

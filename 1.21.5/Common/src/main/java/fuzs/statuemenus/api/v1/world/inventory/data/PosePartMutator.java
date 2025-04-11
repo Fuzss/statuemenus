@@ -12,12 +12,42 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public final class PosePartMutator {
-    public static final PosePartMutator HEAD = new PosePartMutator("head", ArmorStandPose::getHeadPose, ArmorStandPose::withHeadPose, PosePartAxisRange.range(-60.0F, 60.0F), PosePartAxisRange.range(-60.0F, 60.0F), PosePartAxisRange.range(-120.0, 120.0));
-    public static final PosePartMutator BODY = new PosePartMutator("body", ArmorStandPose::getBodyPose, ArmorStandPose::withBodyPose, PosePartAxisRange.range(-30.0F, 30.0F), PosePartAxisRange.range(-30.0F, 30.0F), PosePartAxisRange.range(-120.0, 120.0));
-    public static final PosePartMutator RIGHT_ARM = new PosePartMutator("rightArm", ArmorStandPose::getRightArmPose, ArmorStandPose::withRightArmPose, PosePartAxisRange.range(-180.0, 0.0), PosePartAxisRange.range(-90.0, 45.0), PosePartAxisRange.range(-120.0, 120.0));
-    public static final PosePartMutator LEFT_ARM = new PosePartMutator("leftArm", ArmorStandPose::getLeftArmPose, ArmorStandPose::withLeftArmPose, PosePartAxisRange.range(-180.0, 0.0), PosePartAxisRange.range(-45.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
-    public static final PosePartMutator RIGHT_LEG = new PosePartMutator("rightLeg", ArmorStandPose::getRightLegPose, ArmorStandPose::withRightLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(-90.0, 0.0), PosePartAxisRange.range(-120.0, 120.0));
-    public static final PosePartMutator LEFT_LEG = new PosePartMutator("leftLeg", ArmorStandPose::getLeftLegPose, ArmorStandPose::withLeftLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(0.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
+    public static final PosePartMutator HEAD = new PosePartMutator("head",
+            ArmorStandPose::getHeadPose,
+            ArmorStandPose::withHeadPose,
+            PosePartAxisRange.range(-60.0F, 60.0F),
+            PosePartAxisRange.range(-60.0F, 60.0F),
+            PosePartAxisRange.range(-120.0, 120.0));
+    public static final PosePartMutator BODY = new PosePartMutator("body",
+            ArmorStandPose::getBodyPose,
+            ArmorStandPose::withBodyPose,
+            PosePartAxisRange.range(-30.0F, 30.0F),
+            PosePartAxisRange.range(-30.0F, 30.0F),
+            PosePartAxisRange.range(-120.0, 120.0));
+    public static final PosePartMutator RIGHT_ARM = new PosePartMutator("rightArm",
+            ArmorStandPose::getRightArmPose,
+            ArmorStandPose::withRightArmPose,
+            PosePartAxisRange.range(-180.0, 0.0),
+            PosePartAxisRange.range(-90.0, 45.0),
+            PosePartAxisRange.range(-120.0, 120.0));
+    public static final PosePartMutator LEFT_ARM = new PosePartMutator("leftArm",
+            ArmorStandPose::getLeftArmPose,
+            ArmorStandPose::withLeftArmPose,
+            PosePartAxisRange.range(-180.0, 0.0),
+            PosePartAxisRange.range(-45.0, 90.0),
+            PosePartAxisRange.range(-120.0, 120.0));
+    public static final PosePartMutator RIGHT_LEG = new PosePartMutator("rightLeg",
+            ArmorStandPose::getRightLegPose,
+            ArmorStandPose::withRightLegPose,
+            PosePartAxisRange.range(-120.0, 120.0),
+            PosePartAxisRange.range(-90.0, 0.0),
+            PosePartAxisRange.range(-120.0, 120.0));
+    public static final PosePartMutator LEFT_LEG = new PosePartMutator("leftLeg",
+            ArmorStandPose::getLeftLegPose,
+            ArmorStandPose::withLeftLegPose,
+            PosePartAxisRange.range(-120.0, 120.0),
+            PosePartAxisRange.range(0.0, 90.0),
+            PosePartAxisRange.range(-120.0, 120.0));
     public static final String AXIS_X_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.rotations.x";
     public static final String AXIS_Y_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.rotations.y";
     public static final String AXIS_Z_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.rotations.z";
@@ -30,7 +60,14 @@ public final class PosePartMutator {
     private final byte invertedIndices;
 
     public PosePartMutator(String name, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ) {
-        this(name, getRotations, setRotations, rangeX, rangeY, rangeZ, new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Y, Direction.Axis.Z}, Direction.Axis.Y);
+        this(name,
+                getRotations,
+                setRotations,
+                rangeX,
+                rangeY,
+                rangeZ,
+                new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Y, Direction.Axis.Z},
+                Direction.Axis.Y);
     }
 
     public PosePartMutator(String name, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ, Direction.Axis[] axisOrder, Direction.Axis... invertedAxes) {
@@ -60,8 +97,10 @@ public final class PosePartMutator {
     }
 
     public Component getAxisComponent(ArmorStandPose pose, int index) {
-        double value = ArmorStandPose.snapValue(this.getRotationsAtAxis(index, pose), ArmorStandPose.DEGREES_SNAP_INTERVAL);
-        return Component.translatable(this.getAxisTranslationKey(this.getAxisAt(index)), ArmorStandPose.ROTATION_FORMAT.format(value));
+        double value = ArmorStandPose.snapValue(this.getRotationsAtAxis(index, pose),
+                ArmorStandPose.DEGREES_SNAP_INTERVAL);
+        return Component.translatable(this.getAxisTranslationKey(this.getAxisAt(index)),
+                ArmorStandPose.ROTATION_FORMAT.format(value));
     }
 
     private String getAxisTranslationKey(Direction.Axis axis) {
@@ -78,9 +117,9 @@ public final class PosePartMutator {
 
     private double getRotationsAtAxis(int index, Rotations rotations) {
         return switch (this.getAxisAt(index)) {
-            case X -> this.invertAtAxis(Direction.Axis.X, rotations.getWrappedX());
-            case Y -> this.invertAtAxis(Direction.Axis.Y, rotations.getWrappedY());
-            case Z -> this.invertAtAxis(Direction.Axis.Z, rotations.getWrappedZ());
+            case X -> this.invertAtAxis(Direction.Axis.X, rotations.x());
+            case Y -> this.invertAtAxis(Direction.Axis.Y, rotations.y());
+            case Z -> this.invertAtAxis(Direction.Axis.Z, rotations.z());
         };
     }
 
@@ -90,21 +129,24 @@ public final class PosePartMutator {
 
     private double getNormalizedRotationsAtAxis(int index, Rotations rotations, boolean clampRotations) {
         return switch (this.getAxisAt(index)) {
-            case X ->
-                    (float) this.getAxisRangeAtAxis(Direction.Axis.X, clampRotations).normalize(this.invertAtAxis(Direction.Axis.X, rotations.getWrappedX()));
-            case Y ->
-                    (float) this.getAxisRangeAtAxis(Direction.Axis.Y, clampRotations).normalize(this.invertAtAxis(Direction.Axis.Y, rotations.getWrappedY()));
-            case Z ->
-                    (float) this.getAxisRangeAtAxis(Direction.Axis.Z, clampRotations).normalize(this.invertAtAxis(Direction.Axis.Z, rotations.getWrappedZ()));
+            case X -> (float) this.getAxisRangeAtAxis(Direction.Axis.X, clampRotations)
+                    .normalize(this.invertAtAxis(Direction.Axis.X, rotations.x()));
+            case Y -> (float) this.getAxisRangeAtAxis(Direction.Axis.Y, clampRotations)
+                    .normalize(this.invertAtAxis(Direction.Axis.Y, rotations.y()));
+            case Z -> (float) this.getAxisRangeAtAxis(Direction.Axis.Z, clampRotations)
+                    .normalize(this.invertAtAxis(Direction.Axis.Z, rotations.z()));
         };
     }
 
     private float invertAtAxis(Direction.Axis axis, float value) {
-        return (this.invertedIndices >> axis.ordinal() & 1) == 1 ? value * -1.0F : value;
+        return Mth.wrapDegrees((this.invertedIndices >> axis.ordinal() & 1) == 1 ? value * -1.0F : value);
     }
 
     public ArmorStandPose setRotationsAtAxis(int index, ArmorStandPose pose, double newValue, boolean clampRotations) {
-        return this.setRotations.apply(pose, this.setRotationsAtAxis(index, this.getRotations.apply(pose), (float) this.getAxisRangeAtAxis(index, clampRotations).expand(newValue)));
+        return this.setRotations.apply(pose,
+                this.setRotationsAtAxis(index,
+                        this.getRotations.apply(pose),
+                        (float) this.getAxisRangeAtAxis(index, clampRotations).expand(newValue)));
     }
 
     private PosePartAxisRange getAxisRangeAtAxis(int index, boolean clampRotations) {
@@ -117,9 +159,9 @@ public final class PosePartMutator {
 
     private Rotations setRotationsAtAxis(int index, Rotations rotations, float newValue) {
         return switch (this.getAxisAt(index)) {
-            case X -> new Rotations(this.invertAtAxis(Direction.Axis.X, newValue), rotations.getY(), rotations.getZ());
-            case Y -> new Rotations(rotations.getX(), this.invertAtAxis(Direction.Axis.Y, newValue), rotations.getZ());
-            case Z -> new Rotations(rotations.getX(), rotations.getY(), this.invertAtAxis(Direction.Axis.Z, newValue));
+            case X -> new Rotations(this.invertAtAxis(Direction.Axis.X, newValue), rotations.y(), rotations.z());
+            case Y -> new Rotations(rotations.x(), this.invertAtAxis(Direction.Axis.Y, newValue), rotations.z());
+            case Z -> new Rotations(rotations.x(), rotations.y(), this.invertAtAxis(Direction.Axis.Z, newValue));
         };
     }
 
@@ -128,7 +170,9 @@ public final class PosePartMutator {
     }
 
     Rotations randomRotations(boolean clampRotations) {
-        Rotations rotations = new Rotations((float) this.getAxisRangeAtAxis(Direction.Axis.X, clampRotations).random(), (float) this.getAxisRangeAtAxis(Direction.Axis.Y, clampRotations).random(), (float) this.getAxisRangeAtAxis(Direction.Axis.Z, clampRotations).random());
+        Rotations rotations = new Rotations((float) this.getAxisRangeAtAxis(Direction.Axis.X, clampRotations).random(),
+                (float) this.getAxisRangeAtAxis(Direction.Axis.Y, clampRotations).random(),
+                (float) this.getAxisRangeAtAxis(Direction.Axis.Z, clampRotations).random());
         return clampRotations ? this.setRotationsAtAxis(2, rotations, 0.0F) : rotations;
     }
 
@@ -142,10 +186,16 @@ public final class PosePartMutator {
                 throw new IllegalArgumentException("Min must be smaller than max: %s >= %s".formatted(min, max));
             }
             if (Mth.clamp(min, MIN_VALUE, MAX_VALUE) != min) {
-                throw new IllegalArgumentException("Min out of bounds, must be between %s and %s, was %s".formatted(MIN_VALUE, MAX_VALUE, min));
+                throw new IllegalArgumentException("Min out of bounds, must be between %s and %s, was %s".formatted(
+                        MIN_VALUE,
+                        MAX_VALUE,
+                        min));
             }
             if (Mth.clamp(max, MIN_VALUE, MAX_VALUE) != max) {
-                throw new IllegalArgumentException("Max out of bounds, must be between %s and %s, was %s".formatted(MIN_VALUE, MAX_VALUE, max));
+                throw new IllegalArgumentException("Max out of bounds, must be between %s and %s, was %s".formatted(
+                        MIN_VALUE,
+                        MAX_VALUE,
+                        max));
             }
         }
 
