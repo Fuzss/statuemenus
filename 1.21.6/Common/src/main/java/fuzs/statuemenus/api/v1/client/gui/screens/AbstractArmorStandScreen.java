@@ -16,7 +16,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
@@ -209,7 +209,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
                     mouseX,
                     mouseY,
                     this.dataSyncHandler.getScreenTypes()).ifPresent(hoveredTab -> {
-                guiGraphics.renderTooltip(this.font,
+                guiGraphics.setTooltipForNextFrame(this.font,
                         Component.translatable(hoveredTab.getTranslationKey()),
                         mouseX,
                         mouseY);
@@ -229,7 +229,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         if (!this.disableMenuRendering()) {
-            guiGraphics.blit(RenderType::guiTextured,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     getArmorStandBackgroundLocation(),
                     this.leftPos,
                     this.topPos,
@@ -252,7 +252,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     private void renderEntityInInventory(GuiGraphics guiGraphics) {
         if (this.renderInventoryEntity()) {
             if (this.smallInventoryEntity) {
-                guiGraphics.blit(RenderType::guiTextured,
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                         getArmorStandWidgetsLocation(),
                         this.leftPos + this.inventoryEntityX,
                         this.topPos + this.inventoryEntityY,
@@ -269,7 +269,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
                         this.leftPos + this.inventoryEntityX + 24 - 10 - this.mouseX,
                         this.topPos + this.inventoryEntityY + 65 - 44 - this.mouseY);
             } else {
-                guiGraphics.blit(RenderType::guiTextured,
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                         getArmorStandWidgetsLocation(),
                         this.leftPos + this.inventoryEntityX,
                         this.topPos + this.inventoryEntityY,
@@ -312,8 +312,9 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             return true;
         } else if (handleHotbarKeyPressed(keyCode, scanCode, this, this.dataSyncHandler.getScreenTypes())) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     public static <T extends Screen & ArmorStandScreen> boolean handleHotbarKeyPressed(int keyCode, int scanCode, T screen, ArmorStandScreenType[] tabs) {
@@ -380,8 +381,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     private static ArmorStandScreenType cycleTabs(ArmorStandScreenType currentScreenType, ArmorStandScreenType[] screenTypes, boolean backwards) {
         int index = ArrayUtils.indexOf(screenTypes, currentScreenType);
-        return screenTypes[((backwards ? --index : ++index) % screenTypes.length + screenTypes.length) %
-                screenTypes.length];
+        return screenTypes[((backwards ? --index : ++index) % screenTypes.length + screenTypes.length)
+                % screenTypes.length];
     }
 
     public static <T extends Screen & ArmorStandScreen> void drawTabs(GuiGraphics guiGraphics, int leftPos, int topPos, int imageHeight, T screen, ArmorStandScreenType[] tabs) {
@@ -390,7 +391,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             ArmorStandScreenType tabType = tabs[i];
             int tabX = leftPos - 32;
             int tabY = topPos + tabsStartY + 27 * i;
-            guiGraphics.blit(RenderType::guiTextured,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     getArmorStandBackgroundLocation(),
                     tabX,
                     tabY,

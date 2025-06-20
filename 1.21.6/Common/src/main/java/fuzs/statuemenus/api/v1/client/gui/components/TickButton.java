@@ -3,7 +3,7 @@ package fuzs.statuemenus.api.v1.client.gui.components;
 import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -42,7 +42,7 @@ public class TickButton extends NewTextureButton implements Tickable {
             final int i = this.getYImage();
             int titleWidth = minecraft.font.width(this.clickedTitle);
             final int startX = (this.width - titleWidth - (titleWidth > 0 ? 4 : 0) - 16) / 2;
-            guiGraphics.blit(RenderType::guiTextured,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     this.textureLocation,
                     this.getX() + startX,
                     this.getY() + 2,

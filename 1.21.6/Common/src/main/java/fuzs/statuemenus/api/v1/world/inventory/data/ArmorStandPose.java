@@ -5,6 +5,7 @@ import fuzs.statuemenus.impl.StatueMenus;
 import net.minecraft.Util;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,11 +14,12 @@ import java.text.DecimalFormatSymbols;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class ArmorStandPose {
     private static final Rotations ZERO_ROTATIONS = new Rotations(0.0F, 0.0F, 0.0F);
     public static final double DEGREES_SNAP_INTERVAL = 0.125;
-    public static final DecimalFormat ROTATION_FORMAT = Util.make(new DecimalFormat("#.##"), (decimalFormat) -> {
+    public static final DecimalFormat ROTATION_FORMAT = Util.make(new DecimalFormat("#.##"), decimalFormat -> {
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });
     public static final ArmorStandPose EMPTY = new ArmorStandPose(null).withSourceType(SourceType.EMPTY);
@@ -535,51 +537,37 @@ public class ArmorStandPose {
         armorStand.setRightLegPose(this.getRightLegPose());
     }
 
-    public void serializeAllPoses(CompoundTag tag) {
-        this.serializeBodyPoses(tag, null);
-        this.serializeArmPoses(tag, null);
-        this.serializeLegPoses(tag, null);
+    public void serializeAllPoses(CompoundTag compoundTag) {
+        this.serializeBodyPoses(compoundTag, null);
+        this.serializeArmPoses(compoundTag, null);
+        this.serializeLegPoses(compoundTag, null);
     }
 
-    public boolean serializeBodyPoses(CompoundTag tag, @Nullable ArmorStandPose lastSentPose) {
-        boolean hasChanged = false;
-        if (this.headPose != null && (lastSentPose == null || !this.headPose.equals(lastSentPose.headPose))) {
-            tag.store("Head", Rotations.CODEC, this.headPose);
-            hasChanged = true;
+    public void serializeBodyPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose) {
+        if (lastSentPose == null || !Objects.equals(this.headPose, lastSentPose.headPose)) {
+            compoundTag.storeNullable("Head", Rotations.CODEC, this.headPose);
         }
-        if (this.bodyPose != null && (lastSentPose == null || !this.bodyPose.equals(lastSentPose.bodyPose))) {
-            tag.store("Body", Rotations.CODEC, this.bodyPose);
-            hasChanged = true;
+        if (lastSentPose == null || !Objects.equals(this.bodyPose, lastSentPose.bodyPose)) {
+            compoundTag.storeNullable("Body", Rotations.CODEC, this.bodyPose);
         }
-        return hasChanged;
     }
 
-    public boolean serializeArmPoses(CompoundTag tag, @Nullable ArmorStandPose lastSentPose) {
-        boolean hasChanged = false;
-        if (this.leftArmPose != null && (lastSentPose == null || !this.leftArmPose.equals(lastSentPose.leftArmPose))) {
-            tag.store("LeftArm", Rotations.CODEC, this.leftArmPose);
-            hasChanged = true;
+    public void serializeArmPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose) {
+        if (lastSentPose == null || !Objects.equals(this.leftArmPose, lastSentPose.leftArmPose)) {
+            compoundTag.storeNullable("LeftArm", Rotations.CODEC, this.leftArmPose);
         }
-        if (this.rightArmPose != null &&
-                (lastSentPose == null || !this.rightArmPose.equals(lastSentPose.rightArmPose))) {
-            tag.store("RightArm", Rotations.CODEC, this.rightArmPose);
-            hasChanged = true;
+        if (lastSentPose == null || !Objects.equals(this.rightArmPose, lastSentPose.rightArmPose)) {
+            compoundTag.storeNullable("RightArm", Rotations.CODEC, this.rightArmPose);
         }
-        return hasChanged;
     }
 
-    public boolean serializeLegPoses(CompoundTag tag, @Nullable ArmorStandPose lastSentPose) {
-        boolean hasChanged = false;
-        if (this.leftLegPose != null && (lastSentPose == null || !this.leftLegPose.equals(lastSentPose.leftLegPose))) {
-            tag.store("LeftLeg", Rotations.CODEC, this.leftLegPose);
-            hasChanged = true;
+    public void serializeLegPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose) {
+        if (lastSentPose == null || !Objects.equals(this.leftLegPose, lastSentPose.leftLegPose)) {
+            compoundTag.storeNullable("LeftLeg", Rotations.CODEC, this.leftLegPose);
         }
-        if (this.rightLegPose != null &&
-                (lastSentPose == null || !this.rightLegPose.equals(lastSentPose.rightLegPose))) {
-            tag.store("RightLeg", Rotations.CODEC, this.rightLegPose);
-            hasChanged = true;
+        if (lastSentPose == null || !Objects.equals(this.rightLegPose, lastSentPose.rightLegPose)) {
+            compoundTag.storeNullable("RightLeg", Rotations.CODEC, this.rightLegPose);
         }
-        return hasChanged;
     }
 
     public static ArmorStandPose fromEntity(ArmorStand armorStand) {

@@ -10,7 +10,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.CommonInputs;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -60,7 +60,7 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.blit(RenderType::guiTextured,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                 this.getX(),
                 this.getY(),
@@ -71,7 +71,7 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
                 256,
                 256,
                 ARGB.white(this.alpha));
-        guiGraphics.blit(RenderType::guiTextured,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                 this.getX() + 1,
                 this.getY() + 1 + (int) (this.value * (double) (this.height - this.sliderSize - 2)),
@@ -112,9 +112,9 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
         } else {
             if (this.canChangeValue) {
                 return this.keyPressed(keyCode);
+            } else {
+                return false;
             }
-
-            return false;
         }
     }
 
@@ -161,8 +161,8 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
     }
 
     @Override
-    public void playDownSound(SoundManager handler) {
-
+    public void playDownSound(SoundManager soundManager) {
+        // NO-OP
     }
 
     @Override

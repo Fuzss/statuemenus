@@ -8,7 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -54,7 +54,7 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
                 73,
                 9,
                 EntityType.ARMOR_STAND.getDescription());
-        this.name.setTextColor(0xFFFFFF);
+        this.name.setTextColor(-1);
         this.name.setBordered(false);
         this.name.setMaxLength(this.getNameMaxLength());
         this.name.setValue(this.getNameDefaultValue());
@@ -104,16 +104,19 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
         if (keyCode == InputConstants.KEY_ESCAPE && this.shouldCloseOnEsc()) {
             this.onClose();
             return true;
+        } else {
+            return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput() || super.keyPressed(
+                    keyCode,
+                    scanCode,
+                    modifiers);
         }
-        return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput() ||
-                super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
         // name edit box background
-        guiGraphics.blit(RenderType::guiTextured,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 getArmorStandWidgetsLocation(),
                 this.leftPos + 14,
                 this.topPos + 30,

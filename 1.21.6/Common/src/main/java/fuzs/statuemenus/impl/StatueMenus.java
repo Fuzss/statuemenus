@@ -13,7 +13,6 @@ import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOptions;
 import fuzs.statuemenus.impl.network.client.*;
 import net.minecraft.core.Holder;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -47,21 +46,22 @@ public class StatueMenus implements ModConstructor {
         if (!ModLoaderEnvironment.INSTANCE.isDevelopmentEnvironment(MOD_ID)) return;
         RegistryManager registry = RegistryManager.from(MOD_ID);
         Object[] holder = new Object[1];
-        holder[0] = registry.registerExtendedMenuType(ARMOR_STAND_IDENTIFIER.getPath(),
-                () -> (int containerId, Inventory inventory, RegistryFriendlyByteBuf buf) -> {
+        holder[0] = registry.registerMenuType(ARMOR_STAND_IDENTIFIER.getPath(),
+                (int containerId, Inventory inventory, ArmorStandMenu.ArmorStandData data) -> {
                     return new ArmorStandMenu(((Holder.Reference<MenuType<ArmorStandMenu>>) holder[0]).value(),
                             containerId,
                             inventory,
-                            buf,
+                            data,
                             null);
-                });
+                },
+                ArmorStandMenu.ArmorStandData.STREAM_CODEC);
         PlayerInteractEvents.USE_ENTITY_AT.register(onUseEntityAt((Holder.Reference<MenuType<?>>) holder[0]));
     }
 
     private static PlayerInteractEvents.UseEntityAt onUseEntityAt(Holder<MenuType<?>> menuType) {
         return (Player player, Level level, InteractionHand interactionHand, Entity entity, Vec3 hitVector) -> {
-            if (player.getAbilities().mayBuild && entity.getType() == EntityType.ARMOR_STAND &&
-                    player.getItemInHand(interactionHand).is(Items.DEBUG_STICK)) {
+            if (player.getAbilities().mayBuild && entity.getType() == EntityType.ARMOR_STAND && player.getItemInHand(
+                    interactionHand).is(Items.DEBUG_STICK)) {
                 return ArmorStandInteractHelper.tryOpenArmorStatueMenu(player,
                         level,
                         (ArmorStand) entity,

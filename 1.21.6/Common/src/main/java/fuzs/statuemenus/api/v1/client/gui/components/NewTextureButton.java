@@ -5,12 +5,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Mth;
 
 public class NewTextureButton extends Button {
     private final int textureX;
@@ -31,55 +29,52 @@ public class NewTextureButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        int i = this.getYImage();
-        guiGraphics.blit(RenderType::guiTextured,
+        int yImage = this.getYImage();
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 this.textureLocation,
                 this.getX(),
                 this.getY(),
                 this.textureX,
-                this.textureY + i * 20,
+                this.textureY + yImage * 20,
                 this.width / 2,
                 this.height,
                 256,
                 256,
                 ARGB.white(this.alpha));
-        guiGraphics.blit(RenderType::guiTextured,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 this.textureLocation,
                 this.getX() + this.width / 2,
                 this.getY(),
                 this.textureX + 200 - this.width / 2,
-                this.textureY + i * 20,
+                this.textureY + yImage * 20,
                 this.width / 2,
                 this.height,
                 256,
                 256,
                 ARGB.white(this.alpha));
         this.renderBg(guiGraphics, minecraft, mouseX, mouseY);
-        final int j = this.active && this.isHoveredOrFocused() ? ChatFormatting.YELLOW.getColor() : 4210752;
-        drawCenteredString(guiGraphics,
+        int textColor = this.active && this.isHoveredOrFocused() ? ChatFormatting.YELLOW.getColor() : 0x404040;
+        drawCenteredStringWithShadow(guiGraphics,
                 minecraft.font,
                 this.getMessage(),
                 this.getX() + this.width / 2 + this.getMessageXOffset(),
                 this.getY() + (this.height - 8) / 2,
-                j | Mth.ceil(this.alpha * 255.0F) << 24,
+                ARGB.color(this.alpha, textColor),
                 false);
     }
 
     protected void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY) {
-
+        // NO-OP
     }
 
     protected int getMessageXOffset() {
         return 0;
     }
 
-    public static void drawCenteredString(GuiGraphics guiGraphics, Font font, Component text, int x, int y, int color, boolean dropShadow) {
-        FormattedCharSequence formattedCharSequence = text.getVisualOrderText();
-        guiGraphics.drawString(font,
-                formattedCharSequence,
-                x - font.width(formattedCharSequence) / 2,
-                y,
-                color,
-                dropShadow);
+    /**
+     * @see GuiGraphics#drawCenteredString(Font, Component, int, int, int)
+     */
+    public static void drawCenteredStringWithShadow(GuiGraphics guiGraphics, Font font, Component component, int x, int y, int color, boolean dropShadow) {
+        guiGraphics.drawString(font, component, x - font.width(component) / 2, y, color, dropShadow);
     }
 }

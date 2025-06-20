@@ -6,7 +6,6 @@ import fuzs.puzzleslib.api.util.v1.InteractionResultHelper;
 import fuzs.statuemenus.api.v1.world.entity.decoration.ArmorStandDataProvider;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -48,11 +47,7 @@ public final class ArmorStandInteractHelper {
                 new SimpleMenuProvider((int containerId, Inventory inventory, Player playerX) -> {
                     return new ArmorStandMenu(menuType, containerId, inventory, armorStand, dataProvider);
                 }, armorStand.getDisplayName()),
-                (ServerPlayer serverPlayerX, RegistryFriendlyByteBuf buf) -> {
-                    buf.writeInt(armorStand.getId());
-                    buf.writeBoolean(armorStand.isInvulnerable());
-                    buf.writeInt(armorStand.disabledSlots);
-                });
+                ArmorStandMenu.ArmorStandData.of(armorStand));
     }
 
     public static Component getArmorStandHoverText() {

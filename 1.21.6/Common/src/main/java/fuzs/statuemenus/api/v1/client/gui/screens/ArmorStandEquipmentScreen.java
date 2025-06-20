@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -119,7 +119,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
                     mouseX,
                     mouseY,
                     this.dataSyncHandler.getScreenTypes()).ifPresent(hoveredTab -> {
-                guiGraphics.renderTooltip(this.font,
+                guiGraphics.setTooltipForNextFrame(this.font,
                         Component.translatable(hoveredTab.getTranslationKey()),
                         mouseX,
                         mouseY);
@@ -131,7 +131,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float pPartialTick, int pX, int pY) {
-        guiGraphics.blit(RenderType::guiTextured,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 AbstractArmorStandScreen.getArmorStandEquipmentLocation(),
                 this.leftPos,
                 this.topPos,
@@ -146,7 +146,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
             if (equipmentSlot != null) {
                 Slot slot = this.menu.slots.get(j++);
                 if (slot.isActive() && isSlotRestricted(this.menu.getArmorStand(), equipmentSlot)) {
-                    guiGraphics.blit(RenderType::guiTextured,
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                             AbstractArmorStandScreen.getArmorStandEquipmentLocation(),
                             this.leftPos + slot.x - 1,
                             this.topPos + slot.y - 1,
@@ -174,13 +174,15 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     private static boolean isSlotRestricted(ArmorStand armorStand, EquipmentSlot equipmentSlot) {
-        return ArmorStandSlot.isSlotDisabled(armorStand, equipmentSlot, 0) ||
-                ArmorStandSlot.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_TAKING_OFFSET) ||
-                ArmorStandSlot.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_PUTTING_OFFSET);
+        return ArmorStandSlot.isSlotDisabled(armorStand, equipmentSlot, 0) || ArmorStandSlot.isSlotDisabled(armorStand,
+                equipmentSlot,
+                ArmorStand.DISABLE_TAKING_OFFSET) || ArmorStandSlot.isSlotDisabled(armorStand,
+                equipmentSlot,
+                ArmorStand.DISABLE_PUTTING_OFFSET);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics poseStack, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         // NO-OP
     }
 

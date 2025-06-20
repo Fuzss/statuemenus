@@ -6,6 +6,8 @@ import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
 import fuzs.statuemenus.impl.network.client.*;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class NetworkDataSyncHandler implements DataSyncHandler {
     private final ArmorStandHolder holder;
@@ -30,7 +32,9 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
         pose.applyToEntity(this.getArmorStand());
         CompoundTag compoundTag = new CompoundTag();
         pose.serializeAllPoses(compoundTag);
-        MessageSender.broadcast(new ServerboundArmorStandPoseMessage(compoundTag));
+        ArmorStand.ArmorStandPose armorStandPose = ArmorStand.ArmorStandPose.CODEC.parse(NbtOps.INSTANCE, compoundTag)
+                .getPartialOrThrow();
+        MessageSender.broadcast(new ServerboundArmorStandPoseMessage(armorStandPose));
     }
 
     @Override

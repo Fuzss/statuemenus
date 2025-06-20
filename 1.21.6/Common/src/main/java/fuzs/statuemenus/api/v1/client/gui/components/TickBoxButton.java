@@ -5,16 +5,15 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.Mth;
 
 import java.util.function.BooleanSupplier;
 
 public class TickBoxButton extends Button {
     private final int textMargin;
-    private BooleanSupplier supplier;
+    private final BooleanSupplier supplier;
 
     public TickBoxButton(int posX, int posY, int textMargin, int textWidth, Component component, BooleanSupplier supplier, OnPress onPress) {
         super(posX, posY, 20 + textMargin + textWidth, 20, component, onPress, DEFAULT_NARRATION);
@@ -25,7 +24,7 @@ public class TickBoxButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        guiGraphics.blit(RenderType::guiTextured,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                 this.getX() + 2,
                 this.getY() + 2,
@@ -37,7 +36,7 @@ public class TickBoxButton extends Button {
                 256,
                 ARGB.white(this.alpha));
         if (this.supplier.getAsBoolean()) {
-            guiGraphics.blit(RenderType::guiTextured,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                     this.getX() + 2,
                     this.getY() + 2,
@@ -55,6 +54,6 @@ public class TickBoxButton extends Button {
                 this.getMessage(),
                 this.getX() + 20 + this.textMargin,
                 this.getY() + 2 + 4,
-                textColor | Mth.ceil(this.alpha * 255.0F) << 24);
+                ARGB.color(this.alpha, textColor));
     }
 }

@@ -186,7 +186,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
         @Override
         public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             if (ArmorStandWidgetsScreen.this.disableMenuRendering()) {
-                NewTextureButton.drawCenteredString(guiGraphics,
+                NewTextureButton.drawCenteredStringWithShadow(guiGraphics,
                         ArmorStandWidgetsScreen.this.font,
                         this.title,
                         this.posX + 36,
@@ -194,7 +194,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
                         0xFFFFFFFF,
                         true);
             } else {
-                NewTextureButton.drawCenteredString(guiGraphics,
+                NewTextureButton.drawCenteredStringWithShadow(guiGraphics,
                         ArmorStandWidgetsScreen.this.font,
                         this.title,
                         this.posX + 36,

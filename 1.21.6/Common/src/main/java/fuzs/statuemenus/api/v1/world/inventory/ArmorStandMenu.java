@@ -6,7 +6,8 @@ import fuzs.statuemenus.api.v1.world.entity.decoration.ArmorStandDataProvider;
 import fuzs.statuemenus.impl.world.inventory.ArmorStandSlot;
 import fuzs.statuemenus.impl.world.inventory.EquipmentContainer;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -37,8 +38,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
     @Nullable
     private final ArmorStandDataProvider dataProvider;
 
-    public ArmorStandMenu(MenuType<?> menuType, int containerId, Inventory inventory, RegistryFriendlyByteBuf buf, @Nullable ArmorStandDataProvider dataProvider) {
-        this(menuType, containerId, inventory, readArmorStand(inventory.player.level(), buf), dataProvider);
+    public ArmorStandMenu(MenuType<?> menuType, int containerId, Inventory inventory, ArmorStandData data, @Nullable ArmorStandDataProvider dataProvider) {
+        this(menuType, containerId, inventory, data.setupArmorStand(inventory.player.level()), dataProvider);
     }
 
     public ArmorStandMenu(MenuType<?> menuType, int containerId, Inventory inventory, ArmorStand armorStand, @Nullable ArmorStandDataProvider dataProvider) {
@@ -61,22 +62,6 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
         }
 
         ContainerMenuHelper.addInventorySlots(this, inventory, 25, 96);
-    }
-
-    static ArmorStand readArmorStand(Level level, ByteBuf buf) {
-        int entityId = buf.readInt();
-        if (level.getEntity(entityId) instanceof ArmorStand armorStand) {
-            // vanilla doesn't sync these automatically, we need them for the menu
-            armorStand.setInvulnerable(buf.readBoolean());
-            armorStand.disabledSlots = buf.readInt();
-            // also create the armor stand container client side, so that visual update instantly instead of having to wait for the server to resync data
-            return armorStand;
-        } else {
-            // exception is caught, so nothing will crash, only the screen will not open
-            // not sure how this is even possible, but there was a report about it
-            // report was concerning just placed statues, so maybe entity data arrived at remote after menu was opened
-            throw new IllegalStateException("Armor stand missing on client for id " + entityId);
-        }
     }
 
     @Override
@@ -111,5 +96,34 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
     @Override
     public ArmorStandDataProvider getDataProvider() {
         return this.dataProvider != null ? this.dataProvider : ArmorStandHolder.super.getDataProvider();
+    }
+
+    public record ArmorStandData(int entityId, boolean isInvulnerable, int disabledSlots) {
+        public static final StreamCodec<ByteBuf, ArmorStandData> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.INT,
+                ArmorStandData::entityId,
+                ByteBufCodecs.BOOL,
+                ArmorStandData::isInvulnerable,
+                ByteBufCodecs.INT,
+                ArmorStandData::disabledSlots,
+                ArmorStandData::new);
+
+        public static ArmorStandData of(ArmorStand armorStand) {
+            return new ArmorStandData(armorStand.getId(), armorStand.isInvulnerable(), armorStand.disabledSlots);
+        }
+
+        public ArmorStand setupArmorStand(Level level) {
+            if (level.getEntity(this.entityId) instanceof ArmorStand armorStand) {
+                // vanilla doesn't sync these automatically, we need them for the menu
+                armorStand.setInvulnerable(this.isInvulnerable);
+                armorStand.disabledSlots = this.disabledSlots;
+                // also create the armor stand container client side, so that visual update instantly instead of having to wait for the server to resync data
+                return armorStand;
+            } else {
+                // exception is caught, so nothing will crash, only the screen will not open
+                // not sure how this is even possible, but there was a report about it
+                // report was concerning just placed statues, so maybe entity data arrived at remote after menu was opened
+                throw new IllegalStateException("Armor stand missing on client for id " + this.entityId);
+            }
+        }
     }
 }

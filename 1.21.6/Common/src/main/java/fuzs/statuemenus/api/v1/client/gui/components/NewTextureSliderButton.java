@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.navigation.CommonInputs;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -33,15 +33,16 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
             return 0;
         } else if (this.isHovered || this.canChangeValue) {
             return 2;
+        } else {
+            return 1;
         }
-        return 1;
     }
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         GuiGraphicsHelper.blitNineSliced(guiGraphics,
-                RenderType::guiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 this.textureLocation,
                 this.getX(),
                 this.getY(),
@@ -59,7 +60,7 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
                 256,
                 ARGB.white(this.alpha));
         GuiGraphicsHelper.blitNineSliced(guiGraphics,
-                RenderType::guiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 this.textureLocation,
                 this.getX() + (int) (this.value * (double) (this.width - 8)),
                 this.getY(),
@@ -76,8 +77,8 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
                 256,
                 256,
                 ARGB.white(this.alpha));
-        int i = this.active ? 16777215 : 10526880;
-        this.renderScrollingString(guiGraphics, minecraft.font, 2, i | Mth.ceil(this.alpha * 255.0F) << 24);
+        int textColor = this.active ? -1 : 0XA0A0A0;
+        this.renderScrollingString(guiGraphics, minecraft.font, 2, ARGB.color(this.alpha, textColor));
     }
 
     @Override

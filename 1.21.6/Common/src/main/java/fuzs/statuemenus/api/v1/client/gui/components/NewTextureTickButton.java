@@ -3,7 +3,7 @@ package fuzs.statuemenus.api.v1.client.gui.components;
 import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -37,8 +37,9 @@ public class NewTextureTickButton extends NewTextureButton implements Tickable {
             return 0;
         } else if (this.isHoveredOrFocused()) {
             return 2;
+        } else {
+            return 1;
         }
-        return 1;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class NewTextureTickButton extends NewTextureButton implements Tickable {
                 this.lastClickedTicks > 0 ? this.textureLocation : this.imageTextureLocation;
         final int i = this.getYImage();
         if (this.lastClickedTicks > 0) {
-            guiGraphics.blit(RenderType::guiTextured,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     resourceLocation,
                     this.getX() + this.width / 2 - 8,
                     this.getY() + this.height / 2 - 8,
@@ -71,7 +72,7 @@ public class NewTextureTickButton extends NewTextureButton implements Tickable {
                     256,
                     ARGB.white(this.alpha));
         } else {
-            guiGraphics.blit(RenderType::guiTextured,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     resourceLocation,
                     this.getX() + this.width / 2 - 8,
                     this.getY() + this.height / 2 - 8,

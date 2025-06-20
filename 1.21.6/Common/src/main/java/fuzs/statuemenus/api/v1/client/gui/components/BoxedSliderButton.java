@@ -11,7 +11,7 @@ import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -61,17 +61,18 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
             return 0;
         } else if (this.isHovered || this.canChangeValue) {
             return 2;
+        } else {
+            return 1;
         }
-        return 1;
     }
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         final int sliderX = (int) (this.horizontalValue * (double) (this.width - SLIDER_SIZE - 2));
         final int sliderY = (int) (this.verticalValue * (double) (this.height - SLIDER_SIZE - 2));
-        if (!this.active || !this.isHoveredOrFocused() ||
-                !this.horizontalValueLocked() && !this.verticalValueLocked()) {
-            guiGraphics.blit(RenderType::guiTextured,
+        if (!this.active || !this.isHoveredOrFocused()
+                || !this.horizontalValueLocked() && !this.verticalValueLocked()) {
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                     this.getX(),
                     this.getY(),
@@ -83,7 +84,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
                     256,
                     ARGB.white(this.alpha));
         } else if (this.horizontalValueLocked() && this.verticalValueLocked()) {
-            guiGraphics.blit(RenderType::guiTextured,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                     this.getX() + sliderX,
                     this.getY() + sliderY,
@@ -95,7 +96,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
                     256,
                     ARGB.white(this.alpha));
         } else if (this.horizontalValueLocked()) {
-            guiGraphics.blit(RenderType::guiTextured,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                     this.getX() + sliderX,
                     this.getY(),
@@ -107,7 +108,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
                     256,
                     ARGB.white(this.alpha));
         } else {
-            guiGraphics.blit(RenderType::guiTextured,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                     this.getX(),
                     this.getY() + sliderY,
@@ -119,7 +120,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
                     256,
                     ARGB.white(this.alpha));
         }
-        guiGraphics.blit(RenderType::guiTextured,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
                 this.getX() + 1 + sliderX,
                 this.getY() + 1 + sliderY,
@@ -235,8 +236,8 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
     }
 
     @Override
-    public void playDownSound(SoundManager handler) {
-
+    public void playDownSound(SoundManager soundManager) {
+        // NO-OP
     }
 
     @Override
