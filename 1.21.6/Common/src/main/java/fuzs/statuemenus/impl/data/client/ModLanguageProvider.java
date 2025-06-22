@@ -2,9 +2,13 @@ package fuzs.statuemenus.impl.data.client;
 
 import fuzs.puzzleslib.api.client.data.v2.AbstractLanguageProvider;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
-import fuzs.statuemenus.api.v1.client.gui.screens.*;
+import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
+import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandPositionScreen;
+import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandRotationsScreen;
+import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandStyleScreen;
 import fuzs.statuemenus.api.v1.helper.ArmorStandInteractHelper;
 import fuzs.statuemenus.api.v1.world.inventory.data.*;
+import fuzs.statuemenus.impl.world.inventory.ArmorStandPoseImpl;
 
 public class ModLanguageProvider extends AbstractLanguageProvider {
 
@@ -16,7 +20,7 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
     public void addTranslations(TranslationBuilder builder) {
         builder.add(ArmorStandInteractHelper.OPEN_SCREEN_TRANSLATION_KEY,
                 "Use %s + %s with an empty hand to open configuration screen.");
-        builder.add(ArmorStandPosesScreen.POSE_SOURCE_TRANSLATION_KEY, "By %s");
+        builder.add(ArmorStandPoseImpl.SourceType.POSE_SOURCE_TRANSLATION_KEY, "By %s");
         builder.add(ArmorStandPose.ATHENA.getTranslationKey(), "Athena");
         builder.add(ArmorStandPose.BRANDISH.getTranslationKey(), "Brandish");
         builder.add(ArmorStandPose.CANCAN.getTranslationKey(), "Cancan");

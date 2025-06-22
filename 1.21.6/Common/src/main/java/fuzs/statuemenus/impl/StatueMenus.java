@@ -27,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Locale;
+import java.util.stream.Stream;
 
 public class StatueMenus implements ModConstructor {
     public static final String MOD_ID = "statuemenus";
@@ -74,10 +74,8 @@ public class StatueMenus implements ModConstructor {
 
     @Override
     public void onCommonSetup() {
-        // do this here instead of in enum constructor to avoid potential issues with the enum class not having been loaded yet on server-side, therefore nothing being registered
-        for (ArmorStandStyleOptions styleOption : ArmorStandStyleOptions.values()) {
-            ArmorStandStyleOption.register(id(styleOption.getName().toLowerCase(Locale.ROOT)), styleOption);
-        }
+        // do this here instead of in enum constructor to avoid potential issues with the enum class not having been loaded yet on server-side, therefore, nothing being registered
+        Stream.of(ArmorStandStyleOptions.values()).forEach(ArmorStandStyleOption::register);
     }
 
     @Override

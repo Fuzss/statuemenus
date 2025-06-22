@@ -2,7 +2,7 @@ package fuzs.statuemenus.api.v1.client.gui.components;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.puzzleslib.api.client.gui.v2.GuiGraphicsHelper;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
+import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -130,7 +130,7 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
         double oldValue = this.value;
         this.value = Mth.clamp(value, 0.0, 1.0);
         if (snapValue) {
-            this.value = ArmorStandPose.snapValue(this.value, this.snapInterval);
+            this.value = ArmorStandPoses.snapValue(this.value, this.snapInterval);
         }
         if (oldValue != this.value) {
             this.applyValue();

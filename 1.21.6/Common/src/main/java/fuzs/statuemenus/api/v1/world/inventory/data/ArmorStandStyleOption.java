@@ -2,7 +2,7 @@ package fuzs.statuemenus.api.v1.world.inventory.data;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import fuzs.statuemenus.impl.StatueMenus;
+import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -13,10 +13,10 @@ import java.util.Objects;
 public interface ArmorStandStyleOption {
     BiMap<ResourceLocation, ArmorStandStyleOption> OPTIONS_REGISTRY = HashBiMap.create();
 
-    String getName();
+    ResourceLocation getName();
 
     default String getTranslationKey() {
-        return StatueMenus.MOD_ID + ".screen.style." + this.getName();
+        return Util.makeDescriptionId("screen.style", this.getName());
     }
 
     default String getDescriptionKey() {
@@ -27,22 +27,23 @@ public interface ArmorStandStyleOption {
 
     boolean getOption(ArmorStand armorStand);
 
-    void toTag(CompoundTag tag, boolean currentValue);
+    void toTag(CompoundTag compoundTag, boolean currentValue);
 
     default boolean allowChanges(Player player) {
         return true;
     }
 
-    default ResourceLocation getId() {
-        return Objects.requireNonNull(OPTIONS_REGISTRY.inverse().get(this), "Armor stand style option %s has not been registered".formatted(this.getName()));
-    }
-
-    static void register(ResourceLocation id, ArmorStandStyleOption styleOption) {
-        if (OPTIONS_REGISTRY.containsValue(styleOption) || OPTIONS_REGISTRY.put(id, styleOption) != null) throw new IllegalStateException("Attempted to register duplicate armor stand style option for id %s".formatted(id));
+    static void register(ArmorStandStyleOption styleOption) {
+        Objects.requireNonNull(styleOption, "style option is null");
+        if (OPTIONS_REGISTRY.putIfAbsent(styleOption.getName(), styleOption) != null) {
+            throw new IllegalStateException("Duplicate style option for: " + styleOption.getName());
+        }
     }
 
     static ArmorStandStyleOption get(ResourceLocation id) {
-        return Objects.requireNonNull(OPTIONS_REGISTRY.get(id), "No armor stand style option registered for id %s".formatted(id));
+        ArmorStandStyleOption styleOption = OPTIONS_REGISTRY.get(id);
+        Objects.requireNonNull(styleOption, "style option is null for: " + id);
+        return styleOption;
     }
 
     static boolean getArmorStandData(ArmorStand armorStand, int offset) {
@@ -50,7 +51,9 @@ public interface ArmorStandStyleOption {
     }
 
     static void setArmorStandData(ArmorStand armorStand, boolean setting, int offset) {
-        armorStand.getEntityData().set(ArmorStand.DATA_CLIENT_FLAGS, setBit(armorStand.getEntityData().get(ArmorStand.DATA_CLIENT_FLAGS), offset, setting));
+        armorStand.getEntityData()
+                .set(ArmorStand.DATA_CLIENT_FLAGS,
+                        setBit(armorStand.getEntityData().get(ArmorStand.DATA_CLIENT_FLAGS), offset, setting));
     }
 
     static byte setBit(byte oldBit, int offset, boolean value) {

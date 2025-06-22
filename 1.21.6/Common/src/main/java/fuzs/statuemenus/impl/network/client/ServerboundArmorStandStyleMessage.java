@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 public record ServerboundArmorStandStyleMessage(ArmorStandStyleOption styleOption,
                                                 boolean value) implements ServerboundPlayMessage {
     public static final StreamCodec<ByteBuf, ServerboundArmorStandStyleMessage> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC.map(ArmorStandStyleOption::get, ArmorStandStyleOption::getId),
+            ResourceLocation.STREAM_CODEC.map(ArmorStandStyleOption::get, ArmorStandStyleOption::getName),
             ServerboundArmorStandStyleMessage::styleOption,
             ByteBufCodecs.BOOL,
             ServerboundArmorStandStyleMessage::value,

@@ -1,6 +1,7 @@
 package fuzs.statuemenus.api.v1.world.inventory.data;
 
 import fuzs.statuemenus.impl.StatueMenus;
+import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
@@ -97,10 +98,10 @@ public final class PosePartMutator {
     }
 
     public Component getAxisComponent(ArmorStandPose pose, int index) {
-        double value = ArmorStandPose.snapValue(this.getRotationsAtAxis(index, pose),
-                ArmorStandPose.DEGREES_SNAP_INTERVAL);
+        double value = ArmorStandPoses.snapValue(this.getRotationsAtAxis(index, pose),
+                ArmorStandPoses.DEGREES_SNAP_INTERVAL);
         return Component.translatable(this.getAxisTranslationKey(this.getAxisAt(index)),
-                ArmorStandPose.ROTATION_FORMAT.format(value));
+                ArmorStandPoses.ROTATION_FORMAT.format(value));
     }
 
     private String getAxisTranslationKey(Direction.Axis axis) {
@@ -169,7 +170,7 @@ public final class PosePartMutator {
         return this.axisOrder[index];
     }
 
-    Rotations randomRotations(boolean clampRotations) {
+    public Rotations randomRotations(boolean clampRotations) {
         Rotations rotations = new Rotations((float) this.getAxisRangeAtAxis(Direction.Axis.X, clampRotations).random(),
                 (float) this.getAxisRangeAtAxis(Direction.Axis.Y, clampRotations).random(),
                 (float) this.getAxisRangeAtAxis(Direction.Axis.Z, clampRotations).random());

@@ -166,11 +166,13 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
                 this,
                 this.dataSyncHandler.getScreenTypes());
         this.renderArmorStandInInventory(guiGraphics,
-                this.leftPos + 104,
-                this.topPos + 84,
+                this.leftPos + 81,
+                this.topPos + 20,
+                this.leftPos + 129,
+                this.topPos + 90,
                 30,
-                (float) (this.leftPos + 104 - 10) - this.mouseX,
-                (float) (this.topPos + 84 - 44) - this.mouseY);
+                this.mouseX,
+                this.mouseY);
     }
 
     private static boolean isSlotRestricted(ArmorStand armorStand, EquipmentSlot equipmentSlot) {

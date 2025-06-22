@@ -89,8 +89,8 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
         for (int i = 0; i < this.widgets.size(); i++) {
             this.widgets.get(i)
                     .init(this.leftPos + 8,
-                            this.topPos + startY + this.getWidgetTopOffset() +
-                                    i * (WIDGET_HEIGHT + this.getWidgetRenderOffset()));
+                            this.topPos + startY + this.getWidgetTopOffset() + i * (WIDGET_HEIGHT
+                                    + this.getWidgetRenderOffset()));
         }
     }
 
@@ -103,11 +103,11 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         for (ArmorStandWidget widget : this.getActivePositionComponentWidgets()) {
             widget.render(guiGraphics, mouseX, mouseY, partialTick);
         }
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     @FunctionalInterface
@@ -191,7 +191,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
                         this.title,
                         this.posX + 36,
                         this.posY + 6,
-                        0xFFFFFFFF,
+                        -1,
                         true);
             } else {
                 NewTextureButton.drawCenteredStringWithShadow(guiGraphics,
@@ -199,7 +199,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
                         this.title,
                         this.posX + 36,
                         this.posY + 6,
-                        0x404040,
+                        0xFF404040,
                         false);
             }
         }

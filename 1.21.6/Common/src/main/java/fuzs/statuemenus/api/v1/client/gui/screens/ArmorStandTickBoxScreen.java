@@ -105,16 +105,14 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
             this.onClose();
             return true;
         } else {
-            return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput() || super.keyPressed(
-                    keyCode,
-                    scanCode,
-                    modifiers);
+            return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput()
+                    || super.keyPressed(keyCode, scanCode, modifiers);
         }
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         // name edit box background
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 getArmorStandWidgetsLocation(),

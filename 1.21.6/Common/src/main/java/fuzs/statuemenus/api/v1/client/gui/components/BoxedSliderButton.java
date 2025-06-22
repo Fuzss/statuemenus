@@ -2,7 +2,7 @@ package fuzs.statuemenus.api.v1.client.gui.components;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
+import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -205,8 +205,8 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
         if (!this.horizontalValueLocked()) {
             this.horizontalValue = Mth.clamp(horizontalValue, 0.0, 1.0);
             if (snapValue) {
-                this.horizontalValue = ArmorStandPose.snapValue(this.horizontalValue,
-                        ArmorStandPose.DEGREES_SNAP_INTERVAL);
+                this.horizontalValue = ArmorStandPoses.snapValue(this.horizontalValue,
+                        ArmorStandPoses.DEGREES_SNAP_INTERVAL);
             }
         }
         if (oldHorizontalValue != this.horizontalValue) {
@@ -219,7 +219,8 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
         if (!this.verticalValueLocked()) {
             this.verticalValue = Mth.clamp(verticalValue, 0.0, 1.0);
             if (snapValue) {
-                this.verticalValue = ArmorStandPose.snapValue(this.verticalValue, ArmorStandPose.DEGREES_SNAP_INTERVAL);
+                this.verticalValue = ArmorStandPoses.snapValue(this.verticalValue,
+                        ArmorStandPoses.DEGREES_SNAP_INTERVAL);
             }
         }
         if (oldVerticalValue != this.verticalValue) {

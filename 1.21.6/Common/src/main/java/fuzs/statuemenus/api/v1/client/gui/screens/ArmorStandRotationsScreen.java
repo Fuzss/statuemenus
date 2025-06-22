@@ -15,8 +15,8 @@ import fuzs.statuemenus.impl.StatueMenus;
 import fuzs.statuemenus.impl.client.gui.components.TooltipFactories;
 import net.minecraft.Util;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
@@ -47,7 +47,6 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
     private static boolean clampRotations = true;
     @Nullable
     private static ArmorStandPose clipboard;
-
     private final AbstractWidget[] lockButtons = new AbstractWidget[2];
     private ArmorStandPose currentPose;
 
@@ -62,23 +61,56 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
     @Override
     protected void init() {
         super.init();
-        this.lockButtons[0] = Util.make(this.addRenderableWidget(new SpritelessImageButton(this.leftPos + 83, this.topPos + 10, 20, 20, 156, 124, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
-            clampRotations = true;
-            this.toggleLockButtons();
-            this.refreshLiveButtons();
-        }, CommonComponents.EMPTY)), widget -> {
+        this.lockButtons[0] = Util.make(this.addRenderableWidget(new SpritelessImageButton(this.leftPos + 83,
+                this.topPos + 10,
+                20,
+                20,
+                156,
+                124,
+                20,
+                getArmorStandWidgetsLocation(),
+                256,
+                256,
+                (Button button) -> {
+                    clampRotations = true;
+                    this.toggleLockButtons();
+                    this.refreshLiveButtons();
+                },
+                CommonComponents.EMPTY)), (SpritelessImageButton widget) -> {
             widget.setTooltip(Tooltip.create(Component.translatable(UNLIMITED_TRANSLATION_KEY)));
         });
-        this.lockButtons[1] = Util.make(this.addRenderableWidget(new SpritelessImageButton(this.leftPos + 83, this.topPos + 10, 20, 20, 136, 124, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
-            clampRotations = false;
-            this.toggleLockButtons();
-            this.refreshLiveButtons();
-        }, CommonComponents.EMPTY)), widget -> {
+        this.lockButtons[1] = Util.make(this.addRenderableWidget(new SpritelessImageButton(this.leftPos + 83,
+                this.topPos + 10,
+                20,
+                20,
+                136,
+                124,
+                20,
+                getArmorStandWidgetsLocation(),
+                256,
+                256,
+                (Button button) -> {
+                    clampRotations = false;
+                    this.toggleLockButtons();
+                    this.refreshLiveButtons();
+                },
+                CommonComponents.EMPTY)), (SpritelessImageButton widget) -> {
             widget.setTooltip(Tooltip.create(Component.translatable(LIMITED_TRANSLATION_KEY)));
         });
         Component tipComponent = this.getTipComponent();
         if (tipComponent != null) {
-            this.addRenderableWidget(new SpritelessImageButton(this.leftPos + 107, this.topPos + 10, 20, 20, 136, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {}) {
+            this.addRenderableWidget(new SpritelessImageButton(this.leftPos + 107,
+                    this.topPos + 10,
+                    20,
+                    20,
+                    136,
+                    64,
+                    20,
+                    getArmorStandWidgetsLocation(),
+                    256,
+                    256,
+                    (Button button) -> {
+                    }) {
 
                 @Nullable
                 @Override
@@ -92,36 +124,74 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                 }
             }).setTooltip(Tooltip.create(tipComponent));
         }
-        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83, this.topPos + 34, 20, 20, 192, 124, getArmorStandWidgetsLocation(), button -> {
-            this.setCurrentPose(this.holder.getDataProvider().getRandomPose(true));
-        })).setTooltip(Tooltip.create(Component.translatable(RANDOMIZE_TRANSLATION_KEY)));
-        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107, this.topPos + 34, 20, 20, 240, 124, getArmorStandWidgetsLocation(), button -> {
-            this.setCurrentPose(ArmorStandPose.EMPTY);
-        })).setTooltip(Tooltip.create(Component.translatable(RESET_TRANSLATION_KEY)));
-        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83, this.topPos + 134, 44, 20, 179, 0, getArmorStandWidgetsLocation(), button -> {
-            this.setCurrentPose(this.currentPose.mirror());
-        })).setTooltip(Tooltip.create(Component.translatable(MIRROR_TRANSLATION_KEY)));
+        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83,
+                this.topPos + 34,
+                20,
+                20,
+                192,
+                124,
+                getArmorStandWidgetsLocation(),
+                (Button button) -> {
+                    this.setCurrentPose(this.holder.getDataProvider().getRandomPose(true));
+                })).setTooltip(Tooltip.create(Component.translatable(RANDOMIZE_TRANSLATION_KEY)));
+        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107,
+                this.topPos + 34,
+                20,
+                20,
+                240,
+                124,
+                getArmorStandWidgetsLocation(),
+                (Button button) -> {
+                    this.setCurrentPose(ArmorStandPose.EMPTY);
+                })).setTooltip(Tooltip.create(Component.translatable(RESET_TRANSLATION_KEY)));
+        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83,
+                this.topPos + 134,
+                44,
+                20,
+                179,
+                0,
+                getArmorStandWidgetsLocation(),
+                (Button button) -> {
+                    this.setCurrentPose(this.currentPose.mirror());
+                })).setTooltip(Tooltip.create(Component.translatable(MIRROR_TRANSLATION_KEY)));
         AbstractWidget[] pasteButton = new AbstractWidget[1];
-        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83, this.topPos + 158, 20, 20, 208, 124, getArmorStandWidgetsLocation(), button -> {
-            clipboard = this.currentPose;
-            pasteButton[0].active = true;
-        })).setTooltip(Tooltip.create(Component.translatable(COPY_TRANSLATION_KEY)));
-        pasteButton[0] = Util.make(this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107, this.topPos + 158, 20, 20, 224, 124, getArmorStandWidgetsLocation(), button -> {
-            if (clipboard != null) this.setCurrentPose(clipboard);
-        })), widget -> {
+        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83,
+                this.topPos + 158,
+                20,
+                20,
+                208,
+                124,
+                getArmorStandWidgetsLocation(),
+                (Button button) -> {
+                    clipboard = this.currentPose;
+                    pasteButton[0].active = true;
+                })).setTooltip(Tooltip.create(Component.translatable(COPY_TRANSLATION_KEY)));
+        pasteButton[0] = Util.make(this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107,
+                this.topPos + 158,
+                20,
+                20,
+                224,
+                124,
+                getArmorStandWidgetsLocation(),
+                (Button button) -> {
+                    if (clipboard != null) this.setCurrentPose(clipboard);
+                })), (NewTextureTickButton widget) -> {
             widget.setTooltip(Tooltip.create(Component.translatable(PASTE_TRANSLATION_KEY)));
             widget.active = clipboard != null;
         });
         PosePartMutator[] posePartMutators = this.holder.getDataProvider().getPosePartMutators();
-        ArmorStandPose.checkMutatorsSize(posePartMutators);
         for (int i = 0; i < posePartMutators.length; i++) {
             PosePartMutator mutator = posePartMutators[i];
             boolean isLeft = i % 2 == 0;
-            this.addRenderableWidget(new BoxedSliderButton(this.leftPos + 23 + i % 2 * 110, this.topPos + 7 + i / 2 * 60, () -> mutator.getNormalizedRotationsAtAxis(1, this.currentPose, clampRotations), () -> mutator.getNormalizedRotationsAtAxis(0, this.currentPose, clampRotations)) {
+            this.addRenderableWidget(new BoxedSliderButton(this.leftPos + 23 + i % 2 * 110,
+                    this.topPos + 7 + i / 2 * 60,
+                    () -> mutator.getNormalizedRotationsAtAxis(1, this.currentPose, clampRotations),
+                    () -> mutator.getNormalizedRotationsAtAxis(0, this.currentPose, clampRotations)) {
                 private boolean dirty;
 
                 {
-                    this.active = isPosePartMutatorActive(mutator, ArmorStandRotationsScreen.this.holder.getArmorStand());
+                    this.active = isPosePartMutatorActive(mutator,
+                            ArmorStandRotationsScreen.this.holder.getArmorStand());
                     TooltipFactories.applyRotationsTooltip(this, isLeft, () -> {
                         List<Component> lines = new ArrayList<>();
                         lines.add(Component.translatable(mutator.getTranslationKey()));
@@ -134,8 +204,14 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                 @Override
                 protected void applyValue() {
                     this.dirty = true;
-                    ArmorStandRotationsScreen.this.currentPose = mutator.setRotationsAtAxis(1, ArmorStandRotationsScreen.this.currentPose, this.horizontalValue, clampRotations);
-                    ArmorStandRotationsScreen.this.currentPose = mutator.setRotationsAtAxis(0, ArmorStandRotationsScreen.this.currentPose, this.verticalValue, clampRotations);
+                    ArmorStandRotationsScreen.this.currentPose = mutator.setRotationsAtAxis(1,
+                            ArmorStandRotationsScreen.this.currentPose,
+                            this.horizontalValue,
+                            clampRotations);
+                    ArmorStandRotationsScreen.this.currentPose = mutator.setRotationsAtAxis(0,
+                            ArmorStandRotationsScreen.this.currentPose,
+                            this.verticalValue,
+                            clampRotations);
                 }
 
                 @Override
@@ -157,11 +233,14 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                     }
                 }
             });
-            this.addRenderableWidget(new VerticalSliderButton(this.leftPos + 6 + i % 2 * 183, this.topPos + 7 + i / 2 * 60, () -> mutator.getNormalizedRotationsAtAxis(2, this.currentPose, clampRotations)) {
+            this.addRenderableWidget(new VerticalSliderButton(this.leftPos + 6 + i % 2 * 183,
+                    this.topPos + 7 + i / 2 * 60,
+                    () -> mutator.getNormalizedRotationsAtAxis(2, this.currentPose, clampRotations)) {
                 private boolean dirty;
 
                 {
-                    this.active = isPosePartMutatorActive(mutator, ArmorStandRotationsScreen.this.holder.getArmorStand());
+                    this.active = isPosePartMutatorActive(mutator,
+                            ArmorStandRotationsScreen.this.holder.getArmorStand());
                     TooltipFactories.applyRotationsTooltip(this, isLeft, () -> {
                         List<Component> lines = new ArrayList<>();
                         lines.add(Component.translatable(mutator.getTranslationKey()));
@@ -173,7 +252,10 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                 @Override
                 protected void applyValue() {
                     this.dirty = true;
-                    ArmorStandRotationsScreen.this.currentPose = mutator.setRotationsAtAxis(2, ArmorStandRotationsScreen.this.currentPose, this.value, clampRotations);
+                    ArmorStandRotationsScreen.this.currentPose = mutator.setRotationsAtAxis(2,
+                            ArmorStandRotationsScreen.this.currentPose,
+                            this.value,
+                            clampRotations);
                 }
 
                 @Override
@@ -215,12 +297,8 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        ArmorStand armorStand = this.holder.getArmorStand();
-        ArmorStandPose entityPose = ArmorStandPose.fromEntity(armorStand);
-        this.currentPose.applyToEntity(armorStand);
-        super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
-        entityPose.applyToEntity(armorStand);
+    protected ArmorStandPose getPoseOverride() {
+        return this.currentPose;
     }
 
     @Override
@@ -249,10 +327,13 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
     }
 
     public static void registerPosePartMutatorFilter(PosePartMutator mutator, Predicate<ArmorStand> filter) {
-        if (POSE_PART_MUTATOR_FILTERS.put(mutator, filter) != null) throw new IllegalStateException("Attempted to register duplicate pose part mutator filter for mutator %s".formatted(mutator));
+        if (POSE_PART_MUTATOR_FILTERS.put(mutator, filter) != null) {
+            throw new IllegalStateException("Attempted to register duplicate pose part mutator filter for mutator %s".formatted(
+                    mutator));
+        }
     }
 
     private static boolean isPosePartMutatorActive(PosePartMutator mutator, ArmorStand armorStand) {
-        return POSE_PART_MUTATOR_FILTERS.getOrDefault(mutator, armorStand1 -> true).test(armorStand);
+        return POSE_PART_MUTATOR_FILTERS.getOrDefault(mutator, (ArmorStand armorStand1) -> true).test(armorStand);
     }
 }
