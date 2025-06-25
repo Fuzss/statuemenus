@@ -327,7 +327,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
     }
 
     public static void registerPosePartMutatorFilter(PosePartMutator mutator, Predicate<ArmorStand> filter) {
-        if (POSE_PART_MUTATOR_FILTERS.put(mutator, filter) != null) {
+        if (POSE_PART_MUTATOR_FILTERS.putIfAbsent(mutator, filter) != null) {
             throw new IllegalStateException("Attempted to register duplicate pose part mutator filter for mutator %s".formatted(
                     mutator));
         }

@@ -1,7 +1,7 @@
 package fuzs.statuemenus.impl.client.gui.components;
 
 import fuzs.puzzleslib.api.client.gui.v2.tooltip.TooltipBuilder;
-import fuzs.statuemenus.api.v1.client.gui.screens.LegacyArmorStandPosesScreen;
+import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandPosesScreen;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
@@ -24,7 +24,7 @@ public final class TooltipFactories {
         TooltipBuilder.create()
                 .setTooltipPositionerFactory(TooltipFactories::createPosesTooltipPositioner)
                 .setLines(() -> {
-                    return LegacyArmorStandPosesScreen.getPoseAt(index)
+                    return ArmorStandPosesScreen.getPoseAt(index)
                             .map(ArmorStandPose::getTooltipLines)
                             .orElse(Collections.emptyList());
                 })
