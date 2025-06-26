@@ -2,6 +2,7 @@ package fuzs.statuemenus.api.v1.world.entity.decoration;
 
 import com.google.common.util.concurrent.Runnables;
 import fuzs.statuemenus.api.v1.world.inventory.data.*;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
@@ -46,9 +47,9 @@ public interface ArmorStandDataProvider {
 
     /**
      * Prepares an armor stand entity for rendering via
-     * {@link net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(GuiGraphics, float,
-     * float, float, Vector3f, Quaternionf, Quaternionf, LivingEntity)}, the returned runnable is used for resetting the
-     * entity to the original state after rendering is done.
+     * {@link fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandScreen#renderArmorStandInInventory(GuiGraphics, int,
+     * int, int, int, int, float, float)}, the returned runnable is used for resetting the entity to the original state
+     * after rendering is done.
      *
      * @param armorStand the armor stand
      * @return the runnable for resetting the entity
