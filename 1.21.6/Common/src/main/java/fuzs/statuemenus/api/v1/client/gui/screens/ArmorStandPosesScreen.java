@@ -110,14 +110,18 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
             Optional<ArmorStandPose> pose = getPoseAt(i);
             if (pose.isPresent()) {
                 pose.get().applyToEntity(armorStand);
+                int posX = this.leftPos + 89 + i % 2 * 62;
+                int posY = this.topPos + 15 + i / 2 * 88;
+                int lookX = posX + this.getInventoryEntityScissorWidth(true) / 2;
+                int lookY = posY + this.getInventoryEntityScissorHeight(true) / 2;
                 this.renderArmorStandInInventory(guiGraphics,
-                        this.leftPos + 89 + i % 2 * 62,
-                        this.topPos + 15 + i / 2 * 88,
-                        this.leftPos + 89 + 48 + i % 2 * 62,
-                        this.topPos + 15 + 70 + i / 2 * 88,
-                        30,
-                        this.mouseX,
-                        this.mouseY);
+                        posX,
+                        posY,
+                        posX + this.getInventoryEntityScissorWidth(true),
+                        posY + this.getInventoryEntityScissorHeight(true),
+                        this.getInventoryEntityScale(true),
+                        lookX + (this.poseButtons[i].isHovered() ? (this.mouseX - lookX) * 4 : 0),
+                        lookY + (this.poseButtons[i].isHovered() ? (this.mouseY - lookY) * 4 : 0));
             }
         }
         originalPose.applyToEntity(armorStand);

@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
 public interface ArmorStandScreen {
 
@@ -25,11 +24,19 @@ public interface ArmorStandScreen {
 
     DataSyncHandler getDataSyncHandler();
 
+    default int getInventoryEntityScissorWidth(boolean smallInventoryEntity) {
+        return smallInventoryEntity ? 48 : 74;
+    }
+
+    default int getInventoryEntityScissorHeight(boolean smallInventoryEntity) {
+        return smallInventoryEntity ? 70 : 106;
+    }
+
+    default int getInventoryEntityScale(boolean smallInventoryEntity) {
+        return smallInventoryEntity ? 30 : 45;
+    }
+
     default void renderArmorStandInInventory(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float mouseX, float mouseY) {
-        ArmorStand armorStand = this.getHolder().getArmorStand();
-        Runnable finalizeInInventoryRendering = this.getHolder()
-                .getDataProvider()
-                .setupInInventoryRendering(armorStand);
         this.renderEntityInInventoryFollowsMouse(guiGraphics,
                 x1,
                 y1,
@@ -39,8 +46,7 @@ public interface ArmorStandScreen {
                 0.0625F,
                 mouseX,
                 mouseY,
-                armorStand);
-        finalizeInInventoryRendering.run();
+                this.getHolder().getArmorStand());
     }
 
     default void renderEntityInInventoryFollowsMouse(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float yOffset, float mouseX, float mouseY, LivingEntity livingEntity) {

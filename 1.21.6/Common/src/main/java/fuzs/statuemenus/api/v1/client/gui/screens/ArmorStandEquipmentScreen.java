@@ -165,12 +165,14 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
                 this.imageHeight,
                 this,
                 this.dataSyncHandler.getScreenTypes());
+        int posX = this.leftPos + 81;
+        int posY = this.topPos + 20;
         this.renderArmorStandInInventory(guiGraphics,
-                this.leftPos + 81,
-                this.topPos + 20,
-                this.leftPos + 129,
-                this.topPos + 90,
-                30,
+                posX,
+                posY,
+                posX + this.getInventoryEntityScissorWidth(true),
+                posY + this.getInventoryEntityScissorHeight(true),
+                this.getInventoryEntityScale(true),
                 this.mouseX,
                 this.mouseY);
     }

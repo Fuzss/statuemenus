@@ -4,7 +4,6 @@ import fuzs.statuemenus.impl.world.inventory.ArmorStandPoseImpl;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
@@ -189,21 +188,28 @@ public interface ArmorStandPose {
             .withRightLegPose(new Rotations(-4.0F, 17.0F, 2.0F))
             .withLeftLegPose(new Rotations(6.0F, 24.0F, 0.0F));
 
+    default boolean isEmpty() {
+        return this.headPose() == null && this.bodyPose() == null && this.leftArmPose() == null
+                && this.rightArmPose() == null && this.leftLegPose() == null && this.rightLegPose() == null;
+    }
+
     @Nullable String getTranslationKey();
 
     List<Component> getTooltipLines();
 
-    Rotations headPose();
+    boolean isMirrored();
 
-    Rotations bodyPose();
+    @Nullable Rotations headPose();
 
-    Rotations leftArmPose();
+    @Nullable Rotations bodyPose();
 
-    Rotations rightArmPose();
+    @Nullable Rotations leftArmPose();
 
-    Rotations leftLegPose();
+    @Nullable Rotations rightArmPose();
 
-    Rotations rightLegPose();
+    @Nullable Rotations leftLegPose();
+
+    @Nullable Rotations rightLegPose();
 
     Rotations getHeadPose();
 
@@ -242,6 +248,8 @@ public interface ArmorStandPose {
     void serializeArmPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose);
 
     void serializeLegPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose);
+
+    boolean isVanillaTweaksCompatible();
 
     static ArmorStandPose fromEntity(ArmorStand armorStand) {
         return ArmorStandPoseImpl.fromEntity(armorStand);

@@ -205,14 +205,16 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (!this.disableMenuRendering()) {
             if (this.renderInventoryEntity()) {
+                int posX = this.leftPos + this.inventoryEntityX + 1;
+                int posY = this.topPos + this.inventoryEntityY + 1;
                 this.renderArmorStandInInventory(guiGraphics,
-                        this.leftPos + this.inventoryEntityX + 1,
-                        this.topPos + this.inventoryEntityY + 1,
-                        this.leftPos + this.inventoryEntityX + 1 + this.getInventoryEntityBackgroundWidth() - 2,
-                        this.topPos + this.inventoryEntityY + 1 + this.getInventoryEntityBackgroundHeight() - 2,
-                        this.smallInventoryEntity ? 30 : 45,
-                        this.mouseX,
-                        this.mouseY);
+                        posX,
+                        posY,
+                        posX + this.getInventoryEntityScissorWidth(this.smallInventoryEntity),
+                        posY + this.getInventoryEntityScissorHeight(this.smallInventoryEntity),
+                        this.getInventoryEntityScale(this.smallInventoryEntity),
+                        posX + this.getInventoryEntityScissorWidth(this.smallInventoryEntity) / 2,
+                        posY + this.getInventoryEntityScissorHeight(this.smallInventoryEntity) / 2);
             }
             findHoveredTab(this.leftPos,
                     this.topPos,
@@ -287,11 +289,11 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     protected int getInventoryEntityBackgroundWidth() {
-        return this.smallInventoryEntity ? 50 : 76;
+        return this.getInventoryEntityScissorWidth(this.smallInventoryEntity) + 2;
     }
 
     protected int getInventoryEntityBackgroundHeight() {
-        return this.smallInventoryEntity ? 72 : 108;
+        return this.getInventoryEntityScissorHeight(this.smallInventoryEntity) + 2;
     }
 
     @Override

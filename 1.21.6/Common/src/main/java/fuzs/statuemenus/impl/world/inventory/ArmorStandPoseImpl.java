@@ -17,6 +17,7 @@ import java.util.*;
 
 public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
                                  @Nullable SourceType sourceType,
+                                 boolean isMirrored,
                                  @Nullable Rotations headPose,
                                  @Nullable Rotations bodyPose,
                                  @Nullable Rotations leftArmPose,
@@ -28,6 +29,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     private ArmorStandPoseImpl(String name, SourceType sourceType) {
         this(sourceType.id(name),
                 sourceType,
+                false,
                 ZERO_ROTATIONS,
                 ZERO_ROTATIONS,
                 ZERO_ROTATIONS,
@@ -37,7 +39,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     public ArmorStandPoseImpl(@Nullable Rotations headPose, @Nullable Rotations bodyPose, @Nullable Rotations leftArmPose, @Nullable Rotations rightArmPose, @Nullable Rotations leftLegPose, @Nullable Rotations rightLegPose) {
-        this(null, null, headPose, bodyPose, leftArmPose, rightArmPose, leftLegPose, rightLegPose);
+        this(null, null, false, headPose, bodyPose, leftArmPose, rightArmPose, leftLegPose, rightLegPose);
     }
 
     public static ArmorStandPose ofMinecraft(String name) {
@@ -129,6 +131,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     public ArmorStandPose withHeadPose(Rotations rotation) {
         return new ArmorStandPoseImpl(this.name,
                 this.sourceType,
+                false,
                 rotation,
                 this.bodyPose,
                 this.leftArmPose,
@@ -141,6 +144,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     public ArmorStandPose withBodyPose(Rotations rotation) {
         return new ArmorStandPoseImpl(this.name,
                 this.sourceType,
+                false,
                 this.headPose,
                 rotation,
                 this.leftArmPose,
@@ -153,6 +157,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     public ArmorStandPose withLeftArmPose(Rotations rotation) {
         return new ArmorStandPoseImpl(this.name,
                 this.sourceType,
+                false,
                 this.headPose,
                 this.bodyPose,
                 rotation,
@@ -165,6 +170,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     public ArmorStandPose withRightArmPose(Rotations rotation) {
         return new ArmorStandPoseImpl(this.name,
                 this.sourceType,
+                false,
                 this.headPose,
                 this.bodyPose,
                 this.leftArmPose,
@@ -177,6 +183,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     public ArmorStandPose withLeftLegPose(Rotations rotation) {
         return new ArmorStandPoseImpl(this.name,
                 this.sourceType,
+                false,
                 this.headPose,
                 this.bodyPose,
                 this.leftArmPose,
@@ -189,6 +196,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     public ArmorStandPose withRightLegPose(Rotations rotation) {
         return new ArmorStandPoseImpl(this.name,
                 this.sourceType,
+                false,
                 this.headPose,
                 this.bodyPose,
                 this.leftArmPose,
@@ -201,6 +209,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     public ArmorStandPose mirror() {
         return new ArmorStandPoseImpl(this.name,
                 this.sourceType,
+                true,
                 mirrorRotations(this.headPose),
                 mirrorRotations(this.bodyPose),
                 mirrorRotations(this.rightArmPose),
@@ -218,6 +227,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     public ArmorStandPose copyAndFillFrom(ArmorStandPose fillFrom) {
         return new ArmorStandPoseImpl(this.name,
                 this.sourceType,
+                false,
                 this.headPose != null ? this.headPose : fillFrom.headPose(),
                 this.bodyPose != null ? this.bodyPose : fillFrom.bodyPose(),
                 this.leftArmPose != null ? this.leftArmPose : fillFrom.leftArmPose(),
@@ -271,6 +281,11 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
         if (lastSentPose == null || !Objects.equals(this.rightLegPose, lastSentPose.rightLegPose())) {
             compoundTag.storeNullable("RightLeg", Rotations.CODEC, this.rightLegPose);
         }
+    }
+
+    @Override
+    public boolean isVanillaTweaksCompatible() {
+        return this.sourceType == SourceType.VANILLA_TWEAKS;
     }
 
     @Override
