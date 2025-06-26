@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 
 public interface ArmorStandScreen {
 
@@ -37,6 +38,10 @@ public interface ArmorStandScreen {
     }
 
     default void renderArmorStandInInventory(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float mouseX, float mouseY) {
+        ArmorStand armorStand = this.getHolder().getArmorStand();
+        Runnable finalizeInInventoryRendering = this.getHolder()
+                .getDataProvider()
+                .setupInInventoryRendering(armorStand);
         this.renderEntityInInventoryFollowsMouse(guiGraphics,
                 x1,
                 y1,
@@ -46,7 +51,8 @@ public interface ArmorStandScreen {
                 0.0625F,
                 mouseX,
                 mouseY,
-                this.getHolder().getArmorStand());
+                armorStand);
+        finalizeInInventoryRendering.run();
     }
 
     default void renderEntityInInventoryFollowsMouse(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float yOffset, float mouseX, float mouseY, LivingEntity livingEntity) {
