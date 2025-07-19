@@ -48,8 +48,8 @@ public interface ArmorStandDataProvider {
     /**
      * Prepares an armor stand entity for rendering via
      * {@link fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandScreen#renderArmorStandInInventory(GuiGraphics, int,
-     * int, int, int, int, float, float)}, the returned runnable is used for resetting the entity to the original state
-     * after rendering is done.
+     * int, int, int, int, float, float, float)}, the returned runnable is used for resetting the entity to the original
+     * state after rendering is done.
      *
      * @param armorStand the armor stand
      * @return the runnable for resetting the entity

@@ -121,14 +121,15 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
                         posY + this.getInventoryEntityScissorHeight(true),
                         this.getInventoryEntityScale(true),
                         lookX + (this.poseButtons[i].isHovered() ? (this.mouseX - lookX) * 4 : 0),
-                        lookY + (this.poseButtons[i].isHovered() ? (this.mouseY - lookY) * 4 : 0));
+                        lookY + (this.poseButtons[i].isHovered() ? (this.mouseY - lookY) * 4 : 0),
+                        partialTick);
             }
         }
         originalPose.applyToEntity(armorStand);
     }
 
     @Override
-    public void renderEntityInInventoryFollowsMouse(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float yOffset, float mouseX, float mouseY, LivingEntity livingEntity) {
+    public void renderEntityInInventoryFollowsMouse(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float yOffset, float mouseX, float mouseY, LivingEntity livingEntity, float partialTick) {
         ArmorStandPosesScreenHelper.renderEntityInInventoryFollowsMouse(guiGraphics,
                 x1,
                 y1,
@@ -138,7 +139,8 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
                 yOffset,
                 mouseX,
                 mouseY,
-                livingEntity);
+                livingEntity,
+                partialTick);
     }
 
     @Override

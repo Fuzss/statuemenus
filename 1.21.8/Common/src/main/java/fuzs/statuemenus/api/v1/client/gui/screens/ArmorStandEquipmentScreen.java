@@ -130,7 +130,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float pPartialTick, int pX, int pY) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 AbstractArmorStandScreen.getArmorStandEquipmentLocation(),
                 this.leftPos,
@@ -174,7 +174,8 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
                 posY + this.getInventoryEntityScissorHeight(true),
                 this.getInventoryEntityScale(true),
                 this.mouseX,
-                this.mouseY);
+                this.mouseY,
+                partialTick);
     }
 
     private static boolean isSlotRestricted(ArmorStand armorStand, EquipmentSlot equipmentSlot) {

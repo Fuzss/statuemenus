@@ -214,7 +214,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
                         posY + this.getInventoryEntityScissorHeight(this.smallInventoryEntity),
                         this.getInventoryEntityScale(this.smallInventoryEntity),
                         posX + this.getInventoryEntityScissorWidth(this.smallInventoryEntity) / 2,
-                        posY + this.getInventoryEntityScissorHeight(this.smallInventoryEntity) / 2);
+                        posY + this.getInventoryEntityScissorHeight(this.smallInventoryEntity) / 2,
+                        partialTick);
             }
             findHoveredTab(this.leftPos,
                     this.topPos,
@@ -233,7 +234,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     @Override
-    public void renderArmorStandInInventory(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float mouseX, float mouseY) {
+    public void renderArmorStandInInventory(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float mouseX, float mouseY, float partialTick) {
         ArmorStand armorStand = this.holder.getArmorStand();
         ArmorStandPose pose = this.getPoseOverride();
         ArmorStandPose originalPose;
@@ -243,7 +244,15 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         } else {
             originalPose = null;
         }
-        ArmorStandScreen.super.renderArmorStandInInventory(guiGraphics, x1, y1, x2, y2, scale, mouseX, mouseY);
+        ArmorStandScreen.super.renderArmorStandInInventory(guiGraphics,
+                x1,
+                y1,
+                x2,
+                y2,
+                scale,
+                mouseX,
+                mouseY,
+                partialTick);
         if (originalPose != null) {
             originalPose.applyToEntity(armorStand);
         }
