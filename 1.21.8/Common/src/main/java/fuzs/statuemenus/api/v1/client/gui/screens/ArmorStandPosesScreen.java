@@ -6,13 +6,11 @@ import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
 import fuzs.statuemenus.impl.client.gui.components.TooltipFactories;
-import fuzs.statuemenus.impl.client.util.ArmorStandPosesScreenHelper;
 import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -126,21 +124,6 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
             }
         }
         originalPose.applyToEntity(armorStand);
-    }
-
-    @Override
-    public void renderEntityInInventoryFollowsMouse(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float yOffset, float mouseX, float mouseY, LivingEntity livingEntity, float partialTick) {
-        ArmorStandPosesScreenHelper.renderEntityInInventoryFollowsMouse(guiGraphics,
-                x1,
-                y1,
-                x2,
-                y2,
-                scale,
-                yOffset,
-                mouseX,
-                mouseY,
-                livingEntity,
-                partialTick);
     }
 
     @Override
