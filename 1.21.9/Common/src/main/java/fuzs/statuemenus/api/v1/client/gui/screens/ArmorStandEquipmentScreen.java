@@ -1,5 +1,6 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
@@ -9,6 +10,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -77,10 +80,10 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) {
-            if (AbstractArmorStandScreen.handleTabClicked((int) mouseX,
-                    (int) mouseY,
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
+        if (mouseButtonEvent.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+            if (AbstractArmorStandScreen.handleTabClicked((int) mouseButtonEvent.x(),
+                    (int) mouseButtonEvent.y(),
                     this.leftPos,
                     this.topPos,
                     this.imageHeight,
@@ -89,7 +92,8 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
                 return true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+
+        return super.mouseClicked(mouseButtonEvent, doubleClick);
     }
 
     @Override
@@ -192,12 +196,13 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent keyEvent) {
         ArmorStandScreenType[] tabs = this.dataSyncHandler.getScreenTypes();
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot == null) {
-            AbstractArmorStandScreen.handleHotbarKeyPressed(keyCode, scanCode, this, tabs);
+            AbstractArmorStandScreen.handleHotbarKeyPressed(keyEvent, this, tabs);
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+
+        return super.keyPressed(keyEvent);
     }
 
     @Override

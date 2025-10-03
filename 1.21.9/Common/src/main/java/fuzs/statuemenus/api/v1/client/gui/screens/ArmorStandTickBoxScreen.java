@@ -1,6 +1,5 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import net.minecraft.client.Minecraft;
@@ -8,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -100,13 +100,12 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == InputConstants.KEY_ESCAPE && this.shouldCloseOnEsc()) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.isEscape() && this.shouldCloseOnEsc()) {
             this.onClose();
             return true;
         } else {
-            return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput()
-                    || super.keyPressed(keyCode, scanCode, modifiers);
+            return this.name.keyPressed(keyEvent) || this.name.canConsumeInput() || super.keyPressed(keyEvent);
         }
     }
 

@@ -16,6 +16,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -254,8 +255,8 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                 }
 
                 @Override
-                public void onRelease(double mouseX, double mouseY) {
-                    super.onRelease(mouseX, mouseY);
+                public void onRelease(MouseButtonEvent mouseButtonEvent) {
+                    super.onRelease(mouseButtonEvent);
                     this.clearDirty();
                 }
 

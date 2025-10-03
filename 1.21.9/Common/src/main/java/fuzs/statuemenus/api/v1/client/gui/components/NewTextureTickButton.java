@@ -3,6 +3,7 @@ package fuzs.statuemenus.api.v1.client.gui.components;
 import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.network.chat.CommonComponents;
@@ -43,8 +44,8 @@ public class NewTextureTickButton extends NewTextureButton implements Tickable {
     }
 
     @Override
-    public void onPress() {
-        super.onPress();
+    public void onPress(InputWithModifiers inputWithModifiers) {
+        super.onPress(inputWithModifiers);
         this.lastClickedTicks = this.lastClickedTicksDelay;
     }
 

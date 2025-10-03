@@ -1,5 +1,6 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
 import fuzs.statuemenus.api.v1.client.gui.components.UnboundedSliderButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
@@ -18,6 +19,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -185,10 +188,10 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) {
-            if (!this.disableMenuRendering() && handleTabClicked((int) mouseX,
-                    (int) mouseY,
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
+        if (mouseButtonEvent.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+            if (!this.disableMenuRendering() && handleTabClicked((int) mouseButtonEvent.x(),
+                    (int) mouseButtonEvent.y(),
                     this.leftPos,
                     this.topPos,
                     this.imageHeight,
@@ -197,7 +200,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
                 return true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+
+        return super.mouseClicked(mouseButtonEvent, doubleClick);
     }
 
     @Override
@@ -306,39 +310,41 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
         // make sure value is sent to server when mouse is released outside of slider widget, but when the slider value has been changed
         boolean mouseReleased = false;
         for (GuiEventListener child : this.children()) {
             if (child instanceof UnboundedSliderButton sliderButton) {
                 if (sliderButton.isDirty()) {
-                    mouseReleased |= child.mouseReleased(mouseX, mouseY, button);
+                    mouseReleased |= child.mouseReleased(mouseButtonEvent);
                 }
             }
         }
-        return mouseReleased || super.mouseReleased(mouseX, mouseY, button);
+
+        return mouseReleased || super.mouseReleased(mouseButtonEvent);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (super.keyPressed(keyEvent)) {
             return true;
-        } else if (this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+        } else if (this.minecraft.options.keyInventory.matches(keyEvent)) {
             this.onClose();
             return true;
         } else {
-            return handleHotbarKeyPressed(keyCode, scanCode, this, this.dataSyncHandler.getScreenTypes());
+            return handleHotbarKeyPressed(keyEvent, this, this.dataSyncHandler.getScreenTypes());
         }
     }
 
-    public static <T extends Screen & ArmorStandScreen> boolean handleHotbarKeyPressed(int keyCode, int scanCode, T screen, ArmorStandScreenType[] tabs) {
+    public static <T extends Screen & ArmorStandScreen> boolean handleHotbarKeyPressed(KeyEvent keyEvent, T screen, ArmorStandScreenType[] tabs) {
         for (int i = 0; i < Math.min(tabs.length, 9); ++i) {
-            if (screen.minecraft.options.keyHotbarSlots[i].matches(keyCode, scanCode)) {
+            if (screen.minecraft.options.keyHotbarSlots[i].matches(keyEvent)) {
                 if (openTabScreen(screen, tabs[i], true)) {
                     return true;
                 }
             }
         }
+
         return false;
     }
 

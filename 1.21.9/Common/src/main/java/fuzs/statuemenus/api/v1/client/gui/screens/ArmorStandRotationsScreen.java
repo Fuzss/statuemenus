@@ -20,6 +20,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -119,7 +120,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                 }
 
                 @Override
-                public boolean mouseClicked(double mouseX, double mouseY, int button) {
+                public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
                     return false;
                 }
             }).setTooltip(Tooltip.create(tipComponent));
@@ -215,8 +216,8 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                 }
 
                 @Override
-                public void onRelease(double mouseX, double mouseY) {
-                    super.onRelease(mouseX, mouseY);
+                public void onRelease(MouseButtonEvent mouseButtonEvent) {
+                    super.onRelease(mouseButtonEvent);
                     this.clearDirty();
                 }
 
@@ -259,8 +260,8 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                 }
 
                 @Override
-                public void onRelease(double mouseX, double mouseY) {
-                    super.onRelease(mouseX, mouseY);
+                public void onRelease(MouseButtonEvent mouseButtonEvent) {
+                    super.onRelease(mouseButtonEvent);
                     this.clearDirty();
                 }
 

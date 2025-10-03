@@ -1,13 +1,13 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.puzzleslib.api.client.gui.v2.GuiGraphicsHelper;
 import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
-import net.minecraft.client.gui.navigation.CommonInputs;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -82,8 +82,8 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        this.setValueFromMouse(mouseX);
+    public void onClick(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
+        this.setValueFromMouse(mouseButtonEvent.x());
     }
 
     @Override
@@ -100,23 +100,25 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (CommonInputs.selected(keyCode)) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.isSelection()) {
             this.canChangeValue = !this.canChangeValue;
             return true;
         } else {
             if (this.canChangeValue) {
-                return this.keyPressed(keyCode);
+                return this.onKeyPressed(keyEvent);
+            } else {
+                return false;
             }
-            return false;
         }
     }
 
-    private boolean keyPressed(int keyCode) {
-        boolean bl = keyCode == InputConstants.KEY_LEFT;
-        if (bl || keyCode == InputConstants.KEY_RIGHT) {
-            float f = bl ? -1.0F : 1.0F;
-            this.setValue(this.value + (double) (f / (float) (this.width - 8)), true);
+    private boolean onKeyPressed(KeyEvent keyEvent) {
+        boolean isLeft = keyEvent.isLeft();
+        boolean isRight = keyEvent.isRight();
+        if (isLeft || isRight) {
+            float valueDirection = isLeft ? -1.0F : 1.0F;
+            this.setValue(this.value + (double) (valueDirection / (float) (this.width - 8)), true);
         }
 
         return false;
@@ -139,7 +141,7 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
     }
 
     @Override
-    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
-        this.setValueFromMouse(mouseX);
+    protected void onDrag(MouseButtonEvent mouseButtonEvent, double dragX, double dragY) {
+        this.setValueFromMouse(mouseButtonEvent.x());
     }
 }

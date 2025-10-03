@@ -1,6 +1,6 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
-import com.mojang.blaze3d.platform.InputConstants;
+import fuzs.puzzleslib.api.util.v1.CommonHelper;
 import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
 import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
 import net.minecraft.client.InputType;
@@ -9,8 +9,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.navigation.CommonInputs;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.CommonComponents;
@@ -134,8 +134,8 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        this.setValueFromMouse(mouseX, mouseY);
+    public void onClick(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
+        this.setValueFromMouse(mouseButtonEvent);
     }
 
     @Override
@@ -152,52 +152,51 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (CommonInputs.selected(keyCode)) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.isSelection()) {
             this.canChangeValue = !this.canChangeValue;
             return true;
         } else {
             if (this.canChangeValue) {
-                return this.keyPressed(keyCode);
+                return this.onKeyPressed(keyEvent);
+            } else {
+                return false;
             }
-            return false;
         }
     }
 
-    private boolean keyPressed(int keyCode) {
+    private boolean onKeyPressed(KeyEvent keyEvent) {
         if (this.active && this.visible) {
-            switch (keyCode) {
-                case InputConstants.KEY_LEFT -> {
-                    this.setHorizontalValue(this.horizontalValue - VALUE_KEY_INTERVAL, false);
-                    return true;
-                }
-                case InputConstants.KEY_RIGHT -> {
-                    this.setHorizontalValue(this.horizontalValue + VALUE_KEY_INTERVAL, false);
-                    return true;
-                }
-                case InputConstants.KEY_UP -> {
-                    this.setVerticalValue(this.verticalValue - VALUE_KEY_INTERVAL, false);
-                    return true;
-                }
-                case InputConstants.KEY_DOWN -> {
-                    this.setVerticalValue(this.verticalValue + VALUE_KEY_INTERVAL, false);
-                    return true;
-                }
+            if (keyEvent.isLeft()) {
+                this.setHorizontalValue(this.horizontalValue - VALUE_KEY_INTERVAL, false);
+                return true;
+            } else if (keyEvent.isRight()) {
+                this.setHorizontalValue(this.horizontalValue + VALUE_KEY_INTERVAL, false);
+                return true;
+            } else if (keyEvent.isUp()) {
+                this.setVerticalValue(this.verticalValue - VALUE_KEY_INTERVAL, false);
+                return true;
+            } else if (keyEvent.isDown()) {
+                this.setVerticalValue(this.verticalValue + VALUE_KEY_INTERVAL, false);
+                return true;
+            } else {
+                return false;
             }
-            return false;
         } else {
             return false;
         }
     }
 
     @Override
-    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
-        this.setValueFromMouse(mouseX, mouseY);
+    protected void onDrag(MouseButtonEvent mouseButtonEvent, double dragX, double dragY) {
+        this.setValueFromMouse(mouseButtonEvent);
     }
 
-    private void setValueFromMouse(double mouseX, double mouseY) {
-        this.setHorizontalValue((mouseX - (double) (this.getX() + 8)) / (double) (this.width - SLIDER_SIZE - 2), true);
-        this.setVerticalValue((mouseY - (double) (this.getY() + 8)) / (double) (this.height - SLIDER_SIZE - 2), true);
+    private void setValueFromMouse(MouseButtonEvent mouseButtonEvent) {
+        this.setHorizontalValue(
+                (mouseButtonEvent.x() - (double) (this.getX() + 8)) / (double) (this.width - SLIDER_SIZE - 2), true);
+        this.setVerticalValue(
+                (mouseButtonEvent.y() - (double) (this.getY() + 8)) / (double) (this.height - SLIDER_SIZE - 2), true);
     }
 
     private void setHorizontalValue(double horizontalValue, boolean snapValue) {
@@ -229,11 +228,11 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
     }
 
     protected boolean verticalValueLocked() {
-        return Screen.hasShiftDown();
+        return CommonHelper.hasShiftDown();
     }
 
     protected boolean horizontalValueLocked() {
-        return Screen.hasAltDown();
+        return CommonHelper.hasAltDown();
     }
 
     @Override
@@ -242,7 +241,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
+    public void onRelease(MouseButtonEvent mouseButtonEvent) {
         super.playDownSound(Minecraft.getInstance().getSoundManager());
     }
 

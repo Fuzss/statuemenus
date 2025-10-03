@@ -36,7 +36,7 @@ public final class ArmorStandInteractHelper {
     public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, ArmorStand armorStand, MenuType<?> menuType, @Nullable ArmorStandDataProvider dataProvider) {
         if (player.isShiftKeyDown() && (!armorStand.isInvulnerable() || player.getAbilities().instabuild)) {
             openArmorStatueMenu(player, armorStand, menuType, dataProvider);
-            return EventResultHolder.interrupt(InteractionResultHelper.sidedSuccess(level.isClientSide));
+            return EventResultHolder.interrupt(InteractionResultHelper.sidedSuccess(level.isClientSide()));
         }
         return EventResultHolder.pass();
     }
