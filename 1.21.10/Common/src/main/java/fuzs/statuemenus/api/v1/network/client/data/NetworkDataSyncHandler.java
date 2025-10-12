@@ -1,62 +1,63 @@
 package fuzs.statuemenus.api.v1.network.client.data;
 
 import fuzs.puzzleslib.api.network.v4.MessageSender;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
 import fuzs.statuemenus.impl.network.client.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class NetworkDataSyncHandler implements DataSyncHandler {
-    private final ArmorStandHolder holder;
+    private final StatueHolder holder;
 
-    public NetworkDataSyncHandler(ArmorStandHolder holder) {
+    public NetworkDataSyncHandler(StatueHolder holder) {
         this.holder = holder;
     }
 
     @Override
-    public ArmorStandHolder getArmorStandHolder() {
+    public StatueHolder getArmorStandHolder() {
         return this.holder;
     }
 
     @Override
     public void sendName(String name) {
-        DataSyncHandler.setCustomArmorStandName(this.getArmorStand(), name);
-        MessageSender.broadcast(new ServerboundArmorStandNameMessage(name));
+        DataSyncHandler.setCustomArmorStandName(this.getEntity(), name);
+        MessageSender.broadcast(new ServerboundStatueNameMessage(name));
     }
 
     @Override
-    public void sendPose(ArmorStandPose pose, boolean finalize) {
-        pose.applyToEntity(this.getArmorStand());
+    public void sendPose(StatuePose pose, boolean finalize) {
+        pose.applyToEntity(this.getArmorStandHolder().getStatueEntity());
         CompoundTag compoundTag = new CompoundTag();
         pose.serializeAllPoses(compoundTag);
         ArmorStand.ArmorStandPose armorStandPose = ArmorStand.ArmorStandPose.CODEC.parse(NbtOps.INSTANCE, compoundTag)
                 .getPartialOrThrow();
-        MessageSender.broadcast(new ServerboundArmorStandPoseMessage(armorStandPose));
+        MessageSender.broadcast(new ServerboundStatuePoseMessage(armorStandPose));
     }
 
     @Override
     public void sendPosition(double posX, double posY, double posZ, boolean finalize) {
-        MessageSender.broadcast(new ServerboundArmorStandPositionMessage(posX, posY, posZ));
+        MessageSender.broadcast(new ServerboundStatuePositionMessage(posX, posY, posZ));
     }
 
     @Override
     public void sendScale(float scale, boolean finalize) {
-        MessageSender.broadcast(new ServerboundArmorStandPropertyMessage(ServerboundArmorStandPropertyMessage.DataType.SCALE,
+        MessageSender.broadcast(new ServerboundStatuePropertyMessage(ServerboundStatuePropertyMessage.DataType.SCALE,
                 scale));
     }
 
     @Override
     public void sendRotation(float rotation, boolean finalize) {
-        MessageSender.broadcast(new ServerboundArmorStandPropertyMessage(ServerboundArmorStandPropertyMessage.DataType.ROTATION,
+        MessageSender.broadcast(new ServerboundStatuePropertyMessage(ServerboundStatuePropertyMessage.DataType.ROTATION,
                 rotation));
     }
 
     @Override
-    public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize) {
-        styleOption.setOption(this.getArmorStand(), value);
-        MessageSender.broadcast(new ServerboundArmorStandStyleMessage(styleOption, value));
+    public void sendStyleOption(StatueStyleOption<?> styleOption, boolean value, boolean finalize) {
+        ((StatueStyleOption<LivingEntity>) styleOption).setOption(this.getEntity(), value);
+        MessageSender.broadcast(new ServerboundStatueStyleMessage(styleOption, value));
     }
 }

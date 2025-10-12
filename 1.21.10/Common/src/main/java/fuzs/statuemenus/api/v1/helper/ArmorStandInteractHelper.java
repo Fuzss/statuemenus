@@ -3,8 +3,8 @@ package fuzs.statuemenus.api.v1.helper;
 import fuzs.puzzleslib.api.container.v1.ContainerMenuHelper;
 import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
 import fuzs.puzzleslib.api.util.v1.InteractionResultHelper;
-import fuzs.statuemenus.api.v1.world.entity.decoration.ArmorStandDataProvider;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
+import fuzs.statuemenus.api.v1.world.entity.decoration.StatueEntity;
+import fuzs.statuemenus.api.v1.world.inventory.StatueMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,27 +27,27 @@ public final class ArmorStandInteractHelper {
         // NO-OP
     }
 
-    public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, InteractionHand interactionHand, ArmorStand armorStand, MenuType<?> menuType, @Nullable ArmorStandDataProvider dataProvider) {
+    public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, InteractionHand interactionHand, ArmorStand armorStand, MenuType<?> menuType, @Nullable StatueEntity statueEntity) {
         ItemStack itemInHand = player.getItemInHand(interactionHand);
-        return itemInHand.isEmpty() ? tryOpenArmorStatueMenu(player, level, armorStand, menuType, dataProvider) :
+        return itemInHand.isEmpty() ? tryOpenArmorStatueMenu(player, level, armorStand, menuType, statueEntity) :
                 EventResultHolder.pass();
     }
 
-    public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, ArmorStand armorStand, MenuType<?> menuType, @Nullable ArmorStandDataProvider dataProvider) {
+    public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, ArmorStand armorStand, MenuType<?> menuType, @Nullable StatueEntity statueEntity) {
         if (player.isShiftKeyDown() && (!armorStand.isInvulnerable() || player.getAbilities().instabuild)) {
-            openArmorStatueMenu(player, armorStand, menuType, dataProvider);
+            openArmorStatueMenu(player, armorStand, menuType, statueEntity);
             return EventResultHolder.interrupt(InteractionResultHelper.sidedSuccess(level.isClientSide()));
         }
         return EventResultHolder.pass();
     }
 
-    public static void openArmorStatueMenu(Player player, ArmorStand armorStand, MenuType<?> menuType, @Nullable ArmorStandDataProvider dataProvider) {
+    public static void openArmorStatueMenu(Player player, ArmorStand armorStand, MenuType<?> menuType, @Nullable StatueEntity statueEntity) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
         ContainerMenuHelper.openMenu(serverPlayer,
                 new SimpleMenuProvider((int containerId, Inventory inventory, Player playerX) -> {
-                    return new ArmorStandMenu(menuType, containerId, inventory, armorStand, dataProvider);
+                    return new StatueMenu(menuType, containerId, inventory, armorStand, statueEntity);
                 }, armorStand.getDisplayName()),
-                ArmorStandMenu.ArmorStandData.of(armorStand));
+                StatueMenu.StatueData.of(armorStand));
     }
 
     public static Component getArmorStandHoverText() {

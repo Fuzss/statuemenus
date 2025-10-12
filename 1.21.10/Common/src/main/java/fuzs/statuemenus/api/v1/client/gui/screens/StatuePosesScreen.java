@@ -2,26 +2,26 @@ package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
+import fuzs.statuemenus.api.v1.world.entity.decoration.StatueEntity;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
 import fuzs.statuemenus.impl.client.gui.components.TooltipFactories;
-import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
+import fuzs.statuemenus.impl.world.inventory.StatuePoses;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.Optional;
 
-public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
+public class StatuePosesScreen extends AbstractStatueScreen {
     private static int firstPoseIndex;
     private final AbstractWidget[] cycleButtons = new AbstractWidget[2];
     private final AbstractWidget[] poseButtons = new AbstractWidget[4];
 
-    public ArmorStandPosesScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+    public StatuePosesScreen(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
         this.inventoryEntityX = 5;
         this.inventoryEntityY = 40;
@@ -73,10 +73,10 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
 
     private void toggleCycleButtons(int increment) {
         int newFirstPoseIndex = firstPoseIndex + increment;
-        if (newFirstPoseIndex >= 0 && newFirstPoseIndex < ArmorStandPoses.size()) {
+        if (newFirstPoseIndex >= 0 && newFirstPoseIndex < StatuePoses.size()) {
             firstPoseIndex = newFirstPoseIndex;
             this.cycleButtons[0].active = newFirstPoseIndex - this.poseButtons.length >= 0;
-            this.cycleButtons[1].active = newFirstPoseIndex + this.poseButtons.length < ArmorStandPoses.size();
+            this.cycleButtons[1].active = newFirstPoseIndex + this.poseButtons.length < StatuePoses.size();
             for (int i = 0; i < this.poseButtons.length; i++) {
                 this.poseButtons[i].visible = getPoseAt(i).isPresent();
                 this.poseButtons[i].setFocused(false);
@@ -102,12 +102,12 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        ArmorStand armorStand = this.holder.getArmorStand();
-        ArmorStandPose originalPose = ArmorStandPose.fromEntity(armorStand);
+        StatueEntity statueEntity = this.holder.getStatueEntity();
+        StatuePose originalPose = StatuePose.fromEntity(statueEntity);
         for (int i = 0; i < this.poseButtons.length; i++) {
-            Optional<ArmorStandPose> pose = getPoseAt(i);
+            Optional<StatuePose> pose = getPoseAt(i);
             if (pose.isPresent()) {
-                pose.get().applyToEntity(armorStand);
+                pose.get().applyToEntity(statueEntity);
                 int posX = this.leftPos + 89 + i % 2 * 62;
                 int posY = this.topPos + 15 + i / 2 * 88;
                 int lookX = posX + this.getInventoryEntityScissorWidth(true) / 2;
@@ -123,7 +123,8 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
                         partialTick);
             }
         }
-        originalPose.applyToEntity(armorStand);
+
+        originalPose.applyToEntity(statueEntity);
     }
 
     @Override
@@ -132,11 +133,11 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     }
 
     @Override
-    public ArmorStandScreenType getScreenType() {
-        return ArmorStandScreenType.POSES;
+    public StatueScreenType getScreenType() {
+        return StatueScreenType.POSES;
     }
 
-    public static Optional<ArmorStandPose> getPoseAt(int index) {
-        return ArmorStandPoses.get(index + firstPoseIndex);
+    public static Optional<StatuePose> getPoseAt(int index) {
+        return StatuePoses.get(index + firstPoseIndex);
     }
 }

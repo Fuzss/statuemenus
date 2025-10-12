@@ -1,6 +1,6 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
-import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
+import fuzs.statuemenus.api.v1.client.gui.screens.AbstractStatueScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.InputWithModifiers;
@@ -9,14 +9,14 @@ import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
-public class TickButton extends NewTextureButton implements Tickable {
+public class TickButton extends FlatButton implements Tickable {
     private final Component title;
     private final Component clickedTitle;
     private int lastClickedTicks;
     protected int lastClickedTicksDelay = 30;
 
     public TickButton(int x, int y, int width, int height, Component title, Component clickedTitle, OnPress onPress) {
-        super(x, y, width, height, 0, 184, AbstractArmorStandScreen.getArmorStandWidgetsLocation(), title, onPress);
+        super(x, y, width, height, 0, 184, AbstractStatueScreen.getArmorStandWidgetsLocation(), title, onPress);
         this.title = title;
         this.clickedTitle = clickedTitle;
     }

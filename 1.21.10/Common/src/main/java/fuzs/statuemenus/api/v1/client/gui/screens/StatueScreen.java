@@ -1,22 +1,22 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
+import fuzs.statuemenus.api.v1.world.inventory.StatueMenu;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.LivingEntity;
 
-public interface ArmorStandScreen {
+public interface StatueScreen {
 
-    ArmorStandHolder getHolder();
+    StatueHolder getHolder();
 
-    ArmorStandScreenType getScreenType();
+    StatueScreenType getScreenType();
 
-    <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createScreenType(ArmorStandScreenType screenType);
+    <T extends Screen & MenuAccess<StatueMenu> & StatueScreen> T createScreenType(StatueScreenType screenType);
 
     void setMouseX(int mouseX);
 
@@ -37,10 +37,10 @@ public interface ArmorStandScreen {
     }
 
     default void renderArmorStandInInventory(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float mouseX, float mouseY, float partialTick) {
-        ArmorStand armorStand = this.getHolder().getArmorStand();
+        LivingEntity livingEntity = this.getHolder().getEntity();
         Runnable finalizeInInventoryRendering = this.getHolder()
-                .getDataProvider()
-                .setupInInventoryRendering(armorStand);
+                .getStatueEntity()
+                .setupInInventoryRendering(livingEntity);
         InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics,
                 x1,
                 y1,
@@ -50,7 +50,7 @@ public interface ArmorStandScreen {
                 0.0625F,
                 mouseX,
                 mouseY,
-                armorStand);
+                livingEntity);
         finalizeInInventoryRendering.run();
     }
 }

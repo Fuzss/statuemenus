@@ -10,12 +10,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 
-public class NewTextureButton extends Button {
+public class FlatButton extends Button {
     private final int textureX;
     private final int textureY;
     protected final ResourceLocation textureLocation;
 
-    public NewTextureButton(int x, int y, int width, int height, int textureX, int textureY, ResourceLocation textureLocation, Component component, OnPress onPress) {
+    public FlatButton(int x, int y, int width, int height, int textureX, int textureY, ResourceLocation textureLocation, Component component, OnPress onPress) {
         super(x, y, width, height, component, onPress, Button.DEFAULT_NARRATION);
         this.textureX = textureX;
         this.textureY = textureY;

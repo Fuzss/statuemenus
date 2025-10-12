@@ -2,14 +2,13 @@ package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
 import fuzs.puzzleslib.api.client.gui.v2.tooltip.TooltipBuilder;
-import fuzs.statuemenus.api.v1.client.gui.components.NewTextureButton;
-import fuzs.statuemenus.api.v1.client.gui.components.NewTextureSliderButton;
+import fuzs.statuemenus.api.v1.client.gui.components.FlatButton;
+import fuzs.statuemenus.api.v1.client.gui.components.FlatSliderButton;
 import fuzs.statuemenus.api.v1.helper.ScaleAttributeHelper;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
-import fuzs.statuemenus.impl.StatueMenus;
-import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
+import fuzs.statuemenus.impl.world.inventory.StatuePoses;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -20,8 +19,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,51 +32,65 @@ import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
-public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
-    public static final String SCALE_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.scale";
-    public static final String ROTATION_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.rotation";
-    public static final String POSITION_X_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.x";
-    public static final String POSITION_Y_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.y";
-    public static final String POSITION_Z_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.z";
-    public static final String INCREMENT_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.increment";
-    public static final String DECREMENT_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.decrement";
-    public static final String PIXELS_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.pixels";
-    public static final String BLOCKS_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.blocks";
-    public static final String DEGREES_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.degrees";
-    public static final String MOVE_BY_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.position.moveBy";
-    public static final String CENTERED_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.centered";
-    public static final String CENTERED_DESCRIPTION_TRANSLATION_KEY =
-            StatueMenus.MOD_ID + ".screen.centered.description";
-    public static final String CORNERED_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.cornered";
-    public static final String CORNERED_DESCRIPTION_TRANSLATION_KEY =
-            StatueMenus.MOD_ID + ".screen.cornered.description";
-    public static final String ALIGNED_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.aligned";
-    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> SCALE_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
+public class StatuePositionScreen extends StatueButtonsScreen {
+    public static final String SCALE_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "scale");
+    public static final String ROTATION_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "rotation");
+    public static final String POSITION_X_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "x");
+    public static final String POSITION_Y_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "y");
+    public static final String POSITION_Z_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "z");
+    public static final String INCREMENT_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "increment");
+    public static final String DECREMENT_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "decrement");
+    public static final String PIXELS_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "pixels");
+    public static final String BLOCKS_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "blocks");
+    public static final String DEGREES_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "degrees");
+    public static final String MOVE_BY_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "move_by");
+    public static final String CENTERED_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "centered");
+    public static final String CENTERED_DESCRIPTION_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "centered_description");
+    public static final String CORNERED_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "cornered");
+    public static final String CORNERED_DESCRIPTION_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "cornered_description");
+    public static final String ALIGNED_TRANSLATION_KEY = StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "aligned");
+    protected static final ArmorStandWidgetFactory<StatuePositionScreen> SCALE_WIDGET_FACTORY = (StatuePositionScreen screen, LivingEntity livingEntity) -> {
         return screen.new ScaleWidget(Component.translatable(SCALE_TRANSLATION_KEY),
-                armorStand::getScale,
+                livingEntity::getScale,
                 screen.dataSyncHandler::sendScale);
     };
-    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> ROTATION_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
+    protected static final ArmorStandWidgetFactory<StatuePositionScreen> ROTATION_WIDGET_FACTORY = (StatuePositionScreen screen, LivingEntity livingEntity) -> {
         return screen.new RotationWidget(Component.translatable(ROTATION_TRANSLATION_KEY),
-                armorStand::getYRot,
+                livingEntity::getYRot,
                 screen.dataSyncHandler::sendRotation);
     };
-    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> POSITION_INCREMENT_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
+    protected static final ArmorStandWidgetFactory<StatuePositionScreen> POSITION_INCREMENT_WIDGET_FACTORY = (StatuePositionScreen screen, LivingEntity livingEntity) -> {
         return screen.new PositionIncrementWidget();
     };
-    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> POSITION_X_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
-        return screen.new PositionComponentWidget(POSITION_X_TRANSLATION_KEY, armorStand::getX, (double x) -> {
-            screen.dataSyncHandler.sendPosition(x, armorStand.getY(), armorStand.getZ());
+    protected static final ArmorStandWidgetFactory<StatuePositionScreen> POSITION_X_WIDGET_FACTORY = (StatuePositionScreen screen, LivingEntity livingEntity) -> {
+        return screen.new PositionComponentWidget(POSITION_X_TRANSLATION_KEY, livingEntity::getX, (double x) -> {
+            screen.dataSyncHandler.sendPosition(x, livingEntity.getY(), livingEntity.getZ());
         });
     };
-    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> POSITION_Y_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
-        return screen.new PositionComponentWidget(POSITION_Y_TRANSLATION_KEY, armorStand::getY, (double y) -> {
-            screen.dataSyncHandler.sendPosition(armorStand.getX(), y, armorStand.getZ());
+    protected static final ArmorStandWidgetFactory<StatuePositionScreen> POSITION_Y_WIDGET_FACTORY = (StatuePositionScreen screen, LivingEntity livingEntity) -> {
+        return screen.new PositionComponentWidget(POSITION_Y_TRANSLATION_KEY, livingEntity::getY, (double y) -> {
+            screen.dataSyncHandler.sendPosition(livingEntity.getX(), y, livingEntity.getZ());
         });
     };
-    protected static final ArmorStandWidgetFactory<ArmorStandPositionScreen> POSITION_Z_WIDGET_FACTORY = (ArmorStandPositionScreen screen, ArmorStand armorStand) -> {
-        return screen.new PositionComponentWidget(POSITION_Z_TRANSLATION_KEY, armorStand::getZ, (double z) -> {
-            screen.dataSyncHandler.sendPosition(armorStand.getX(), armorStand.getY(), z);
+    protected static final ArmorStandWidgetFactory<StatuePositionScreen> POSITION_Z_WIDGET_FACTORY = (StatuePositionScreen screen, LivingEntity livingEntity) -> {
+        return screen.new PositionComponentWidget(POSITION_Z_TRANSLATION_KEY, livingEntity::getZ, (double z) -> {
+            screen.dataSyncHandler.sendPosition(livingEntity.getX(), livingEntity.getY(), z);
         });
     };
     private static final DecimalFormat BLOCK_INCREMENT_FORMAT = Util.make(new DecimalFormat("#.####"),
@@ -89,15 +101,15 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
 
     private static double currentIncrement = INCREMENTS[0];
 
-    public ArmorStandPositionScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+    public StatuePositionScreen(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
     }
 
     @Override
-    protected List<ArmorStandWidget> buildWidgets(ArmorStand armorStand) {
+    protected List<ArmorStandWidget> buildWidgets(LivingEntity livingEntity) {
         // only move server-side to prevent rubber banding
         return buildWidgets(this,
-                armorStand,
+                livingEntity,
                 List.of(SCALE_WIDGET_FACTORY,
                         ROTATION_WIDGET_FACTORY,
                         POSITION_INCREMENT_WIDGET_FACTORY,
@@ -112,8 +124,8 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
     }
 
     @Override
-    public ArmorStandScreenType getScreenType() {
-        return ArmorStandScreenType.POSITION;
+    public StatueScreenType getScreenType() {
+        return StatueScreenType.POSITION;
     }
 
     private static Component getPixelIncrementComponent(double increment) {
@@ -154,12 +166,12 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
             mouseValue = getScaledValue(mouseValue);
             mouseValue = (int) (mouseValue * 100.0F) / 100.0F;
             mouseValue = Mth.clamp(mouseValue, ScaleAttributeHelper.MIN_SCALE, ScaleAttributeHelper.MAX_SCALE);
-            return Component.literal(ArmorStandPoses.ROTATION_FORMAT.format(mouseValue));
+            return Component.literal(StatuePoses.ROTATION_FORMAT.format(mouseValue));
         }
 
         @Override
         protected void applyClientValue(double newValue) {
-            ScaleAttributeHelper.setScale(ArmorStandPositionScreen.this.getHolder().getArmorStand(),
+            ScaleAttributeHelper.setScale(StatuePositionScreen.this.getHolder().getEntity(),
                     getScaledValue(newValue));
         }
 
@@ -177,7 +189,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
         private Runnable reset;
 
         public RotationWidget(Component title, DoubleSupplier currentValue, Consumer<Float> newValue) {
-            this(title, currentValue, newValue, ArmorStandPoses.DEGREES_SNAP_INTERVAL);
+            this(title, currentValue, newValue, StatuePoses.DEGREES_SNAP_INTERVAL);
         }
 
         public RotationWidget(Component title, DoubleSupplier currentValue, Consumer<Float> newValue, double snapInterval) {
@@ -197,7 +209,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
 
         protected Component getTooltipComponent(double mouseValue) {
             return Component.translatable(DEGREES_TRANSLATION_KEY,
-                    ArmorStandPoses.ROTATION_FORMAT.format(toWrappedDegrees(mouseValue)));
+                    StatuePoses.ROTATION_FORMAT.format(toWrappedDegrees(mouseValue)));
         }
 
         protected static double fromWrappedDegrees(double value) {
@@ -220,7 +232,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            var sliderButton = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureSliderButton(posX + 76,
+            var sliderButton = StatuePositionScreen.this.addRenderableWidget(new FlatSliderButton(posX + 76,
                     posY + 1,
                     90,
                     20,
@@ -234,7 +246,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                 @Override
                 public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                     super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-                    double mouseValue = ArmorStandPoses.snapValue((mouseX - this.getX()) / (double) this.getWidth(),
+                    double mouseValue = StatuePoses.snapValue((mouseX - this.getX()) / (double) this.getWidth(),
                             this.snapInterval);
                     this.setTooltip(Tooltip.create(RotationWidget.this.getTooltipComponent(mouseValue)));
                 }
@@ -277,7 +289,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
             sliderButton.snapInterval = this.snapInterval;
             this.reset = sliderButton::reset;
             this.children.add(sliderButton);
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174,
+            this.children.add(StatuePositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174,
                     posY + 1,
                     20,
                     20,
@@ -285,7 +297,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                     64,
                     getArmorStandWidgetsLocation(),
                     (Button button) -> {
-                        ArmorStandPositionScreen.this.setActiveWidget(this);
+                        StatuePositionScreen.this.setActiveWidget(this);
                     })));
         }
     }
@@ -301,7 +313,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
             super.init(posX, posY);
             for (int i = 0; i < INCREMENTS.length; i++) {
                 double increment = INCREMENTS[i];
-                AbstractWidget widget = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureButton(
+                AbstractWidget widget = StatuePositionScreen.this.addRenderableWidget(new FlatButton(
                         posX + 76 + i * 24 + (i > 1 ? 1 : 0),
                         posY + 1,
                         20,
@@ -320,7 +332,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                     widget.active = false;
                 }
             }
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174,
+            this.children.add(StatuePositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174,
                     posY + 1,
                     20,
                     20,
@@ -328,7 +340,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                     64,
                     getArmorStandWidgetsLocation(),
                     (Button button) -> {
-                        ArmorStandPositionScreen.this.setActiveWidget(this);
+                        StatuePositionScreen.this.setActiveWidget(this);
                     })));
         }
 
@@ -372,18 +384,18 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            this.editBox = new EditBox(ArmorStandPositionScreen.this.font,
+            this.editBox = new EditBox(StatuePositionScreen.this.font,
                     posX + 77,
                     posY,
                     66,
                     22,
-                    EntityType.ARMOR_STAND.getDescription());
+                    StatuePositionScreen.this.getHolder().getEntity().getType().getDescription());
             this.editBox.setMaxLength(50);
             this.editBox.setEditable(false);
             this.editBox.setTextColorUneditable(0XFFE0E0E0);
             this.editBox.setValue(BLOCK_INCREMENT_FORMAT.format(this.getPositionValue()));
             this.addChildren(this.editBox);
-            AbstractWidget incrementButton = this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(
+            AbstractWidget incrementButton = this.addChildren(StatuePositionScreen.this.addRenderableWidget(new SpritelessImageButton(
                     posX + 149,
                     posY + 1,
                     20,
@@ -401,7 +413,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                     .setLines(() -> Collections.singletonList(Component.translatable(INCREMENT_TRANSLATION_KEY,
                             getPixelIncrementComponent(currentIncrement))))
                     .build(incrementButton);
-            AbstractWidget decrementButton = this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(
+            AbstractWidget decrementButton = this.addChildren(StatuePositionScreen.this.addRenderableWidget(new SpritelessImageButton(
                     posX + 149,
                     posY + 11,
                     20,
@@ -419,7 +431,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                     .setLines(() -> Collections.singletonList(Component.translatable(DECREMENT_TRANSLATION_KEY,
                             getPixelIncrementComponent(currentIncrement))))
                     .build(decrementButton);
-            this.addChildren(ArmorStandPositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174,
+            this.addChildren(StatuePositionScreen.this.addRenderableWidget(new SpritelessImageButton(posX + 174,
                     posY + 1,
                     20,
                     20,
@@ -427,7 +439,7 @@ public class ArmorStandPositionScreen extends ArmorStandButtonsScreen {
                     64,
                     getArmorStandWidgetsLocation(),
                     (Button button) -> {
-                        ArmorStandPositionScreen.this.setActiveWidget(this);
+                        StatuePositionScreen.this.setActiveWidget(this);
                     })));
         }
 

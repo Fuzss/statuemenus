@@ -1,6 +1,6 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
-import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
+import fuzs.statuemenus.api.v1.client.gui.screens.AbstractStatueScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,7 +25,7 @@ public class TickBoxButton extends Button {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                AbstractStatueScreen.getArmorStandWidgetsLocation(),
                 this.getX() + 2,
                 this.getY() + 2,
                 196,
@@ -37,7 +37,7 @@ public class TickBoxButton extends Button {
                 ARGB.white(this.alpha));
         if (this.supplier.getAsBoolean()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                    AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                    AbstractStatueScreen.getArmorStandWidgetsLocation(),
                     this.getX() + 2,
                     this.getY() + 2,
                     196,

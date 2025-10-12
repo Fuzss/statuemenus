@@ -1,7 +1,7 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
 import fuzs.puzzleslib.api.client.gui.v2.GuiGraphicsHelper;
-import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
+import fuzs.statuemenus.impl.world.inventory.StatuePoses;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,14 +14,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
-public abstract class NewTextureSliderButton extends AbstractSliderButton implements UnboundedSliderButton {
+public abstract class FlatSliderButton extends AbstractSliderButton implements UnboundedSliderButton {
     private final int textureX;
     private final int textureY;
     protected final ResourceLocation textureLocation;
     private boolean canChangeValue;
     public double snapInterval = -1.0;
 
-    public NewTextureSliderButton(int x, int y, int width, int height, int textureX, int textureY, ResourceLocation textureLocation, Component component, double value) {
+    public FlatSliderButton(int x, int y, int width, int height, int textureX, int textureY, ResourceLocation textureLocation, Component component, double value) {
         super(x, y, width, height, component, value);
         this.textureX = textureX;
         this.textureY = textureY;
@@ -132,7 +132,7 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
         double oldValue = this.value;
         this.value = Mth.clamp(value, 0.0, 1.0);
         if (snapValue) {
-            this.value = ArmorStandPoses.snapValue(this.value, this.snapInterval);
+            this.value = StatuePoses.snapValue(this.value, this.snapInterval);
         }
         if (oldValue != this.value) {
             this.applyValue();

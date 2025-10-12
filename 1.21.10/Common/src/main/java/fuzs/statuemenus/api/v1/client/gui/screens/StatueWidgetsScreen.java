@@ -1,15 +1,15 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import com.google.common.collect.Lists;
-import fuzs.statuemenus.api.v1.client.gui.components.NewTextureButton;
+import fuzs.statuemenus.api.v1.client.gui.components.FlatButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,22 +17,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
+public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
     protected static final int WIDGET_HEIGHT = 22;
 
     protected final List<ArmorStandWidget> widgets;
     @Nullable
-    private ArmorStandWidgetsScreen.ArmorStandWidget activeWidget;
+    private StatueWidgetsScreen.ArmorStandWidget activeWidget;
 
-    public ArmorStandWidgetsScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+    public StatueWidgetsScreen(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
-        this.widgets = this.buildWidgets(holder.getArmorStand());
+        this.widgets = this.buildWidgets(holder.getEntity());
     }
 
-    protected abstract List<ArmorStandWidget> buildWidgets(ArmorStand armorStand);
+    protected abstract List<ArmorStandWidget> buildWidgets(LivingEntity livingEntity);
 
-    protected static <T extends ArmorStandWidgetsScreen> List<ArmorStandWidget> buildWidgets(T screen, ArmorStand armorStand, List<ArmorStandWidgetFactory<? super T>> widgetFactories) {
-        return widgetFactories.stream().map(factory -> factory.apply(screen, armorStand)).toList();
+    protected static <T extends StatueWidgetsScreen> List<ArmorStandWidget> buildWidgets(T screen, LivingEntity livingEntity, List<ArmorStandWidgetFactory<? super T>> widgetFactories) {
+        return widgetFactories.stream().map(factory -> factory.apply(screen, livingEntity)).toList();
     }
 
     private Collection<ArmorStandWidget> getActivePositionComponentWidgets() {
@@ -111,7 +111,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
     }
 
     @FunctionalInterface
-    protected interface ArmorStandWidgetFactory<T extends ArmorStandWidgetsScreen> extends BiFunction<T, ArmorStand, ArmorStandWidget> {
+    protected interface ArmorStandWidgetFactory<T extends StatueWidgetsScreen> extends BiFunction<T, LivingEntity, ArmorStandWidget> {
 
     }
 
@@ -127,7 +127,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
 
         void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick);
 
-        boolean alwaysVisible(@Nullable ArmorStandWidgetsScreen.ArmorStandWidget activeWidget);
+        boolean alwaysVisible(@Nullable StatueWidgetsScreen.ArmorStandWidget activeWidget);
     }
 
     protected abstract class AbstractArmorStandWidget implements ArmorStandWidget {
@@ -185,17 +185,17 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
 
         @Override
         public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-            if (ArmorStandWidgetsScreen.this.disableMenuRendering()) {
-                NewTextureButton.drawCenteredStringWithShadow(guiGraphics,
-                        ArmorStandWidgetsScreen.this.font,
+            if (StatueWidgetsScreen.this.disableMenuRendering()) {
+                FlatButton.drawCenteredStringWithShadow(guiGraphics,
+                        StatueWidgetsScreen.this.font,
                         this.title,
                         this.posX + 36,
                         this.posY + 6,
                         -1,
                         true);
             } else {
-                NewTextureButton.drawCenteredStringWithShadow(guiGraphics,
-                        ArmorStandWidgetsScreen.this.font,
+                FlatButton.drawCenteredStringWithShadow(guiGraphics,
+                        StatueWidgetsScreen.this.font,
                         this.title,
                         this.posX + 36,
                         this.posY + 6,
@@ -205,7 +205,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
         }
 
         @Override
-        public boolean alwaysVisible(@Nullable ArmorStandWidgetsScreen.ArmorStandWidget activeWidget) {
+        public boolean alwaysVisible(@Nullable StatueWidgetsScreen.ArmorStandWidget activeWidget) {
             return activeWidget == this;
         }
     }

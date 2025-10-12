@@ -2,13 +2,13 @@ package fuzs.statuemenus.impl.network.client;
 
 import fuzs.puzzleslib.api.network.v4.message.MessageListener;
 import fuzs.puzzleslib.api.network.v4.message.play.ServerboundPlayMessage;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
+import fuzs.statuemenus.api.v1.world.inventory.StatueMenu;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
-public record ServerboundArmorStandPoseMessage(ArmorStand.ArmorStandPose pose) implements ServerboundPlayMessage {
+public record ServerboundStatuePoseMessage(ArmorStand.ArmorStandPose pose) implements ServerboundPlayMessage {
     public static final StreamCodec<ByteBuf, ArmorStand.ArmorStandPose> POSE_STREAM_CODEC = StreamCodec.composite(
             Rotations.STREAM_CODEC,
             ArmorStand.ArmorStandPose::head,
@@ -23,19 +23,19 @@ public record ServerboundArmorStandPoseMessage(ArmorStand.ArmorStandPose pose) i
             Rotations.STREAM_CODEC,
             ArmorStand.ArmorStandPose::rightLeg,
             ArmorStand.ArmorStandPose::new);
-    public static final StreamCodec<ByteBuf, ServerboundArmorStandPoseMessage> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, ServerboundStatuePoseMessage> STREAM_CODEC = StreamCodec.composite(
             POSE_STREAM_CODEC,
-            ServerboundArmorStandPoseMessage::pose,
-            ServerboundArmorStandPoseMessage::new);
+            ServerboundStatuePoseMessage::pose,
+            ServerboundStatuePoseMessage::new);
 
     @Override
     public MessageListener<Context> getListener() {
         return new MessageListener<Context>() {
             @Override
             public void accept(Context context) {
-                if (context.player().containerMenu instanceof ArmorStandMenu menu
+                if (context.player().containerMenu instanceof StatueMenu menu
                         && menu.stillValid(context.player())) {
-                    menu.getArmorStand().setArmorStandPose(ServerboundArmorStandPoseMessage.this.pose);
+                    menu.getStatueEntity().setArmorStandPose(ServerboundStatuePoseMessage.this.pose);
                 }
             }
         };

@@ -1,7 +1,7 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -10,15 +10,16 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 
-public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScreen {
+import java.util.List;
+
+public abstract class StatueTickBoxScreen<T> extends AbstractStatueScreen {
     protected EditBox name;
     private int inputUpdateTicks;
 
-    public ArmorStandTickBoxScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+    public StatueTickBoxScreen(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
         this.inventoryEntityX = 14;
         this.inventoryEntityY = 50;
@@ -53,7 +54,7 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
                 this.topPos + 32,
                 73,
                 9,
-                EntityType.ARMOR_STAND.getDescription());
+                this.getHolder().getEntity().getType().getDescription());
         this.name.setTextColor(-1);
         this.name.setBordered(false);
         this.name.setMaxLength(this.getNameMaxLength());
@@ -62,10 +63,10 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
         this.name.setTooltip(Tooltip.create(this.getNameComponent()));
         this.addWidget(this.name);
         this.inputUpdateTicks = -1;
-        T[] values = this.getAllTickBoxValues();
-        final int buttonStartY = (this.imageHeight - values.length * 20 - (values.length - 1) * 2) / 2;
-        for (int i = 0; i < values.length; i++) {
-            this.addRenderableWidget(this.makeTickBoxWidget(this.holder.getArmorStand(), buttonStartY, i, values[i]));
+        List<T> values = this.getAllTickBoxValues();
+        final int buttonStartY = (this.imageHeight - values.size() * 20 - (values.size() - 1) * 2) / 2;
+        for (int i = 0; i < values.size(); i++) {
+            this.addRenderableWidget(this.makeTickBoxWidget(this.holder.getEntity(), buttonStartY, i, values.get(i)));
         }
     }
 
@@ -73,9 +74,9 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
 
     protected abstract String getNameDefaultValue();
 
-    protected abstract T[] getAllTickBoxValues();
+    protected abstract List<T> getAllTickBoxValues();
 
-    protected abstract AbstractWidget makeTickBoxWidget(ArmorStand armorStand, int buttonStartY, int index, T option);
+    protected abstract AbstractWidget makeTickBoxWidget(LivingEntity livingEntity, int buttonStartY, int index, T option);
 
     protected abstract Component getNameComponent();
 

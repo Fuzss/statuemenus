@@ -8,9 +8,8 @@ import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
 import fuzs.puzzleslib.api.event.v1.entity.player.PlayerInteractEvents;
 import fuzs.puzzleslib.api.init.v3.registry.RegistryManager;
 import fuzs.statuemenus.api.v1.helper.ArmorStandInteractHelper;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOptions;
+import fuzs.statuemenus.api.v1.world.inventory.StatueMenu;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
 import fuzs.statuemenus.impl.network.client.*;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -26,8 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.stream.Stream;
 
 public class StatueMenus implements ModConstructor {
     public static final String MOD_ID = "statuemenus";
@@ -47,14 +44,14 @@ public class StatueMenus implements ModConstructor {
         RegistryManager registry = RegistryManager.from(MOD_ID);
         Object[] holder = new Object[1];
         holder[0] = registry.registerMenuType(ARMOR_STAND_IDENTIFIER.getPath(),
-                (int containerId, Inventory inventory, ArmorStandMenu.ArmorStandData data) -> {
-                    return new ArmorStandMenu(((Holder.Reference<MenuType<ArmorStandMenu>>) holder[0]).value(),
+                (int containerId, Inventory inventory, StatueMenu.StatueData data) -> {
+                    return new StatueMenu(((Holder.Reference<MenuType<StatueMenu>>) holder[0]).value(),
                             containerId,
                             inventory,
                             data,
                             null);
                 },
-                ArmorStandMenu.ArmorStandData.STREAM_CODEC);
+                StatueMenu.StatueData.STREAM_CODEC);
         PlayerInteractEvents.USE_ENTITY_AT.register(onUseEntityAt((Holder.Reference<MenuType<?>>) holder[0]));
     }
 
@@ -75,19 +72,25 @@ public class StatueMenus implements ModConstructor {
     @Override
     public void onCommonSetup() {
         // do this here instead of in enum constructor to avoid potential issues with the enum class not having been loaded yet on server-side, therefore, nothing being registered
-        Stream.of(ArmorStandStyleOptions.values()).forEach(ArmorStandStyleOption::register);
+        StatueStyleOption.register(StatueStyleOption.SHOW_NAME);
+        StatueStyleOption.register(StatueStyleOption.SHOW_ARMS);
+        StatueStyleOption.register(StatueStyleOption.SMALL);
+        StatueStyleOption.register(StatueStyleOption.INVISIBLE);
+        StatueStyleOption.register(StatueStyleOption.NO_BASE_PLATE);
+        StatueStyleOption.register(StatueStyleOption.NO_GRAVITY);
+        StatueStyleOption.register(StatueStyleOption.SEALED);
     }
 
     @Override
     public void onRegisterPayloadTypes(PayloadTypesContext context) {
         context.optional();
-        context.playToServer(ServerboundArmorStandNameMessage.class, ServerboundArmorStandNameMessage.STREAM_CODEC);
-        context.playToServer(ServerboundArmorStandStyleMessage.class, ServerboundArmorStandStyleMessage.STREAM_CODEC);
-        context.playToServer(ServerboundArmorStandPositionMessage.class,
-                ServerboundArmorStandPositionMessage.STREAM_CODEC);
-        context.playToServer(ServerboundArmorStandPoseMessage.class, ServerboundArmorStandPoseMessage.STREAM_CODEC);
-        context.playToServer(ServerboundArmorStandPropertyMessage.class,
-                ServerboundArmorStandPropertyMessage.STREAM_CODEC);
+        context.playToServer(ServerboundStatueNameMessage.class, ServerboundStatueNameMessage.STREAM_CODEC);
+        context.playToServer(ServerboundStatueStyleMessage.class, ServerboundStatueStyleMessage.STREAM_CODEC);
+        context.playToServer(ServerboundStatuePositionMessage.class,
+                ServerboundStatuePositionMessage.STREAM_CODEC);
+        context.playToServer(ServerboundStatuePoseMessage.class, ServerboundStatuePoseMessage.STREAM_CODEC);
+        context.playToServer(ServerboundStatuePropertyMessage.class,
+                ServerboundStatuePropertyMessage.STREAM_CODEC);
     }
 
     public static ResourceLocation id(String path) {

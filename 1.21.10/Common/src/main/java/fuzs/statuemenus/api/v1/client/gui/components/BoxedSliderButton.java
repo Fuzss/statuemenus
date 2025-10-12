@@ -1,8 +1,8 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
 import fuzs.puzzleslib.api.util.v1.CommonHelper;
-import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
-import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
+import fuzs.statuemenus.api.v1.client.gui.screens.AbstractStatueScreen;
+import fuzs.statuemenus.impl.world.inventory.StatuePoses;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -73,7 +73,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
         if (!this.active || !this.isHoveredOrFocused()
                 || !this.horizontalValueLocked() && !this.verticalValueLocked()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                    AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                    AbstractStatueScreen.getArmorStandWidgetsLocation(),
                     this.getX(),
                     this.getY(),
                     0,
@@ -85,7 +85,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
                     ARGB.white(this.alpha));
         } else if (this.horizontalValueLocked() && this.verticalValueLocked()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                    AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                    AbstractStatueScreen.getArmorStandWidgetsLocation(),
                     this.getX() + sliderX,
                     this.getY() + sliderY,
                     164,
@@ -97,7 +97,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
                     ARGB.white(this.alpha));
         } else if (this.horizontalValueLocked()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                    AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                    AbstractStatueScreen.getArmorStandWidgetsLocation(),
                     this.getX() + sliderX,
                     this.getY(),
                     54,
@@ -109,7 +109,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
                     ARGB.white(this.alpha));
         } else {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                    AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                    AbstractStatueScreen.getArmorStandWidgetsLocation(),
                     this.getX(),
                     this.getY() + sliderY,
                     136,
@@ -121,7 +121,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
                     ARGB.white(this.alpha));
         }
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                AbstractStatueScreen.getArmorStandWidgetsLocation(),
                 this.getX() + 1 + sliderX,
                 this.getY() + 1 + sliderY,
                 151,
@@ -204,8 +204,8 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
         if (!this.horizontalValueLocked()) {
             this.horizontalValue = Mth.clamp(horizontalValue, 0.0, 1.0);
             if (snapValue) {
-                this.horizontalValue = ArmorStandPoses.snapValue(this.horizontalValue,
-                        ArmorStandPoses.DEGREES_SNAP_INTERVAL);
+                this.horizontalValue = StatuePoses.snapValue(this.horizontalValue,
+                        StatuePoses.DEGREES_SNAP_INTERVAL);
             }
         }
         if (oldHorizontalValue != this.horizontalValue) {
@@ -218,8 +218,8 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
         if (!this.verticalValueLocked()) {
             this.verticalValue = Mth.clamp(verticalValue, 0.0, 1.0);
             if (snapValue) {
-                this.verticalValue = ArmorStandPoses.snapValue(this.verticalValue,
-                        ArmorStandPoses.DEGREES_SNAP_INTERVAL);
+                this.verticalValue = StatuePoses.snapValue(this.verticalValue,
+                        StatuePoses.DEGREES_SNAP_INTERVAL);
             }
         }
         if (oldVerticalValue != this.verticalValue) {

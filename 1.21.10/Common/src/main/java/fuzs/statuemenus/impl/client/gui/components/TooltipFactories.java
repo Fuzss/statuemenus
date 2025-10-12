@@ -1,8 +1,8 @@
 package fuzs.statuemenus.impl.client.gui.components;
 
 import fuzs.puzzleslib.api.client.gui.v2.tooltip.TooltipBuilder;
-import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandPosesScreen;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
+import fuzs.statuemenus.api.v1.client.gui.screens.StatuePosesScreen;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
@@ -24,8 +24,8 @@ public final class TooltipFactories {
         TooltipBuilder.create()
                 .setTooltipPositionerFactory(TooltipFactories::createPosesTooltipPositioner)
                 .setLines(() -> {
-                    return ArmorStandPosesScreen.getPoseAt(index)
-                            .map(ArmorStandPose::getTooltipLines)
+                    return StatuePosesScreen.getPoseAt(index)
+                            .map(StatuePose::getTooltipLines)
                             .orElse(Collections.emptyList());
                 })
                 .build(abstractWidget);

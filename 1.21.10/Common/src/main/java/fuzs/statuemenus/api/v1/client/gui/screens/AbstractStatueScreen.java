@@ -4,10 +4,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
 import fuzs.statuemenus.api.v1.client.gui.components.UnboundedSliderButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
+import fuzs.statuemenus.api.v1.world.entity.decoration.StatueEntity;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
+import fuzs.statuemenus.api.v1.world.inventory.StatueMenu;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
 import fuzs.statuemenus.impl.StatueMenus;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
@@ -28,7 +29,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.apache.commons.lang3.ArrayUtils;
@@ -36,9 +36,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public abstract class AbstractArmorStandScreen extends Screen implements MenuAccess<ArmorStandMenu>, ArmorStandScreen {
+public abstract class AbstractStatueScreen extends Screen implements MenuAccess<StatueMenu>, StatueScreen {
     public static final String VANILLA_TWEAKS_HOMEPAGE = "https://vanillatweaks.net/";
-    public static final String CREDITS_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.credits";
+    public static final String CREDITS_TRANSLATION_KEY = StatueScreenType.POSES.id().toLanguageKey("screen", "credits");
     private static final ResourceLocation ARMOR_STAND_BACKGROUND_LOCATION = StatueMenus.id(
             "textures/gui/container/statue/background.png");
     private static final ResourceLocation ARMOR_STAND_WIDGETS_LOCATION = StatueMenus.id(
@@ -47,10 +47,10 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             "textures/gui/container/statue/equipment.png");
 
     @Nullable
-    static ArmorStandScreenType lastScreenType;
+    static StatueScreenType lastScreenType;
     protected final int imageWidth = 210;
     protected final int imageHeight = 188;
-    protected final ArmorStandHolder holder;
+    protected final StatueHolder holder;
     private final Inventory inventory;
     protected final DataSyncHandler dataSyncHandler;
     protected int leftPos;
@@ -63,7 +63,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     @Nullable
     private AbstractWidget closeButton;
 
-    public AbstractArmorStandScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+    public AbstractStatueScreen(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(component);
         this.holder = holder;
         this.inventory = inventory;
@@ -83,7 +83,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     @Override
-    public ArmorStandHolder getHolder() {
+    public StatueHolder getHolder() {
         return this.holder;
     }
 
@@ -93,8 +93,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     @Override
-    public <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createScreenType(ArmorStandScreenType screenType) {
-        T screen = ArmorStandScreenFactory.createScreenType(screenType,
+    public <T extends Screen & MenuAccess<StatueMenu> & StatueScreen> T createScreenType(StatueScreenType screenType) {
+        T screen = StatueScreenFactory.createScreenType(screenType,
                 this.holder,
                 this.inventory,
                 this.title,
@@ -226,7 +226,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
                     this.imageHeight,
                     mouseX,
                     mouseY,
-                    this.dataSyncHandler.getScreenTypes()).ifPresent((ArmorStandScreenType hoveredTab) -> {
+                    this.dataSyncHandler.getScreenTypes()).ifPresent((StatueScreenType hoveredTab) -> {
                 guiGraphics.setTooltipForNextFrame(this.font,
                         Component.translatable(hoveredTab.getTranslationKey()),
                         mouseX,
@@ -239,16 +239,16 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     @Override
     public void renderArmorStandInInventory(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float mouseX, float mouseY, float partialTick) {
-        ArmorStand armorStand = this.holder.getArmorStand();
-        ArmorStandPose pose = this.getPoseOverride();
-        ArmorStandPose originalPose;
+        StatueEntity statueEntity = this.holder.getStatueEntity();
+        StatuePose pose = this.getPoseOverride();
+        StatuePose originalPose;
         if (pose != null) {
-            originalPose = ArmorStandPose.fromEntity(armorStand);
-            pose.applyToEntity(armorStand);
+            originalPose = StatuePose.fromEntity(statueEntity);
+            pose.applyToEntity(statueEntity);
         } else {
             originalPose = null;
         }
-        ArmorStandScreen.super.renderArmorStandInInventory(guiGraphics,
+        StatueScreen.super.renderArmorStandInInventory(guiGraphics,
                 x1,
                 y1,
                 x2,
@@ -258,11 +258,11 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
                 mouseY,
                 partialTick);
         if (originalPose != null) {
-            originalPose.applyToEntity(armorStand);
+            originalPose.applyToEntity(statueEntity);
         }
     }
 
-    protected @Nullable ArmorStandPose getPoseOverride() {
+    protected @Nullable StatuePose getPoseOverride() {
         return null;
     }
 
@@ -336,7 +336,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         }
     }
 
-    public static <T extends Screen & ArmorStandScreen> boolean handleHotbarKeyPressed(KeyEvent keyEvent, T screen, ArmorStandScreenType[] tabs) {
+    public static <T extends Screen & StatueScreen> boolean handleHotbarKeyPressed(KeyEvent keyEvent, T screen, StatueScreenType[] tabs) {
         for (int i = 0; i < Math.min(tabs.length, 9); ++i) {
             if (screen.minecraft.options.keyHotbarSlots[i].matches(keyEvent)) {
                 if (openTabScreen(screen, tabs[i], true)) {
@@ -364,29 +364,24 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         }
     }
 
-    public static <T extends Screen & ArmorStandScreen> boolean handleMouseScrolled(int mouseX, int mouseY, double delta, int leftPos, int topPos, int imageHeight, T screen, ArmorStandScreenType[] tabs) {
+    public static <T extends Screen & StatueScreen> boolean handleMouseScrolled(int mouseX, int mouseY, double delta, int leftPos, int topPos, int imageHeight, T screen, StatueScreenType[] tabs) {
         delta = Math.signum(delta);
         if (delta != 0.0) {
-            Optional<ArmorStandScreenType> optional = findHoveredTab(leftPos,
-                    topPos,
-                    imageHeight,
-                    mouseX,
-                    mouseY,
-                    tabs);
+            Optional<StatueScreenType> optional = findHoveredTab(leftPos, topPos, imageHeight, mouseX, mouseY, tabs);
             if (optional.isPresent()) {
-                ArmorStandScreenType screenType = cycleTabs(screen.getScreenType(), tabs, delta > 0.0);
+                StatueScreenType screenType = cycleTabs(screen.getScreenType(), tabs, delta > 0.0);
                 return openTabScreen(screen, screenType, false);
             }
         }
         return false;
     }
 
-    public static <T extends Screen & ArmorStandScreen> boolean handleTabClicked(int mouseX, int mouseY, int leftPos, int topPos, int imageHeight, T screen, ArmorStandScreenType[] tabs) {
-        Optional<ArmorStandScreenType> hoveredTab = findHoveredTab(leftPos, topPos, imageHeight, mouseX, mouseY, tabs);
-        return hoveredTab.filter((ArmorStandScreenType type) -> openTabScreen(screen, type, true)).isPresent();
+    public static <T extends Screen & StatueScreen> boolean handleTabClicked(int mouseX, int mouseY, int leftPos, int topPos, int imageHeight, T screen, StatueScreenType[] tabs) {
+        Optional<StatueScreenType> hoveredTab = findHoveredTab(leftPos, topPos, imageHeight, mouseX, mouseY, tabs);
+        return hoveredTab.filter((StatueScreenType type) -> openTabScreen(screen, type, true)).isPresent();
     }
 
-    private static <T extends Screen & ArmorStandScreen> boolean openTabScreen(T screen, ArmorStandScreenType screenType, boolean clickSound) {
+    private static <T extends Screen & StatueScreen> boolean openTabScreen(T screen, StatueScreenType screenType, boolean clickSound) {
         if (screenType != screen.getScreenType()) {
             if (clickSound) {
                 SimpleSoundInstance sound = SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F);
@@ -399,16 +394,16 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         }
     }
 
-    private static ArmorStandScreenType cycleTabs(ArmorStandScreenType currentScreenType, ArmorStandScreenType[] screenTypes, boolean backwards) {
+    private static StatueScreenType cycleTabs(StatueScreenType currentScreenType, StatueScreenType[] screenTypes, boolean backwards) {
         int index = ArrayUtils.indexOf(screenTypes, currentScreenType);
         return screenTypes[((backwards ? --index : ++index) % screenTypes.length + screenTypes.length)
                 % screenTypes.length];
     }
 
-    public static <T extends Screen & ArmorStandScreen> void drawTabs(GuiGraphics guiGraphics, int leftPos, int topPos, int imageHeight, T screen, ArmorStandScreenType[] tabs) {
+    public static <T extends Screen & StatueScreen> void drawTabs(GuiGraphics guiGraphics, int leftPos, int topPos, int imageHeight, T screen, StatueScreenType[] tabs) {
         int tabsStartY = getTabsStartY(imageHeight, tabs.length);
         for (int i = 0; i < tabs.length; i++) {
-            ArmorStandScreenType tabType = tabs[i];
+            StatueScreenType tabType = tabs[i];
             int tabX = leftPos - 32;
             int tabY = topPos + tabsStartY + 27 * i;
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
@@ -421,11 +416,11 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
                     26,
                     256,
                     256);
-            guiGraphics.renderItem(tabType.icon(), tabX + 10, tabY + 5);
+            guiGraphics.renderItem(tabType.item(), tabX + 10, tabY + 5);
         }
     }
 
-    public static Optional<ArmorStandScreenType> findHoveredTab(int leftPos, int topPos, int imageHeight, int mouseX, int mouseY, ArmorStandScreenType[] tabs) {
+    public static Optional<StatueScreenType> findHoveredTab(int leftPos, int topPos, int imageHeight, int mouseX, int mouseY, StatueScreenType[] tabs) {
         int tabsStartY = getTabsStartY(imageHeight, tabs.length);
         for (int i = 0; i < tabs.length; i++) {
             int tabX = leftPos - 32;
@@ -443,15 +438,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     @Override
-    public ArmorStandMenu getMenu() {
-        if (this.holder instanceof ArmorStandMenu menu) {
-            return menu;
-        } else {
-            // prevent ClassCastException in case some mod like OwoLib calls this
-            Inventory inventory1 = this.minecraft.player.getInventory();
-            ArmorStand armorStand = this.getHolder().getArmorStand();
-            return new ArmorStandMenu(null, 0, inventory1, armorStand, this.getHolder().getDataProvider());
-        }
+    public StatueMenu getMenu() {
+        return this.holder instanceof StatueMenu menu ? menu : null;
     }
 
     @Override
@@ -473,6 +461,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         if (this.holder instanceof AbstractContainerMenu) {
             this.minecraft.player.closeContainer();
         }
+
         super.onClose();
     }
 }

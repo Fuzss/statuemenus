@@ -1,32 +1,31 @@
 package fuzs.statuemenus.impl.world.inventory;
 
 import fuzs.puzzleslib.api.core.v1.utility.ResourceLocationHelper;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
+import fuzs.statuemenus.api.v1.world.entity.decoration.StatueEntity;
 import fuzs.statuemenus.api.v1.world.inventory.data.PosePartMutator;
-import fuzs.statuemenus.impl.StatueMenus;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
-                                 @Nullable SourceType sourceType,
-                                 boolean isMirrored,
-                                 @Nullable Rotations headPose,
-                                 @Nullable Rotations bodyPose,
-                                 @Nullable Rotations leftArmPose,
-                                 @Nullable Rotations rightArmPose,
-                                 @Nullable Rotations leftLegPose,
-                                 @Nullable Rotations rightLegPose) implements ArmorStandPose {
+public record StatuePoseImpl(@Nullable ResourceLocation name,
+                             @Nullable SourceType sourceType,
+                             boolean isMirrored,
+                             @Nullable Rotations headPose,
+                             @Nullable Rotations bodyPose,
+                             @Nullable Rotations leftArmPose,
+                             @Nullable Rotations rightArmPose,
+                             @Nullable Rotations leftLegPose,
+                             @Nullable Rotations rightLegPose) implements StatuePose {
     private static final Rotations ZERO_ROTATIONS = new Rotations(0.0F, 0.0F, 0.0F);
 
-    private ArmorStandPoseImpl(String name, SourceType sourceType) {
+    private StatuePoseImpl(String name, SourceType sourceType) {
         this(sourceType.id(name),
                 sourceType,
                 false,
@@ -38,47 +37,51 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
                 ZERO_ROTATIONS);
     }
 
-    public ArmorStandPoseImpl(@Nullable Rotations headPose, @Nullable Rotations bodyPose, @Nullable Rotations leftArmPose, @Nullable Rotations rightArmPose, @Nullable Rotations leftLegPose, @Nullable Rotations rightLegPose) {
+    public StatuePoseImpl(@Nullable Rotations headPose, @Nullable Rotations bodyPose, @Nullable Rotations leftArmPose, @Nullable Rotations rightArmPose, @Nullable Rotations leftLegPose, @Nullable Rotations rightLegPose) {
         this(null, null, false, headPose, bodyPose, leftArmPose, rightArmPose, leftLegPose, rightLegPose);
     }
 
-    public static ArmorStandPose ofMinecraft(String name) {
+    public static StatuePose ofMinecraft(String name) {
         Objects.requireNonNull(name, "name is null");
-        return new ArmorStandPoseImpl(name, SourceType.MINECRAFT);
+        return new StatuePoseImpl(name, SourceType.MINECRAFT);
     }
 
-    public static ArmorStandPose ofVanillaTweaks(String name) {
+    public static StatuePose ofVanillaTweaks(String name) {
         Objects.requireNonNull(name, "name is null");
-        return new ArmorStandPoseImpl(name, SourceType.VANILLA_TWEAKS);
+        return new StatuePoseImpl(name, SourceType.VANILLA_TWEAKS);
     }
 
-    public static ArmorStandPose fromEntity(ArmorStand armorStand) {
-        return new ArmorStandPoseImpl(armorStand.getHeadPose(),
-                armorStand.getBodyPose(),
-                armorStand.getLeftArmPose(),
-                armorStand.getRightArmPose(),
-                armorStand.getLeftLegPose(),
-                armorStand.getRightLegPose());
+    public static StatuePose fromEntity(StatueEntity statueEntity) {
+        return new StatuePoseImpl(statueEntity.getHeadPose(),
+                statueEntity.getBodyPose(),
+                statueEntity.getLeftArmPose(),
+                statueEntity.getRightArmPose(),
+                statueEntity.getLeftLegPose(),
+                statueEntity.getRightLegPose());
     }
 
-    public static ArmorStandPose randomize(PosePartMutator[] mutators, boolean clampRotations) {
-        return new ArmorStandPoseImpl(mutators[0].randomRotations(clampRotations),
-                mutators[1].randomRotations(clampRotations),
-                mutators[2].randomRotations(clampRotations),
-                mutators[3].randomRotations(clampRotations),
-                mutators[4].randomRotations(clampRotations),
-                mutators[5].randomRotations(clampRotations));
+    public static StatuePose randomize(List<PosePartMutator> mutators, boolean clampRotations) {
+        return new StatuePoseImpl(mutators.get(0).randomRotations(clampRotations),
+                mutators.get(1).randomRotations(clampRotations),
+                mutators.get(2).randomRotations(clampRotations),
+                mutators.get(3).randomRotations(clampRotations),
+                mutators.get(4).randomRotations(clampRotations),
+                mutators.get(5).randomRotations(clampRotations));
     }
 
-    public static ArmorStandPose randomValue() {
-        List<ArmorStandPose> poses = new ArrayList<>(Arrays.asList(ArmorStandPoses.VALUES_FOR_RANDOM_SELECTION));
+    public static StatuePose randomValue() {
+        List<StatuePose> poses = new ArrayList<>(Arrays.asList(StatuePoses.VALUES_FOR_RANDOM_SELECTION));
         Collections.shuffle(poses);
         return poses.stream().findAny().orElseThrow();
     }
 
     @Override
     public @Nullable String getTranslationKey() {
-        return this.name != null ? Util.makeDescriptionId("screen.pose", this.name) : null;
+        if (this.name != null) {
+            return StatueScreenType.POSES.id().toLanguageKey("screen", this.name.toLanguageKey());
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -128,8 +131,8 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public ArmorStandPose withHeadPose(Rotations rotation) {
-        return new ArmorStandPoseImpl(this.name,
+    public StatuePose withHeadPose(Rotations rotation) {
+        return new StatuePoseImpl(this.name,
                 this.sourceType,
                 false,
                 rotation,
@@ -141,8 +144,8 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public ArmorStandPose withBodyPose(Rotations rotation) {
-        return new ArmorStandPoseImpl(this.name,
+    public StatuePose withBodyPose(Rotations rotation) {
+        return new StatuePoseImpl(this.name,
                 this.sourceType,
                 false,
                 this.headPose,
@@ -154,8 +157,8 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public ArmorStandPose withLeftArmPose(Rotations rotation) {
-        return new ArmorStandPoseImpl(this.name,
+    public StatuePose withLeftArmPose(Rotations rotation) {
+        return new StatuePoseImpl(this.name,
                 this.sourceType,
                 false,
                 this.headPose,
@@ -167,8 +170,8 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public ArmorStandPose withRightArmPose(Rotations rotation) {
-        return new ArmorStandPoseImpl(this.name,
+    public StatuePose withRightArmPose(Rotations rotation) {
+        return new StatuePoseImpl(this.name,
                 this.sourceType,
                 false,
                 this.headPose,
@@ -180,8 +183,8 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public ArmorStandPose withLeftLegPose(Rotations rotation) {
-        return new ArmorStandPoseImpl(this.name,
+    public StatuePose withLeftLegPose(Rotations rotation) {
+        return new StatuePoseImpl(this.name,
                 this.sourceType,
                 false,
                 this.headPose,
@@ -193,8 +196,8 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public ArmorStandPose withRightLegPose(Rotations rotation) {
-        return new ArmorStandPoseImpl(this.name,
+    public StatuePose withRightLegPose(Rotations rotation) {
+        return new StatuePoseImpl(this.name,
                 this.sourceType,
                 false,
                 this.headPose,
@@ -206,8 +209,8 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public ArmorStandPose mirror() {
-        return new ArmorStandPoseImpl(this.name,
+    public StatuePose mirror() {
+        return new StatuePoseImpl(this.name,
                 this.sourceType,
                 true,
                 mirrorRotations(this.headPose),
@@ -224,8 +227,8 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public ArmorStandPose copyAndFillFrom(ArmorStandPose fillFrom) {
-        return new ArmorStandPoseImpl(this.name,
+    public StatuePose copyAndFillFrom(StatuePose fillFrom) {
+        return new StatuePoseImpl(this.name,
                 this.sourceType,
                 false,
                 this.headPose != null ? this.headPose : fillFrom.headPose(),
@@ -237,13 +240,13 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public void applyToEntity(ArmorStand armorStand) {
-        armorStand.setHeadPose(this.getHeadPose());
-        armorStand.setBodyPose(this.getBodyPose());
-        armorStand.setLeftArmPose(this.getLeftArmPose());
-        armorStand.setRightArmPose(this.getRightArmPose());
-        armorStand.setLeftLegPose(this.getLeftLegPose());
-        armorStand.setRightLegPose(this.getRightLegPose());
+    public void applyToEntity(StatueEntity statueEntity) {
+        statueEntity.setHeadPose(this.getHeadPose());
+        statueEntity.setBodyPose(this.getBodyPose());
+        statueEntity.setLeftArmPose(this.getLeftArmPose());
+        statueEntity.setRightArmPose(this.getRightArmPose());
+        statueEntity.setLeftLegPose(this.getLeftLegPose());
+        statueEntity.setRightLegPose(this.getRightLegPose());
     }
 
     @Override
@@ -254,7 +257,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public void serializeBodyPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose) {
+    public void serializeBodyPoses(CompoundTag compoundTag, @Nullable StatuePose lastSentPose) {
         if (lastSentPose == null || !Objects.equals(this.headPose, lastSentPose.headPose())) {
             compoundTag.storeNullable("Head", Rotations.CODEC, this.headPose);
         }
@@ -264,7 +267,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public void serializeArmPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose) {
+    public void serializeArmPoses(CompoundTag compoundTag, @Nullable StatuePose lastSentPose) {
         if (lastSentPose == null || !Objects.equals(this.leftArmPose, lastSentPose.leftArmPose())) {
             compoundTag.storeNullable("LeftArm", Rotations.CODEC, this.leftArmPose);
         }
@@ -274,7 +277,7 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
     }
 
     @Override
-    public void serializeLegPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose) {
+    public void serializeLegPoses(CompoundTag compoundTag, @Nullable StatuePose lastSentPose) {
         if (lastSentPose == null || !Objects.equals(this.leftLegPose, lastSentPose.leftLegPose())) {
             compoundTag.storeNullable("LeftLeg", Rotations.CODEC, this.leftLegPose);
         }
@@ -290,28 +293,30 @@ public record ArmorStandPoseImpl(@Nullable ResourceLocation name,
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (ArmorStandPoseImpl) obj;
-        return Objects.equals(this.headPose, that.headPose) && Objects.equals(this.bodyPose, that.bodyPose)
-                && Objects.equals(this.leftArmPose, that.leftArmPose) && Objects.equals(this.rightArmPose,
-                that.rightArmPose) && Objects.equals(this.leftLegPose, that.leftLegPose)
-                && Objects.equals(this.rightLegPose, that.rightLegPose);
+        if (obj == this) {
+            return true;
+        } else if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        } else {
+            StatuePoseImpl that = (StatuePoseImpl) obj;
+            return Objects.equals(this.headPose, that.headPose) && Objects.equals(this.bodyPose, that.bodyPose)
+                    && Objects.equals(this.leftArmPose, that.leftArmPose) && Objects.equals(this.rightArmPose,
+                    that.rightArmPose) && Objects.equals(this.leftLegPose, that.leftLegPose)
+                    && Objects.equals(this.rightLegPose, that.rightLegPose);
+        }
     }
 
     public enum SourceType {
         MINECRAFT("minecraft", "Minecraft"),
         VANILLA_TWEAKS("vanillatweaks", "Vanilla Tweaks");
 
-        public static final String POSE_SOURCE_TRANSLATION_KEY = StatueMenus.MOD_ID + ".screen.pose.by";
-
         private final String id;
         public final Component component;
 
         SourceType(String id, String displayName) {
             this.id = id;
-            this.component = Component.translatable(POSE_SOURCE_TRANSLATION_KEY, displayName)
-                    .withStyle(ChatFormatting.BLUE);
+            String translationKey = StatueScreenType.POSES.id().toLanguageKey("screen", "by");
+            this.component = Component.translatable(translationKey, displayName).withStyle(ChatFormatting.BLUE);
         }
 
         public ResourceLocation id(String path) {

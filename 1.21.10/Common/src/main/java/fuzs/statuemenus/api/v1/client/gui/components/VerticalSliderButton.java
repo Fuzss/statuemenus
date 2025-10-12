@@ -1,7 +1,7 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
-import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
-import fuzs.statuemenus.impl.world.inventory.ArmorStandPoses;
+import fuzs.statuemenus.api.v1.client.gui.screens.AbstractStatueScreen;
+import fuzs.statuemenus.impl.world.inventory.StatuePoses;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -61,7 +61,7 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                AbstractStatueScreen.getArmorStandWidgetsLocation(),
                 this.getX(),
                 this.getY(),
                 54,
@@ -72,7 +72,7 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
                 256,
                 ARGB.white(this.alpha));
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                AbstractArmorStandScreen.getArmorStandWidgetsLocation(),
+                AbstractStatueScreen.getArmorStandWidgetsLocation(),
                 this.getX() + 1,
                 this.getY() + 1 + (int) (this.value * (double) (this.height - this.sliderSize - 2)),
                 151,
@@ -151,7 +151,7 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
         double oldValue = this.value;
         this.value = Mth.clamp(value, 0.0, 1.0);
         if (snapValue) {
-            this.value = ArmorStandPoses.snapValue(this.value, ArmorStandPoses.DEGREES_SNAP_INTERVAL);
+            this.value = StatuePoses.snapValue(this.value, StatuePoses.DEGREES_SNAP_INTERVAL);
         }
         if (oldValue != this.value) {
             this.applyValue();

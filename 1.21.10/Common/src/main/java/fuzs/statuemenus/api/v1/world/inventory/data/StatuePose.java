@@ -1,186 +1,186 @@
 package fuzs.statuemenus.api.v1.world.inventory.data;
 
-import fuzs.statuemenus.impl.world.inventory.ArmorStandPoseImpl;
+import fuzs.statuemenus.api.v1.world.entity.decoration.StatueEntity;
+import fuzs.statuemenus.impl.world.inventory.StatuePoseImpl;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface ArmorStandPose {
-    ArmorStandPose EMPTY = new ArmorStandPoseImpl(null, null, null, null, null, null);
-    ArmorStandPose ATHENA = ArmorStandPoseImpl.ofMinecraft("athena")
+public interface StatuePose {
+    StatuePose EMPTY = new StatuePoseImpl(null, null, null, null, null, null);
+    StatuePose ATHENA = StatuePoseImpl.ofMinecraft("athena")
             .withBodyPose(new Rotations(0.0F, 0.0F, 2.0F))
             .withHeadPose(new Rotations(-5.0F, 0.0F, 0.0F))
             .withLeftArmPose(new Rotations(10.0F, 0.0F, -5.0F))
             .withLeftLegPose(new Rotations(-3.0F, -3.0F, -3.0F))
             .withRightArmPose(new Rotations(-60.0F, 20.0F, -10.0F))
             .withRightLegPose(new Rotations(3.0F, 3.0F, 3.0F));
-    ArmorStandPose BRANDISH = ArmorStandPoseImpl.ofMinecraft("brandish")
+    StatuePose BRANDISH = StatuePoseImpl.ofMinecraft("brandish")
             .withBodyPose(new Rotations(0.0F, 0.0F, -2.0F))
             .withHeadPose(new Rotations(-15.0F, 0.0F, 0.0F))
             .withLeftArmPose(new Rotations(20.0F, 0.0F, -10.0F))
             .withLeftLegPose(new Rotations(5.0F, -3.0F, -3.0F))
             .withRightArmPose(new Rotations(-110.0F, 50.0F, 0.0F))
             .withRightLegPose(new Rotations(-5.0F, 3.0F, 3.0F));
-    ArmorStandPose CANCAN = ArmorStandPoseImpl.ofMinecraft("cancan")
+    StatuePose CANCAN = StatuePoseImpl.ofMinecraft("cancan")
             .withBodyPose(new Rotations(0.0F, 22.0F, 0.0F))
             .withHeadPose(new Rotations(-5.0F, 18.0F, 0.0F))
             .withLeftArmPose(new Rotations(8.0F, 0.0F, -114.0F))
             .withLeftLegPose(new Rotations(-111.0F, 55.0F, 0.0F))
             .withRightArmPose(new Rotations(0.0F, 84.0F, 111.0F))
             .withRightLegPose(new Rotations(0.0F, 23.0F, -13.0F));
-    ArmorStandPose DEFAULT = ArmorStandPoseImpl.ofMinecraft("default")
+    StatuePose DEFAULT = StatuePoseImpl.ofMinecraft("default")
             .withLeftArmPose(new Rotations(-10.0F, 0.0F, -10.0F))
             .withLeftLegPose(new Rotations(-1.0F, 0.0F, -1.0F))
             .withRightArmPose(new Rotations(-15.0F, 0.0F, 10.0F))
             .withRightLegPose(new Rotations(1.0F, 0.0F, 1.0F));
-    ArmorStandPose ENTERTAIN = ArmorStandPoseImpl.ofMinecraft("entertain")
+    StatuePose ENTERTAIN = StatuePoseImpl.ofMinecraft("entertain")
             .withHeadPose(new Rotations(-15.0F, 0.0F, 0.0F))
             .withLeftArmPose(new Rotations(-110.0F, -35.0F, 0.0F))
             .withLeftLegPose(new Rotations(5.0F, -3.0F, -3.0F))
             .withRightArmPose(new Rotations(-110.0F, 35.0F, 0.0F))
             .withRightLegPose(new Rotations(-5.0F, 3.0F, 3.0F));
-    ArmorStandPose HERO = ArmorStandPoseImpl.ofMinecraft("hero")
+    StatuePose HERO = StatuePoseImpl.ofMinecraft("hero")
             .withBodyPose(new Rotations(0.0F, 8.0F, 0.0F))
             .withHeadPose(new Rotations(-4.0F, 67.0F, 0.0F))
             .withLeftArmPose(new Rotations(16.0F, 32.0F, -8.0F))
             .withLeftLegPose(new Rotations(0.0F, -75.0F, -8.0F))
             .withRightArmPose(new Rotations(-99.0F, 63.0F, 0.0F))
             .withRightLegPose(new Rotations(4.0F, 63.0F, 8.0F));
-    ArmorStandPose HONOR = ArmorStandPoseImpl.ofMinecraft("honor")
+    StatuePose HONOR = StatuePoseImpl.ofMinecraft("honor")
             .withHeadPose(new Rotations(-15.0F, 0.0F, 0.0F))
             .withLeftArmPose(new Rotations(-110.0F, 35.0F, 0.0F))
             .withLeftLegPose(new Rotations(5.0F, -3.0F, -3.0F))
             .withRightArmPose(new Rotations(-110.0F, -35.0F, 0.0F))
             .withRightLegPose(new Rotations(-5.0F, 3.0F, 3.0F));
-    ArmorStandPose RIPOSTE = ArmorStandPoseImpl.ofMinecraft("riposte")
+    StatuePose RIPOSTE = StatuePoseImpl.ofMinecraft("riposte")
             .withHeadPose(new Rotations(16.0F, 20.0F, 0.0F))
             .withLeftArmPose(new Rotations(4.0F, 8.0F, 237.0F))
             .withLeftLegPose(new Rotations(-14.0F, -18.0F, -16.0F))
             .withRightArmPose(new Rotations(246.0F, 0.0F, 89.0F))
             .withRightLegPose(new Rotations(8.0F, 20.0F, 4.0F));
-    ArmorStandPose SALUTE = ArmorStandPoseImpl.ofMinecraft("salute")
+    StatuePose SALUTE = StatuePoseImpl.ofMinecraft("salute")
             .withLeftArmPose(new Rotations(10.0F, 0.0F, -5.0F))
             .withLeftLegPose(new Rotations(-1.0F, 0.0F, -1.0F))
             .withRightArmPose(new Rotations(-70.0F, -40.0F, 0.0F))
             .withRightLegPose(new Rotations(1.0F, 0.0F, 1.0F));
-    ArmorStandPose SOLEMN = ArmorStandPoseImpl.ofMinecraft("solemn")
+    StatuePose SOLEMN = StatuePoseImpl.ofMinecraft("solemn")
             .withBodyPose(new Rotations(0.0F, 0.0F, 2.0F))
             .withHeadPose(new Rotations(15.0F, 0.0F, 0.0F))
             .withLeftArmPose(new Rotations(-30.0F, 15.0F, 15.0F))
             .withLeftLegPose(new Rotations(-1.0F, 0.0F, -1.0F))
             .withRightArmPose(new Rotations(-60.0F, -20.0F, -10.0F))
             .withRightLegPose(new Rotations(1.0F, 0.0F, 1.0F));
-    ArmorStandPose ZOMBIE = ArmorStandPoseImpl.ofMinecraft("zombie")
+    StatuePose ZOMBIE = StatuePoseImpl.ofMinecraft("zombie")
             .withHeadPose(new Rotations(-10.0F, 0.0F, -5.0F))
             .withLeftArmPose(new Rotations(-105.0F, 0.0F, 0.0F))
             .withLeftLegPose(new Rotations(7.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(-100.0F, 0.0F, 0.0F))
             .withRightLegPose(new Rotations(-46.0F, 0.0F, 0.0F));
-    ArmorStandPose WALKING = ArmorStandPoseImpl.ofVanillaTweaks("walking")
+    StatuePose WALKING = StatuePoseImpl.ofVanillaTweaks("walking")
             .withRightArmPose(new Rotations(20.0F, 0.0F, 10.0F))
             .withLeftArmPose(new Rotations(-20.0F, 0.0F, -10.0F))
             .withRightLegPose(new Rotations(-20.0F, 0.0F, 0.0F))
             .withLeftLegPose(new Rotations(20.0F, 0.0F, 0.0F));
-    ArmorStandPose RUNNING = ArmorStandPoseImpl.ofVanillaTweaks("running")
+    StatuePose RUNNING = StatuePoseImpl.ofVanillaTweaks("running")
             .withRightArmPose(new Rotations(-40.0F, 0.0F, 10.0F))
             .withLeftArmPose(new Rotations(40.0F, 0.0F, -10.0F))
             .withRightLegPose(new Rotations(40.0F, 0.0F, 0.0F))
             .withLeftLegPose(new Rotations(-40.0F, 0.0F, 0.0F));
-    ArmorStandPose POINTING = ArmorStandPoseImpl.ofVanillaTweaks("pointing")
+    StatuePose POINTING = StatuePoseImpl.ofVanillaTweaks("pointing")
             .withHeadPose(new Rotations(0.0F, 20.0F, 0.0F))
             .withRightArmPose(new Rotations(-90.0F, 18.0F, 0.0F))
             .withLeftArmPose(new Rotations(0.0F, 0.0F, -10.0F));
-    ArmorStandPose BLOCKING = ArmorStandPoseImpl.ofVanillaTweaks("blocking")
+    StatuePose BLOCKING = StatuePoseImpl.ofVanillaTweaks("blocking")
             .withRightArmPose(new Rotations(-20.0F, -20.0F, 0.0F))
             .withLeftArmPose(new Rotations(-50.0F, 50.0F, 0.0F))
             .withRightLegPose(new Rotations(-20.0F, 0.0F, 0.0F))
             .withLeftLegPose(new Rotations(20.0F, 0.0F, 0.0F));
-    ArmorStandPose LUNGEING = ArmorStandPoseImpl.ofVanillaTweaks("lungeing")
+    StatuePose LUNGEING = StatuePoseImpl.ofVanillaTweaks("lungeing")
             .withBodyPose(new Rotations(15.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(-60.0F, -10.0F, 0.0F))
             .withLeftArmPose(new Rotations(10.0F, 0.0F, -10.0F))
             .withRightLegPose(new Rotations(-15.0F, 0.0F, 0.0F))
             .withLeftLegPose(new Rotations(30.0F, 0.0F, 0.0F));
-    ArmorStandPose WINNING = ArmorStandPoseImpl.ofVanillaTweaks("winning")
+    StatuePose WINNING = StatuePoseImpl.ofVanillaTweaks("winning")
             .withHeadPose(new Rotations(-15.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(-120.0F, -10.0F, 0.0F))
             .withLeftArmPose(new Rotations(10.0F, 0.0F, -10.0F))
             .withLeftLegPose(new Rotations(15.0F, 0.0F, 0.0F));
-    ArmorStandPose SITTING = ArmorStandPoseImpl.ofVanillaTweaks("sitting")
+    StatuePose SITTING = StatuePoseImpl.ofVanillaTweaks("sitting")
             .withRightArmPose(new Rotations(-80.0F, 20.0F, 0.0F))
             .withLeftArmPose(new Rotations(-80.0F, -20.0F, 0.0F))
             .withRightLegPose(new Rotations(-90.0F, 10.0F, 0.0F))
             .withLeftLegPose(new Rotations(-90.0F, -10.0F, 0.0F));
-    ArmorStandPose ARABESQUE = ArmorStandPoseImpl.ofVanillaTweaks("arabesque")
+    StatuePose ARABESQUE = StatuePoseImpl.ofVanillaTweaks("arabesque")
             .withHeadPose(new Rotations(-15.0F, 0.0F, 0.0F))
             .withBodyPose(new Rotations(10.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(-140.0F, -10.0F, 0.0F))
             .withLeftArmPose(new Rotations(70.0F, 0.0F, -10.0F))
             .withLeftLegPose(new Rotations(75.0F, 0.0F, 0.0F));
-    ArmorStandPose CUPID = ArmorStandPoseImpl.ofVanillaTweaks("cupid")
+    StatuePose CUPID = StatuePoseImpl.ofVanillaTweaks("cupid")
             .withBodyPose(new Rotations(10.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(-90.0F, -10.0F, 0.0F))
             .withLeftArmPose(new Rotations(-75.0F, 0.0F, 10.0F))
             .withLeftLegPose(new Rotations(75.0F, 0.0F, 0.0F));
-    ArmorStandPose CONFIDENT = ArmorStandPoseImpl.ofVanillaTweaks("confident")
+    StatuePose CONFIDENT = StatuePoseImpl.ofVanillaTweaks("confident")
             .withHeadPose(new Rotations(-10.0F, 20.0F, 0.0F))
             .withBodyPose(new Rotations(-2.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(5.0F, 0.0F, 0.0F))
             .withLeftArmPose(new Rotations(5.0F, 0.0F, 0.0F))
             .withRightLegPose(new Rotations(16.0F, 2.0F, 10.0F))
             .withLeftLegPose(new Rotations(0.0F, -10.0F, -4.0F));
-    ArmorStandPose DEATH = ArmorStandPoseImpl.ofVanillaTweaks("death")
+    StatuePose DEATH = StatuePoseImpl.ofVanillaTweaks("death")
             .withHeadPose(new Rotations(-85.0F, 0.0F, 0.0F))
             .withBodyPose(new Rotations(-90.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(-90.0F, 10.0F, 0.0F))
             .withLeftArmPose(new Rotations(-90.0F, -10.0F, 0.0F));
-    ArmorStandPose FACEPALM = ArmorStandPoseImpl.ofVanillaTweaks("facepalm")
+    StatuePose FACEPALM = StatuePoseImpl.ofVanillaTweaks("facepalm")
             .withHeadPose(new Rotations(45.0F, -4.0F, 1.0F))
             .withBodyPose(new Rotations(10.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(18.0F, -14.0F, 0.0F))
             .withLeftArmPose(new Rotations(-72.0F, 24.0F, 47.0F))
             .withRightLegPose(new Rotations(25.0F, -2.0F, 0.0F))
             .withLeftLegPose(new Rotations(-4.0F, -6.0F, -2.0F));
-    ArmorStandPose LAZING = ArmorStandPoseImpl.ofVanillaTweaks("lazing")
+    StatuePose LAZING = StatuePoseImpl.ofVanillaTweaks("lazing")
             .withHeadPose(new Rotations(14.0F, -12.0F, 6.0F))
             .withBodyPose(new Rotations(5.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(-40.0F, 20.0F, 0.0F))
             .withLeftArmPose(new Rotations(-4.0F, -20.0F, -10.0F))
             .withRightLegPose(new Rotations(-88.0F, 71.0F, 0.0F))
             .withLeftLegPose(new Rotations(-88.0F, 46.0F, 0.0F));
-    ArmorStandPose CONFUSED = ArmorStandPoseImpl.ofVanillaTweaks("confused")
+    StatuePose CONFUSED = StatuePoseImpl.ofVanillaTweaks("confused")
             .withHeadPose(new Rotations(0.0F, 30.0F, 0f))
             .withBodyPose(new Rotations(0.0F, 13.0F, 0.0F))
             .withRightArmPose(new Rotations(-22.0F, 31.0F, 10.0F))
             .withLeftArmPose(new Rotations(145.0F, 22.0F, -49.0F))
             .withRightLegPose(new Rotations(6.0F, -20.0F, 0.0F))
             .withLeftLegPose(new Rotations(-6.0F, 0.0F, 0.0F));
-    ArmorStandPose FORMAL = ArmorStandPoseImpl.ofVanillaTweaks("formal")
+    StatuePose FORMAL = StatuePoseImpl.ofVanillaTweaks("formal")
             .withHeadPose(new Rotations(4.0F, 0.0F, 0.0F))
             .withBodyPose(new Rotations(4.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(30.0F, 22.0F, -20.0F))
             .withLeftArmPose(new Rotations(30.0F, -20.0F, 21.0F))
             .withRightLegPose(new Rotations(0.0F, 0.0F, 5.0F))
             .withLeftLegPose(new Rotations(0.0F, 0.0F, -5.0F));
-    ArmorStandPose SAD = ArmorStandPoseImpl.ofVanillaTweaks("sad")
+    StatuePose SAD = StatuePoseImpl.ofVanillaTweaks("sad")
             .withHeadPose(new Rotations(63.0F, 0.0F, 0.0F))
             .withBodyPose(new Rotations(10.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(-5.0F, 0.0F, 5.0F))
             .withLeftArmPose(new Rotations(-5.0F, 0.0F, -5.0F))
             .withRightLegPose(new Rotations(-5.0F, -10.0F, 5.0F))
             .withLeftLegPose(new Rotations(-5.0F, 16.0F, -5.0F));
-    ArmorStandPose JOYOUS = ArmorStandPoseImpl.ofVanillaTweaks("joyous")
+    StatuePose JOYOUS = StatuePoseImpl.ofVanillaTweaks("joyous")
             .withHeadPose(new Rotations(-11.0F, 0.0F, 0.0F))
             .withBodyPose(new Rotations(-4.0F, 0.0F, 0.0F))
             .withRightArmPose(new Rotations(0.0F, 0.0F, 100.0F))
             .withLeftArmPose(new Rotations(0.0F, 0.0F, -100.0F))
             .withRightLegPose(new Rotations(-8.0F, 0.0F, 60.0F))
             .withLeftLegPose(new Rotations(-8.0F, 0.0F, -60.0F));
-    ArmorStandPose STARGAZING = ArmorStandPoseImpl.ofVanillaTweaks("stargazing")
+    StatuePose STARGAZING = StatuePoseImpl.ofVanillaTweaks("stargazing")
             .withHeadPose(new Rotations(-22.0F, 25.0F, 0.0F))
             .withBodyPose(new Rotations(-4.0F, 10.0F, 0.0F))
             .withRightArmPose(new Rotations(-153.0F, 34.0F, -3.0F))
@@ -223,43 +223,43 @@ public interface ArmorStandPose {
 
     Rotations getRightLegPose();
 
-    ArmorStandPose withHeadPose(Rotations rotation);
+    StatuePose withHeadPose(Rotations rotation);
 
-    ArmorStandPose withBodyPose(Rotations rotation);
+    StatuePose withBodyPose(Rotations rotation);
 
-    ArmorStandPose withLeftArmPose(Rotations rotation);
+    StatuePose withLeftArmPose(Rotations rotation);
 
-    ArmorStandPose withRightArmPose(Rotations rotation);
+    StatuePose withRightArmPose(Rotations rotation);
 
-    ArmorStandPose withLeftLegPose(Rotations rotation);
+    StatuePose withLeftLegPose(Rotations rotation);
 
-    ArmorStandPose withRightLegPose(Rotations rotation);
+    StatuePose withRightLegPose(Rotations rotation);
 
-    ArmorStandPose mirror();
+    StatuePose mirror();
 
-    ArmorStandPose copyAndFillFrom(ArmorStandPose fillFrom);
+    StatuePose copyAndFillFrom(StatuePose fillFrom);
 
-    void applyToEntity(ArmorStand armorStand);
+    void applyToEntity(StatueEntity statueEntity);
 
     void serializeAllPoses(CompoundTag compoundTag);
 
-    void serializeBodyPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose);
+    void serializeBodyPoses(CompoundTag compoundTag, @Nullable StatuePose lastSentPose);
 
-    void serializeArmPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose);
+    void serializeArmPoses(CompoundTag compoundTag, @Nullable StatuePose lastSentPose);
 
-    void serializeLegPoses(CompoundTag compoundTag, @Nullable ArmorStandPose lastSentPose);
+    void serializeLegPoses(CompoundTag compoundTag, @Nullable StatuePose lastSentPose);
 
     boolean isVanillaTweaksCompatible();
 
-    static ArmorStandPose fromEntity(ArmorStand armorStand) {
-        return ArmorStandPoseImpl.fromEntity(armorStand);
+    static StatuePose fromEntity(StatueEntity statueEntity) {
+        return StatuePoseImpl.fromEntity(statueEntity);
     }
 
-    static ArmorStandPose randomize(PosePartMutator[] mutators, boolean clampRotations) {
-        return ArmorStandPoseImpl.randomize(mutators, clampRotations);
+    static StatuePose randomize(List<PosePartMutator> mutators, boolean clampRotations) {
+        return StatuePoseImpl.randomize(mutators, clampRotations);
     }
 
-    static ArmorStandPose randomValue() {
-        return ArmorStandPoseImpl.randomValue();
+    static StatuePose randomValue() {
+        return StatuePoseImpl.randomValue();
     }
 }

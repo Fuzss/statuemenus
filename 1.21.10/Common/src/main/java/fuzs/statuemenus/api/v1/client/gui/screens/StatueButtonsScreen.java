@@ -2,16 +2,16 @@ package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import fuzs.statuemenus.api.v1.client.gui.components.TickButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public abstract class ArmorStandButtonsScreen extends ArmorStandWidgetsScreen {
+public abstract class StatueButtonsScreen extends StatueWidgetsScreen {
 
-    public ArmorStandButtonsScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+    public StatueButtonsScreen(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
     }
 
@@ -36,7 +36,7 @@ public abstract class ArmorStandButtonsScreen extends ArmorStandWidgetsScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            this.children.add(Util.make(ArmorStandButtonsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 194, 20, this.title, this.clickedTitle, this.onPress)), widget -> {
+            this.children.add(Util.make(StatueButtonsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 194, 20, this.title, this.clickedTitle, this.onPress)), widget -> {
                 widget.setTooltip(Tooltip.create(this.description));
             }));
         }
@@ -75,10 +75,10 @@ public abstract class ArmorStandButtonsScreen extends ArmorStandWidgetsScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            this.children.add(Util.make(ArmorStandButtonsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 94, 20, this.titleLeft, this.clickedTitleLeft, this.onPressLeft)), widget -> {
+            this.children.add(Util.make(StatueButtonsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 94, 20, this.titleLeft, this.clickedTitleLeft, this.onPressLeft)), widget -> {
                 widget.setTooltip(Tooltip.create(this.descriptionLeft));
             }));
-            this.children.add(Util.make(ArmorStandButtonsScreen.this.addRenderableWidget(new TickButton(posX + 100, posY + 1, 94, 20, this.titleRight, this.clickedTitleRight, this.onPressRight)), widget -> {
+            this.children.add(Util.make(StatueButtonsScreen.this.addRenderableWidget(new TickButton(posX + 100, posY + 1, 94, 20, this.titleRight, this.clickedTitleRight, this.onPressRight)), widget -> {
                 widget.setTooltip(Tooltip.create(this.descriptionRight));
             }));
         }

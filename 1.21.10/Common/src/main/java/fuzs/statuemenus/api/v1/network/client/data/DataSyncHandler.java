@@ -1,38 +1,40 @@
 package fuzs.statuemenus.api.v1.network.client.data;
 
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
-import fuzs.statuemenus.api.v1.world.inventory.data.*;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueAlignment;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.stream.Stream;
+import java.util.Objects;
 
 public interface DataSyncHandler {
 
-    ArmorStandHolder getArmorStandHolder();
+    StatueHolder getArmorStandHolder();
 
-    default ArmorStand getArmorStand() {
-        return this.getArmorStandHolder().getArmorStand();
+    default LivingEntity getEntity() {
+        return this.getArmorStandHolder().getEntity();
     }
 
     void sendName(String name);
 
-    void sendPose(ArmorStandPose pose, boolean finalize);
+    void sendPose(StatuePose pose, boolean finalize);
 
-    default void sendPose(ArmorStandPose pose) {
+    default void sendPose(StatuePose pose) {
         this.sendPose(pose, true);
     }
 
     @Nullable
-    default ArmorStandPose getLastSyncedPose() {
+    default StatuePose getLastSyncedPose() {
         return null;
     }
 
@@ -54,28 +56,30 @@ public interface DataSyncHandler {
         this.sendRotation(rotation, true);
     }
 
-    void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize);
+    void sendStyleOption(StatueStyleOption<?> styleOption, boolean value, boolean finalize);
 
-    default void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
+    default void sendStyleOption(StatueStyleOption<?> styleOption, boolean value) {
         this.sendStyleOption(styleOption, value, true);
     }
 
-    default void sendAlignment(ArmorStandAlignment alignment) {
-        if (!this.getArmorStand().isInvisible()) {
-            this.sendStyleOption(ArmorStandStyleOptions.INVISIBLE, true, false);
+    default void sendAlignment(StatueAlignment alignment) {
+        if (!this.getEntity().isInvisible()) {
+            this.sendStyleOption(StatueStyleOption.INVISIBLE, true, false);
         }
-        if (!this.getArmorStand().isNoGravity()) {
-            this.sendStyleOption(ArmorStandStyleOptions.NO_GRAVITY, true, false);
+
+        if (!this.getEntity().isNoGravity()) {
+            this.sendStyleOption(StatueStyleOption.NO_GRAVITY, true, false);
         }
+
         this.sendPose(alignment.getPose(), false);
-        Vec3 alignmentOffset = alignment.getAlignmentOffset(this.getArmorStand().isSmall());
-        Vec3 newPosition = getLocalPosition(this.getArmorStand(), alignmentOffset);
+        Vec3 alignmentOffset = alignment.getAlignmentOffset(this.getEntity().isBaby());
+        Vec3 newPosition = getLocalPosition(this.getEntity(), alignmentOffset);
         this.sendPosition(newPosition.x(), newPosition.y(), newPosition.z(), false);
         this.finalizeCurrentOperation();
     }
 
     /**
-     * Copied from {@link net.minecraft.commands.arguments.coordinates.LocalCoordinates#getPosition(CommandSourceStack)}.
+     * @see net.minecraft.commands.arguments.coordinates.LocalCoordinates#getPosition(CommandSourceStack)
      */
     private static Vec3 getLocalPosition(Entity entity, Vec3 offset) {
         Vec2 vec2 = entity.getRotationVector();
@@ -95,11 +99,16 @@ public interface DataSyncHandler {
         return new Vec3(vec3.x + d, vec3.y + e, vec3.z + l);
     }
 
-    default ArmorStandScreenType[] getScreenTypes() {
-        return Stream.of(this.getArmorStandHolder().getDataProvider().getScreenTypes()).filter(this::supportsScreenType).toArray(ArmorStandScreenType[]::new);
+    default StatueScreenType[] getScreenTypes() {
+        return this.getArmorStandHolder()
+                .getStatueEntity()
+                .getScreenTypes()
+                .stream()
+                .filter(this::supportsScreenType)
+                .toArray(StatueScreenType[]::new);
     }
 
-    default boolean supportsScreenType(ArmorStandScreenType screenType) {
+    default boolean supportsScreenType(StatueScreenType screenType) {
         return true;
     }
 
@@ -115,11 +124,12 @@ public interface DataSyncHandler {
         // NO-OP
     }
 
-    static void setCustomArmorStandName(ArmorStand armorStand, String name) {
+    static void setCustomArmorStandName(LivingEntity livingEntity, String name) {
         name = StringUtil.filterText(name);
         if (name.length() <= 50) {
-            boolean remove = name.isBlank() || name.equals(EntityType.ARMOR_STAND.getDescription().getString());
-            armorStand.setCustomName(remove ? null : Component.literal(name));
+            boolean remove =
+                    name.isBlank() || Objects.equals(name, livingEntity.getType().getDescription().getString());
+            livingEntity.setCustomName(remove ? null : Component.literal(name));
         }
     }
 }
