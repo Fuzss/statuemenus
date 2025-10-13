@@ -61,17 +61,11 @@ public class StatueRotationsScreen extends AbstractStatueScreen {
     }
 
     protected List<PosePartMutator> getPosePartMutators() {
-        return List.of(PosePartMutator.HEAD,
-                PosePartMutator.BODY,
-                PosePartMutator.RIGHT_ARM,
-                PosePartMutator.LEFT_ARM,
-                PosePartMutator.RIGHT_LEG,
-                PosePartMutator.LEFT_LEG);
+        return PosePartMutator.TYPES;
     }
 
-    protected StatuePose getRandomPose(boolean clampRotations) {
-        return StatuePose.randomize(this.getPosePartMutators(), clampRotations)
-                .withBodyPose(new Rotations(0.0F, 0.0F, 0.0F));
+    protected StatuePose setupRandomPose(StatuePose statuePose) {
+        return statuePose.withBodyPose(new Rotations(0.0F, 0.0F, 0.0F));
     }
 
     @Override
@@ -147,7 +141,8 @@ public class StatueRotationsScreen extends AbstractStatueScreen {
                 124,
                 getArmorStandWidgetsLocation(),
                 (Button button) -> {
-                    this.setCurrentPose(this.getRandomPose(true));
+                    StatuePose statuePose = StatuePose.randomize(this.getPosePartMutators(), clampRotations);
+                    this.setCurrentPose(this.setupRandomPose(statuePose));
                 })).setTooltip(Tooltip.create(Component.translatable(RANDOMIZE_TRANSLATION_KEY)));
         this.addRenderableWidget(new FlatTickButton(this.leftPos + 107,
                 this.topPos + 34,

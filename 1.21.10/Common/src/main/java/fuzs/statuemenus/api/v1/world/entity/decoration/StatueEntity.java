@@ -12,18 +12,6 @@ import java.util.List;
 
 public interface StatueEntity {
 
-    default List<StatueScreenType> getScreenTypes() {
-        return List.of(StatueScreenType.ROTATIONS,
-                StatueScreenType.POSES,
-                StatueScreenType.STYLE,
-                StatueScreenType.POSITION,
-                StatueScreenType.EQUIPMENT);
-    }
-
-    default StatueScreenType getDefaultScreenType() {
-        return StatueScreenType.ROTATIONS;
-    }
-
     Rotations getHeadPose();
 
     Rotations getBodyPose();
@@ -57,10 +45,26 @@ public interface StatueEntity {
         this.setRightLegPose(armorStandPose.rightLeg());
     }
 
+    default ArmorStand.ArmorStandPose getArmorStandPose() {
+        return new ArmorStand.ArmorStandPose(this.getHeadPose(),
+                this.getBodyPose(),
+                this.getLeftArmPose(),
+                this.getRightArmPose(),
+                this.getLeftLegPose(),
+                this.getRightLegPose());
+    }
+
+    default List<StatueScreenType> getScreenTypes() {
+        return StatueScreenType.TYPES;
+    }
+
+    default StatueScreenType getDefaultScreenType() {
+        return StatueScreenType.ROTATIONS;
+    }
+
     /**
      * Prepares the entity for rendering via
-     * {@link StatueScreen#renderArmorStandInInventory(GuiGraphics, int,
-     * int, int, int, int, float, float, float)}.
+     * {@link StatueScreen#renderArmorStandInInventory(GuiGraphics, int, int, int, int, int, float, float, float)}.
      * <p>
      * The returned runnable is used for resetting the entity to the original state after rendering is done.
      *

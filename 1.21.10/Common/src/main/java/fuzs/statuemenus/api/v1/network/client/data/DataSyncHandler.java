@@ -15,6 +15,7 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 
 public interface DataSyncHandler {
@@ -99,13 +100,13 @@ public interface DataSyncHandler {
         return new Vec3(vec3.x + d, vec3.y + e, vec3.z + l);
     }
 
-    default StatueScreenType[] getScreenTypes() {
+    default List<StatueScreenType> getScreenTypes() {
         return this.getArmorStandHolder()
                 .getStatueEntity()
                 .getScreenTypes()
                 .stream()
                 .filter(this::supportsScreenType)
-                .toArray(StatueScreenType[]::new);
+                .toList();
     }
 
     default boolean supportsScreenType(StatueScreenType screenType) {

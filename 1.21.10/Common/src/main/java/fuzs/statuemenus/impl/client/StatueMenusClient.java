@@ -46,13 +46,7 @@ public class StatueMenusClient implements ClientModConstructor {
                     return new StatueStyleScreen<ArmorStand>(holder, inventory, component, dataSyncHandler) {
                         @Override
                         protected List<StatueStyleOption<? super ArmorStand>> getStyleOptions() {
-                            return List.of(StatueStyleOption.SHOW_NAME,
-                                    StatueStyleOption.SHOW_ARMS,
-                                    StatueStyleOption.SMALL,
-                                    StatueStyleOption.INVISIBLE,
-                                    StatueStyleOption.NO_BASE_PLATE,
-                                    StatueStyleOption.NO_GRAVITY,
-                                    StatueStyleOption.SEALED);
+                            return StatueStyleOption.TYPES;
                         }
 
                         @Override

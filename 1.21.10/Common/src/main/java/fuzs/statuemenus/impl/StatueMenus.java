@@ -8,6 +8,7 @@ import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
 import fuzs.puzzleslib.api.event.v1.entity.player.PlayerInteractEvents;
 import fuzs.puzzleslib.api.init.v3.registry.RegistryManager;
 import fuzs.statuemenus.api.v1.helper.ArmorStandInteractHelper;
+import fuzs.statuemenus.api.v1.world.entity.decoration.ArmorStandStatue;
 import fuzs.statuemenus.api.v1.world.inventory.StatueMenu;
 import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
 import fuzs.statuemenus.impl.network.client.*;
@@ -44,26 +45,30 @@ public class StatueMenus implements ModConstructor {
         RegistryManager registry = RegistryManager.from(MOD_ID);
         Object[] holder = new Object[1];
         holder[0] = registry.registerMenuType(ARMOR_STAND_IDENTIFIER.getPath(),
-                (int containerId, Inventory inventory, StatueMenu.StatueData data) -> {
-                    return new StatueMenu(((Holder.Reference<MenuType<StatueMenu>>) holder[0]).value(),
+                (int containerId, Inventory inventory, StatueMenu.Data data) -> {
+                    return new <ArmorStand>StatueMenu(((Holder.Reference<MenuType<StatueMenu>>) holder[0]).value(),
                             containerId,
                             inventory,
                             data,
-                            null);
+                            (ArmorStand armorStand) -> {
+                                return (ArmorStandStatue) () -> armorStand;
+                            });
                 },
-                StatueMenu.StatueData.STREAM_CODEC);
+                StatueMenu.Data.STREAM_CODEC);
         PlayerInteractEvents.USE_ENTITY_AT.register(onUseEntityAt((Holder.Reference<MenuType<?>>) holder[0]));
     }
 
     private static PlayerInteractEvents.UseEntityAt onUseEntityAt(Holder<MenuType<?>> menuType) {
         return (Player player, Level level, InteractionHand interactionHand, Entity entity, Vec3 hitVector) -> {
-            if (player.getAbilities().mayBuild && entity.getType() == EntityType.ARMOR_STAND && player.getItemInHand(
-                    interactionHand).is(Items.DEBUG_STICK)) {
-                return ArmorStandInteractHelper.tryOpenArmorStatueMenu(player,
-                        level,
-                        (ArmorStand) entity,
-                        menuType.value(),
-                        null);
+            if (player.getAbilities().mayBuild && entity.getType() == EntityType.ARMOR_STAND
+                    && entity instanceof ArmorStand armorStand) {
+                if (player.getItemInHand(interactionHand).is(Items.DEBUG_STICK)) {
+                    return ArmorStandInteractHelper.tryOpenArmorStatueMenu(player,
+                            level,
+                            armorStand,
+                            menuType.value(),
+                            (ArmorStandStatue) () -> armorStand);
+                }
             }
             return EventResultHolder.pass();
         };
@@ -86,11 +91,9 @@ public class StatueMenus implements ModConstructor {
         context.optional();
         context.playToServer(ServerboundStatueNameMessage.class, ServerboundStatueNameMessage.STREAM_CODEC);
         context.playToServer(ServerboundStatueStyleMessage.class, ServerboundStatueStyleMessage.STREAM_CODEC);
-        context.playToServer(ServerboundStatuePositionMessage.class,
-                ServerboundStatuePositionMessage.STREAM_CODEC);
+        context.playToServer(ServerboundStatuePositionMessage.class, ServerboundStatuePositionMessage.STREAM_CODEC);
         context.playToServer(ServerboundStatuePoseMessage.class, ServerboundStatuePoseMessage.STREAM_CODEC);
-        context.playToServer(ServerboundStatuePropertyMessage.class,
-                ServerboundStatuePropertyMessage.STREAM_CODEC);
+        context.playToServer(ServerboundStatuePropertyMessage.class, ServerboundStatuePropertyMessage.STREAM_CODEC);
     }
 
     public static ResourceLocation id(String path) {

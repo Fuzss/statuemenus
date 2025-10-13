@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.List;
 import java.util.Objects;
 
 public abstract class StatueStyleOption<T extends LivingEntity> implements StringRepresentable {
@@ -30,24 +31,24 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
             "ShowArms") {
         @Override
         public void setOption(ArmorStand armorStand, boolean value) {
-            StatueStyleOption.setArmorStandData(armorStand, value, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
+            setArmorStandData(armorStand, value, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
         }
 
         @Override
         public boolean getOption(ArmorStand armorStand) {
-            return StatueStyleOption.getArmorStandData(armorStand, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
+            return getArmorStandData(armorStand, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
         }
     };
     public static final StatueStyleOption<ArmorStand> SMALL = new StatueStyleOption<>(StatueMenus.id("small"),
             "Small") {
         @Override
         public void setOption(ArmorStand armorStand, boolean value) {
-            StatueStyleOption.setArmorStandData(armorStand, value, ArmorStand.CLIENT_FLAG_SMALL);
+            setArmorStandData(armorStand, value, ArmorStand.CLIENT_FLAG_SMALL);
         }
 
         @Override
         public boolean getOption(ArmorStand armorStand) {
-            return StatueStyleOption.getArmorStandData(armorStand, ArmorStand.CLIENT_FLAG_SMALL);
+            return getArmorStandData(armorStand, ArmorStand.CLIENT_FLAG_SMALL);
         }
     };
     public static final StatueStyleOption<LivingEntity> INVISIBLE = new StatueStyleOption<>(StatueMenus.id("invisible"),
@@ -66,12 +67,12 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
             "no_base_plate"), "NoBasePlate") {
         @Override
         public void setOption(ArmorStand armorStand, boolean value) {
-            StatueStyleOption.setArmorStandData(armorStand, value, ArmorStand.CLIENT_FLAG_NO_BASEPLATE);
+            setArmorStandData(armorStand, value, ArmorStand.CLIENT_FLAG_NO_BASEPLATE);
         }
 
         @Override
         public boolean getOption(ArmorStand armorStand) {
-            return StatueStyleOption.getArmorStandData(armorStand, ArmorStand.CLIENT_FLAG_NO_BASEPLATE);
+            return getArmorStandData(armorStand, ArmorStand.CLIENT_FLAG_NO_BASEPLATE);
         }
     };
     public static final StatueStyleOption<LivingEntity> NO_GRAVITY = new StatueStyleOption<>(StatueMenus.id("no_gravity"),
@@ -114,6 +115,13 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
             return player.getAbilities().instabuild;
         }
     };
+    public static final List<StatueStyleOption<? super ArmorStand>> TYPES = List.of(SHOW_NAME,
+            SHOW_ARMS,
+            SMALL,
+            INVISIBLE,
+            NO_BASE_PLATE,
+            NO_GRAVITY,
+            SEALED);
 
     private final ResourceLocation id;
     private final String key;
@@ -180,7 +188,10 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
                         setBit(armorStand.getEntityData().get(ArmorStand.DATA_CLIENT_FLAGS), offset, value));
     }
 
-    private static byte setBit(byte oldBit, int offset, boolean value) {
+    /**
+     * @see ArmorStand#setBit(byte, int, boolean)
+     */
+    public static byte setBit(byte oldBit, int offset, boolean value) {
         if (value) {
             oldBit = (byte) (oldBit | offset);
         } else {

@@ -11,14 +11,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 public final class ArmorStandInteractHelper {
     public static final String OPEN_SCREEN_TRANSLATION_KEY = Items.ARMOR_STAND.getDescriptionId() + ".description";
@@ -27,27 +26,29 @@ public final class ArmorStandInteractHelper {
         // NO-OP
     }
 
-    public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, InteractionHand interactionHand, ArmorStand armorStand, MenuType<?> menuType, @Nullable StatueEntity statueEntity) {
+    public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, InteractionHand interactionHand, LivingEntity livingEntity, MenuType<?> menuType, StatueEntity statueEntity) {
         ItemStack itemInHand = player.getItemInHand(interactionHand);
-        return itemInHand.isEmpty() ? tryOpenArmorStatueMenu(player, level, armorStand, menuType, statueEntity) :
+        return itemInHand.isEmpty() ? tryOpenArmorStatueMenu(player, level, livingEntity, menuType, statueEntity) :
                 EventResultHolder.pass();
     }
 
-    public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, ArmorStand armorStand, MenuType<?> menuType, @Nullable StatueEntity statueEntity) {
-        if (player.isShiftKeyDown() && (!armorStand.isInvulnerable() || player.getAbilities().instabuild)) {
-            openArmorStatueMenu(player, armorStand, menuType, statueEntity);
+    public static EventResultHolder<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, LivingEntity livingEntity, MenuType<?> menuType, StatueEntity statueEntity) {
+        if (player.isShiftKeyDown() && (!livingEntity.isInvulnerable() || player.getAbilities().instabuild)) {
+            openArmorStatueMenu(player, livingEntity, menuType, statueEntity);
             return EventResultHolder.interrupt(InteractionResultHelper.sidedSuccess(level.isClientSide()));
+        } else {
+            return EventResultHolder.pass();
         }
-        return EventResultHolder.pass();
     }
 
-    public static void openArmorStatueMenu(Player player, ArmorStand armorStand, MenuType<?> menuType, @Nullable StatueEntity statueEntity) {
-        if (!(player instanceof ServerPlayer serverPlayer)) return;
-        ContainerMenuHelper.openMenu(serverPlayer,
-                new SimpleMenuProvider((int containerId, Inventory inventory, Player playerX) -> {
-                    return new StatueMenu(menuType, containerId, inventory, armorStand, statueEntity);
-                }, armorStand.getDisplayName()),
-                StatueMenu.StatueData.of(armorStand));
+    public static void openArmorStatueMenu(Player player, LivingEntity livingEntity, MenuType<?> menuType, StatueEntity statueEntity) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            ContainerMenuHelper.openMenu(serverPlayer,
+                    new SimpleMenuProvider((int containerId, Inventory inventory, Player playerX) -> {
+                        return new StatueMenu(menuType, containerId, inventory, livingEntity, statueEntity);
+                    }, livingEntity.getDisplayName()),
+                    StatueMenu.Data.of(livingEntity));
+        }
     }
 
     public static Component getArmorStandHoverText() {

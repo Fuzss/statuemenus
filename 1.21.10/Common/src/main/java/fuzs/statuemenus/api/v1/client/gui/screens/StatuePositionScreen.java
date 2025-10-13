@@ -33,16 +33,12 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 public class StatuePositionScreen extends StatueButtonsScreen {
-    public static final String SCALE_TRANSLATION_KEY = StatueScreenType.POSITION.id()
-            .toLanguageKey("screen", "scale");
+    public static final String SCALE_TRANSLATION_KEY = StatueScreenType.POSITION.id().toLanguageKey("screen", "scale");
     public static final String ROTATION_TRANSLATION_KEY = StatueScreenType.POSITION.id()
             .toLanguageKey("screen", "rotation");
-    public static final String POSITION_X_TRANSLATION_KEY = StatueScreenType.POSITION.id()
-            .toLanguageKey("screen", "x");
-    public static final String POSITION_Y_TRANSLATION_KEY = StatueScreenType.POSITION.id()
-            .toLanguageKey("screen", "y");
-    public static final String POSITION_Z_TRANSLATION_KEY = StatueScreenType.POSITION.id()
-            .toLanguageKey("screen", "z");
+    public static final String POSITION_X_TRANSLATION_KEY = StatueScreenType.POSITION.id().toLanguageKey("screen", "x");
+    public static final String POSITION_Y_TRANSLATION_KEY = StatueScreenType.POSITION.id().toLanguageKey("screen", "y");
+    public static final String POSITION_Z_TRANSLATION_KEY = StatueScreenType.POSITION.id().toLanguageKey("screen", "z");
     public static final String INCREMENT_TRANSLATION_KEY = StatueScreenType.POSITION.id()
             .toLanguageKey("screen", "increment");
     public static final String DECREMENT_TRANSLATION_KEY = StatueScreenType.POSITION.id()
@@ -58,11 +54,11 @@ public class StatuePositionScreen extends StatueButtonsScreen {
     public static final String CENTERED_TRANSLATION_KEY = StatueScreenType.POSITION.id()
             .toLanguageKey("screen", "centered");
     public static final String CENTERED_DESCRIPTION_TRANSLATION_KEY = StatueScreenType.POSITION.id()
-            .toLanguageKey("screen", "centered_description");
+            .toLanguageKey("screen", "centered.description");
     public static final String CORNERED_TRANSLATION_KEY = StatueScreenType.POSITION.id()
             .toLanguageKey("screen", "cornered");
     public static final String CORNERED_DESCRIPTION_TRANSLATION_KEY = StatueScreenType.POSITION.id()
-            .toLanguageKey("screen", "cornered_description");
+            .toLanguageKey("screen", "cornered.description");
     public static final String ALIGNED_TRANSLATION_KEY = StatueScreenType.POSITION.id()
             .toLanguageKey("screen", "aligned");
     protected static final ArmorStandWidgetFactory<StatuePositionScreen> SCALE_WIDGET_FACTORY = (StatuePositionScreen screen, LivingEntity livingEntity) -> {
@@ -171,8 +167,7 @@ public class StatuePositionScreen extends StatueButtonsScreen {
 
         @Override
         protected void applyClientValue(double newValue) {
-            ScaleAttributeHelper.setScale(StatuePositionScreen.this.getHolder().getEntity(),
-                    getScaledValue(newValue));
+            ScaleAttributeHelper.setScale(StatuePositionScreen.this.getHolder().getEntity(), getScaledValue(newValue));
         }
 
         public static float getScaledValue(double value) {

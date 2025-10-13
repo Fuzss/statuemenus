@@ -19,10 +19,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class StatueMenu extends AbstractContainerMenu implements StatueHolder {
     public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = StatueMenus.id("container/slot/sword");
@@ -43,20 +43,24 @@ public class StatueMenu extends AbstractContainerMenu implements StatueHolder {
     };
 
     private final LivingEntity livingEntity;
-    @Nullable
     private final StatueEntity statueEntity;
 
-    public StatueMenu(MenuType<?> menuType, int containerId, Inventory inventory, StatueData data, @Nullable StatueEntity statueEntity) {
-        this(menuType, containerId, inventory, data.setupArmorStand(inventory.player.level()), statueEntity);
+    public <T extends LivingEntity> StatueMenu(MenuType<?> menuType, int containerId, Inventory inventory, Data data, Function<T, StatueEntity> statueEntityFactory) {
+        this(menuType, containerId, inventory, (T) data.getEntity(inventory.player.level()), statueEntityFactory);
     }
 
-    public StatueMenu(MenuType<?> menuType, int containerId, Inventory inventory, LivingEntity livingEntity, @Nullable StatueEntity statueEntity) {
+    private <T extends LivingEntity> StatueMenu(MenuType<?> menuType, int containerId, Inventory inventory, T livingEntity, Function<T, StatueEntity> statueEntityFactory) {
+        this(menuType, containerId, inventory, livingEntity, statueEntityFactory.apply(livingEntity));
+    }
+
+    public StatueMenu(MenuType<?> menuType, int containerId, Inventory inventory, LivingEntity livingEntity, StatueEntity statueEntity) {
         super(menuType, containerId);
-        Objects.requireNonNull(livingEntity, "armor stand is null");
+        Objects.requireNonNull(livingEntity, "living entity is null");
         this.livingEntity = livingEntity;
+        Objects.requireNonNull(statueEntity, "statue entity is null");
+        this.statueEntity = statueEntity;
         Container container = new EquipmentContainer(livingEntity);
         container.startOpen(inventory.player);
-        this.statueEntity = statueEntity;
         for (int i = 0; i < SLOT_IDS.length; ++i) {
             EquipmentSlot equipmentSlot = SLOT_IDS[i];
             if (equipmentSlot != null) {
@@ -118,31 +122,31 @@ public class StatueMenu extends AbstractContainerMenu implements StatueHolder {
 
     @Override
     public StatueEntity getStatueEntity() {
-        return this.statueEntity != null ? this.statueEntity : StatueHolder.super.getStatueEntity();
+        return this.statueEntity;
     }
 
-    public record StatueData(int entityId, boolean isInvulnerable, int disabledSlots) {
-        public static final StreamCodec<ByteBuf, StatueData> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.INT,
-                StatueData::entityId,
+    public record Data(int entityId, boolean isInvulnerable, int disabledSlots) {
+        public static final StreamCodec<ByteBuf, Data> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.INT,
+                Data::entityId,
                 ByteBufCodecs.BOOL,
-                StatueData::isInvulnerable,
+                Data::isInvulnerable,
                 ByteBufCodecs.INT,
-                StatueData::disabledSlots,
-                StatueData::new);
+                Data::disabledSlots,
+                Data::new);
 
-        public static StatueData of(LivingEntity livingEntity) {
+        public static Data of(LivingEntity livingEntity) {
             return of(livingEntity, 0);
         }
 
-        public static StatueData of(ArmorStand armorStand) {
+        public static Data of(ArmorStand armorStand) {
             return of(armorStand, armorStand.disabledSlots);
         }
 
-        public static StatueData of(LivingEntity livingEntity, int disabledSlots) {
-            return new StatueData(livingEntity.getId(), livingEntity.isInvulnerable(), disabledSlots);
+        public static Data of(LivingEntity livingEntity, int disabledSlots) {
+            return new Data(livingEntity.getId(), livingEntity.isInvulnerable(), disabledSlots);
         }
 
-        public LivingEntity setupArmorStand(Level level) {
+        public LivingEntity getEntity(Level level) {
             if (level.getEntity(this.entityId) instanceof LivingEntity livingEntity) {
                 // vanilla doesn't sync these automatically, we need them for the menu
                 livingEntity.setInvulnerable(this.isInvulnerable);

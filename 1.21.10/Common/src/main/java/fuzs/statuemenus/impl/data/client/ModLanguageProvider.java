@@ -55,14 +55,12 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(StatueScreenType.STYLE.getTranslationKey(), "Style");
         builder.add(StatueScreenType.POSES.getTranslationKey(), "Poses");
         builder.add(StatueScreenType.POSITION.getTranslationKey(), "Position");
-        builder.add(StatueStyleScreen.TEXT_BOX_TRANSLATION_KEY,
-                "Set a name to display above the entity if enabled.");
+        builder.add(StatueStyleScreen.TEXT_BOX_TRANSLATION_KEY, "Set a name to display above the entity if enabled.");
         builder.add(StatueStyleOption.SHOW_ARMS.getTranslationKey(), "Show Arms");
         builder.add(StatueStyleOption.SHOW_ARMS.getDescriptionKey(),
                 "Shows the statue's arms, so it may hold items in both hands.");
         builder.add(StatueStyleOption.SMALL.getTranslationKey(), "Small");
-        builder.add(StatueStyleOption.SMALL.getDescriptionKey(),
-                "Makes the statue half it's size like a baby mob.");
+        builder.add(StatueStyleOption.SMALL.getDescriptionKey(), "Makes the statue half it's size like a baby mob.");
         builder.add(StatueStyleOption.INVISIBLE.getTranslationKey(), "Invisible");
         builder.add(StatueStyleOption.INVISIBLE.getDescriptionKey(),
                 "Makes the statue itself invisible, but still shows all equipped items.");
@@ -70,8 +68,7 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(StatueStyleOption.NO_BASE_PLATE.getDescriptionKey(),
                 "Hide the stone base plate at the statue's feet.");
         builder.add(StatueStyleOption.SHOW_NAME.getTranslationKey(), "Show Name");
-        builder.add(StatueStyleOption.SHOW_NAME.getDescriptionKey(),
-                "Render the statue's name tag above it's head.");
+        builder.add(StatueStyleOption.SHOW_NAME.getDescriptionKey(), "Render the statue's name tag above it's head.");
         builder.add(StatueStyleOption.NO_GRAVITY.getTranslationKey(), "No Gravity");
         builder.add(StatueStyleOption.NO_GRAVITY.getDescriptionKey(),
                 "Prevents the statue from falling down, so it may float freely.");
@@ -106,7 +103,7 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(PosePartMutator.AXIS_Y_TRANSLATION_KEY, "Y: %s");
         builder.add(PosePartMutator.AXIS_Z_TRANSLATION_KEY, "Z: %s");
         builder.add(StatueRotationsScreen.TIP_TRANSLATION_KEY + 1,
-                "Hold any [§dShift§r] or [§dAlt§r] key to lock two-dimensional sliders to a single axis while dragging!");
+                "Hold any §dShift§r or §dAlt§r key to lock two-dimensional sliders to a single axis while dragging!");
         builder.add(StatueRotationsScreen.TIP_TRANSLATION_KEY + 2,
                 "Use arrow keys to move sliders with greater precision than when dragging! Focus a slider first by clicking.");
         builder.add(StatueRotationsScreen.RESET_TRANSLATION_KEY, "Reset");

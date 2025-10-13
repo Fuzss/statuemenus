@@ -1,6 +1,5 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
-import com.google.common.collect.Sets;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.network.client.data.NetworkDataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
@@ -11,10 +10,10 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 @FunctionalInterface
 public interface StatueScreenFactory<T extends Screen & MenuAccess<StatueMenu> & StatueScreen> {
@@ -40,7 +39,7 @@ public interface StatueScreenFactory<T extends Screen & MenuAccess<StatueMenu> &
     }
 
     static <T extends Screen & MenuAccess<StatueMenu> & StatueScreen> T createLastScreenType(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
-        Set<StatueScreenType> screenTypes = Sets.newHashSet(dataSyncHandler.getScreenTypes());
+        Collection<StatueScreenType> screenTypes = dataSyncHandler.getScreenTypes();
         Optional<StatueScreenType> lastScreenType = Optional.ofNullable(AbstractStatueScreen.lastScreenType)
                 .filter(screenTypes::contains)
                 .filter(dataSyncHandler::supportsScreenType);

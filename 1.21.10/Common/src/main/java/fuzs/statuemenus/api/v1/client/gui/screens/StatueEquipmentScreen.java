@@ -20,6 +20,8 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 
+import java.util.List;
+
 public class StatueEquipmentScreen extends AbstractContainerScreen<StatueMenu> implements StatueScreen {
     private final Inventory inventory;
     private final DataSyncHandler dataSyncHandler;
@@ -190,7 +192,7 @@ public class StatueEquipmentScreen extends AbstractContainerScreen<StatueMenu> i
                     || ArmorStandSlot.isSlotDisabled(armorStand, equipmentSlot, ArmorStandSlot.DISABLE_TAKING_OFFSET)
                     || ArmorStandSlot.isSlotDisabled(armorStand, equipmentSlot, ArmorStandSlot.DISABLE_PUTTING_OFFSET);
         } else {
-            return true;
+            return false;
         }
     }
 
@@ -201,8 +203,8 @@ public class StatueEquipmentScreen extends AbstractContainerScreen<StatueMenu> i
 
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
-        StatueScreenType[] tabs = this.dataSyncHandler.getScreenTypes();
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot == null) {
+            List<StatueScreenType> tabs = this.dataSyncHandler.getScreenTypes();
             AbstractStatueScreen.handleHotbarKeyPressed(keyEvent, this, tabs);
         }
 

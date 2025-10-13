@@ -19,6 +19,9 @@ public record PosePartMutator(ResourceLocation id,
                               List<PosePartAxisRange> axisRanges,
                               List<Direction.Axis> axisOrder,
                               byte invertedIndices) implements StringRepresentable {
+    public static final String AXIS_X_TRANSLATION_KEY = StatueScreenType.ROTATIONS.id().toLanguageKey("screen", "x");
+    public static final String AXIS_Y_TRANSLATION_KEY = StatueScreenType.ROTATIONS.id().toLanguageKey("screen", "y");
+    public static final String AXIS_Z_TRANSLATION_KEY = StatueScreenType.ROTATIONS.id().toLanguageKey("screen", "z");
     public static final PosePartMutator HEAD = new PosePartMutator(StatueMenus.id("head"),
             StatuePose::getHeadPose,
             StatuePose::withHeadPose,
@@ -55,12 +58,12 @@ public record PosePartMutator(ResourceLocation id,
             PosePartAxisRange.range(-120.0, 120.0),
             PosePartAxisRange.range(0.0, 90.0),
             PosePartAxisRange.range(-120.0, 120.0));
-    public static final String AXIS_X_TRANSLATION_KEY = StatueScreenType.ROTATIONS.id()
-            .toLanguageKey("screen", "x");
-    public static final String AXIS_Y_TRANSLATION_KEY = StatueScreenType.ROTATIONS.id()
-            .toLanguageKey("screen", "y");
-    public static final String AXIS_Z_TRANSLATION_KEY = StatueScreenType.ROTATIONS.id()
-            .toLanguageKey("screen", "z");
+    public static final List<PosePartMutator> TYPES = List.of(PosePartMutator.HEAD,
+            PosePartMutator.BODY,
+            PosePartMutator.RIGHT_ARM,
+            PosePartMutator.LEFT_ARM,
+            PosePartMutator.RIGHT_LEG,
+            PosePartMutator.LEFT_LEG);
 
     public PosePartMutator(ResourceLocation id, Function<StatuePose, Rotations> rotationsGetter, BiFunction<StatuePose, Rotations, StatuePose> rotationsSetter, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ) {
         this(id,
@@ -105,8 +108,7 @@ public record PosePartMutator(ResourceLocation id,
     }
 
     public Component getAxisComponent(StatuePose pose, int index) {
-        double value = StatuePoses.snapValue(this.getRotationsAtAxis(index, pose),
-                StatuePoses.DEGREES_SNAP_INTERVAL);
+        double value = StatuePoses.snapValue(this.getRotationsAtAxis(index, pose), StatuePoses.DEGREES_SNAP_INTERVAL);
         return Component.translatable(this.getAxisTranslationKey(this.getAxisAt(index)),
                 StatuePoses.ROTATION_FORMAT.format(value));
     }

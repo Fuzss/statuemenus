@@ -67,7 +67,7 @@
   "screen.statuemenus.rotations.pose.statuemenus.right_leg": "Right Leg",
   "screen.statuemenus.rotations.randomize": "Randomize",
   "screen.statuemenus.rotations.reset": "Reset",
-  "screen.statuemenus.rotations.tip1": "Hold any [§dShift§r] or [§dAlt§r] key to lock two-dimensional sliders to a single axis while dragging!",
+  "screen.statuemenus.rotations.tip1": "Hold any §dShift§r or §dAlt§r key to lock two-dimensional sliders to a single axis while dragging!",
   "screen.statuemenus.rotations.tip2": "Use arrow keys to move sliders with greater precision than when dragging! Focus a slider first by clicking.",
   "screen.statuemenus.rotations.unlimited": "Unlimited Rotations",
   "screen.statuemenus.rotations.x": "X: %s",

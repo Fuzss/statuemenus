@@ -2,6 +2,7 @@ package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
+import fuzs.puzzleslib.api.client.key.v1.KeyMappingHelper;
 import fuzs.statuemenus.api.v1.client.gui.components.UnboundedSliderButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.entity.decoration.StatueEntity;
@@ -31,9 +32,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public abstract class AbstractStatueScreen extends Screen implements MenuAccess<StatueMenu>, StatueScreen {
@@ -248,15 +249,7 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
         } else {
             originalPose = null;
         }
-        StatueScreen.super.renderArmorStandInInventory(guiGraphics,
-                x1,
-                y1,
-                x2,
-                y2,
-                scale,
-                mouseX,
-                mouseY,
-                partialTick);
+        StatueScreen.super.renderArmorStandInInventory(guiGraphics, x1, y1, x2, y2, scale, mouseX, mouseY, partialTick);
         if (originalPose != null) {
             originalPose.applyToEntity(statueEntity);
         }
@@ -328,7 +321,7 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
     public boolean keyPressed(KeyEvent keyEvent) {
         if (super.keyPressed(keyEvent)) {
             return true;
-        } else if (this.minecraft.options.keyInventory.matches(keyEvent)) {
+        } else if (KeyMappingHelper.isKeyActiveAndMatches(this.minecraft.options.keyInventory, keyEvent)) {
             this.onClose();
             return true;
         } else {
@@ -336,10 +329,10 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
         }
     }
 
-    public static <T extends Screen & StatueScreen> boolean handleHotbarKeyPressed(KeyEvent keyEvent, T screen, StatueScreenType[] tabs) {
-        for (int i = 0; i < Math.min(tabs.length, 9); ++i) {
-            if (screen.minecraft.options.keyHotbarSlots[i].matches(keyEvent)) {
-                if (openTabScreen(screen, tabs[i], true)) {
+    public static <T extends Screen & StatueScreen> boolean handleHotbarKeyPressed(KeyEvent keyEvent, T screen, List<StatueScreenType> tabs) {
+        for (int i = 0; i < Math.min(tabs.size(), 9); ++i) {
+            if (KeyMappingHelper.isKeyActiveAndMatches(screen.minecraft.options.keyHotbarSlots[i], keyEvent)) {
+                if (openTabScreen(screen, tabs.get(i), true)) {
                     return true;
                 }
             }
@@ -364,7 +357,7 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
         }
     }
 
-    public static <T extends Screen & StatueScreen> boolean handleMouseScrolled(int mouseX, int mouseY, double delta, int leftPos, int topPos, int imageHeight, T screen, StatueScreenType[] tabs) {
+    public static <T extends Screen & StatueScreen> boolean handleMouseScrolled(int mouseX, int mouseY, double delta, int leftPos, int topPos, int imageHeight, T screen, List<StatueScreenType> tabs) {
         delta = Math.signum(delta);
         if (delta != 0.0) {
             Optional<StatueScreenType> optional = findHoveredTab(leftPos, topPos, imageHeight, mouseX, mouseY, tabs);
@@ -376,7 +369,7 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
         return false;
     }
 
-    public static <T extends Screen & StatueScreen> boolean handleTabClicked(int mouseX, int mouseY, int leftPos, int topPos, int imageHeight, T screen, StatueScreenType[] tabs) {
+    public static <T extends Screen & StatueScreen> boolean handleTabClicked(int mouseX, int mouseY, int leftPos, int topPos, int imageHeight, T screen, List<StatueScreenType> tabs) {
         Optional<StatueScreenType> hoveredTab = findHoveredTab(leftPos, topPos, imageHeight, mouseX, mouseY, tabs);
         return hoveredTab.filter((StatueScreenType type) -> openTabScreen(screen, type, true)).isPresent();
     }
@@ -387,6 +380,7 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
                 SimpleSoundInstance sound = SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F);
                 screen.minecraft.getSoundManager().play(sound);
             }
+
             screen.minecraft.setScreen(screen.createScreenType(screenType));
             return true;
         } else {
@@ -394,16 +388,17 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
         }
     }
 
-    private static StatueScreenType cycleTabs(StatueScreenType currentScreenType, StatueScreenType[] screenTypes, boolean backwards) {
-        int index = ArrayUtils.indexOf(screenTypes, currentScreenType);
-        return screenTypes[((backwards ? --index : ++index) % screenTypes.length + screenTypes.length)
-                % screenTypes.length];
+    private static StatueScreenType cycleTabs(StatueScreenType currentScreenType, List<StatueScreenType> screenTypes, boolean backwards) {
+        int oldIndex = screenTypes.indexOf(currentScreenType);
+        int newIndex =
+                ((backwards ? --oldIndex : ++oldIndex) % screenTypes.size() + screenTypes.size()) % screenTypes.size();
+        return screenTypes.get(newIndex);
     }
 
-    public static <T extends Screen & StatueScreen> void drawTabs(GuiGraphics guiGraphics, int leftPos, int topPos, int imageHeight, T screen, StatueScreenType[] tabs) {
-        int tabsStartY = getTabsStartY(imageHeight, tabs.length);
-        for (int i = 0; i < tabs.length; i++) {
-            StatueScreenType tabType = tabs[i];
+    public static <T extends Screen & StatueScreen> void drawTabs(GuiGraphics guiGraphics, int leftPos, int topPos, int imageHeight, T screen, List<StatueScreenType> tabs) {
+        int tabsStartY = getTabsStartY(imageHeight, tabs.size());
+        for (int i = 0; i < tabs.size(); i++) {
+            StatueScreenType tabType = tabs.get(i);
             int tabX = leftPos - 32;
             int tabY = topPos + tabsStartY + 27 * i;
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
@@ -420,13 +415,13 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
         }
     }
 
-    public static Optional<StatueScreenType> findHoveredTab(int leftPos, int topPos, int imageHeight, int mouseX, int mouseY, StatueScreenType[] tabs) {
-        int tabsStartY = getTabsStartY(imageHeight, tabs.length);
-        for (int i = 0; i < tabs.length; i++) {
+    public static Optional<StatueScreenType> findHoveredTab(int leftPos, int topPos, int imageHeight, int mouseX, int mouseY, List<StatueScreenType> tabs) {
+        int tabsStartY = getTabsStartY(imageHeight, tabs.size());
+        for (int i = 0; i < tabs.size(); i++) {
             int tabX = leftPos - 32;
             int tabY = topPos + tabsStartY + 27 * i;
             if (mouseX > tabX && mouseX <= tabX + 32 && mouseY > tabY && mouseY <= tabY + 26) {
-                return Optional.of(tabs[i]);
+                return Optional.of(tabs.get(i));
             }
         }
         return Optional.empty();

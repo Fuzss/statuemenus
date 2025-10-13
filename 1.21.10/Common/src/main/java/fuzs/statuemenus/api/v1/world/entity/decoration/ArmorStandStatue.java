@@ -3,70 +3,68 @@ package fuzs.statuemenus.api.v1.world.entity.decoration;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
-public class ArmorStandStatue implements StatueEntity {
-    protected final ArmorStand armorStand;
+@FunctionalInterface
+public interface ArmorStandStatue extends StatueEntity {
 
-    public ArmorStandStatue(ArmorStand armorStand) {
-        this.armorStand = armorStand;
+    ArmorStand getArmorStand();
+
+    @Override
+    default Rotations getHeadPose() {
+        return this.getArmorStand().getHeadPose();
     }
 
     @Override
-    public Rotations getHeadPose() {
-        return this.armorStand.getHeadPose();
+    default Rotations getBodyPose() {
+        return this.getArmorStand().getBodyPose();
     }
 
     @Override
-    public Rotations getBodyPose() {
-        return this.armorStand.getBodyPose();
+    default Rotations getLeftArmPose() {
+        return this.getArmorStand().getLeftArmPose();
     }
 
     @Override
-    public Rotations getLeftArmPose() {
-        return this.armorStand.getLeftArmPose();
+    default Rotations getRightArmPose() {
+        return this.getArmorStand().getRightArmPose();
     }
 
     @Override
-    public Rotations getRightArmPose() {
-        return this.armorStand.getRightArmPose();
+    default Rotations getLeftLegPose() {
+        return this.getArmorStand().getLeftLegPose();
     }
 
     @Override
-    public Rotations getLeftLegPose() {
-        return this.armorStand.getLeftLegPose();
+    default Rotations getRightLegPose() {
+        return this.getArmorStand().getRightLegPose();
     }
 
     @Override
-    public Rotations getRightLegPose() {
-        return this.armorStand.getRightLegPose();
+    default void setHeadPose(Rotations headPose) {
+        this.getArmorStand().setHeadPose(headPose);
     }
 
     @Override
-    public void setHeadPose(Rotations headPose) {
-        this.armorStand.setHeadPose(headPose);
+    default void setBodyPose(Rotations bodyPose) {
+        this.getArmorStand().setBodyPose(bodyPose);
     }
 
     @Override
-    public void setBodyPose(Rotations bodyPose) {
-        this.armorStand.setBodyPose(bodyPose);
+    default void setLeftArmPose(Rotations leftArmPose) {
+        this.getArmorStand().setLeftArmPose(leftArmPose);
     }
 
     @Override
-    public void setLeftArmPose(Rotations leftArmPose) {
-        this.armorStand.setLeftArmPose(leftArmPose);
+    default void setRightArmPose(Rotations rightArmPose) {
+        this.getArmorStand().setRightArmPose(rightArmPose);
     }
 
     @Override
-    public void setRightArmPose(Rotations rightArmPose) {
-        this.armorStand.setRightArmPose(rightArmPose);
+    default void setLeftLegPose(Rotations leftLegPose) {
+        this.getArmorStand().setLeftLegPose(leftLegPose);
     }
 
     @Override
-    public void setLeftLegPose(Rotations leftLegPose) {
-        this.armorStand.setLeftLegPose(leftLegPose);
-    }
-
-    @Override
-    public void setRightLegPose(Rotations rightLegPose) {
-        this.armorStand.setRightLegPose(rightLegPose);
+    default void setRightLegPose(Rotations rightLegPose) {
+        this.getArmorStand().setRightLegPose(rightLegPose);
     }
 }

@@ -5,6 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.List;
+
 public record StatueScreenType(ResourceLocation id, ItemStack item, boolean requiresServer) {
     public static final StatueScreenType EQUIPMENT = new StatueScreenType(StatueMenus.id("equipment"),
             new ItemStack(Items.IRON_CHESTPLATE),
@@ -17,6 +19,7 @@ public record StatueScreenType(ResourceLocation id, ItemStack item, boolean requ
             new ItemStack(Items.SPYGLASS));
     public static final StatueScreenType POSITION = new StatueScreenType(StatueMenus.id("position"),
             new ItemStack(Items.GRASS_BLOCK));
+    public static final List<StatueScreenType> TYPES = List.of(ROTATIONS, POSES, STYLE, POSITION, EQUIPMENT);
 
     public StatueScreenType(ResourceLocation id, ItemStack item) {
         this(id, item, false);
