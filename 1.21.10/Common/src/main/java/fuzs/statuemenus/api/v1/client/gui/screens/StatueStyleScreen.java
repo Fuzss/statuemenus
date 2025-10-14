@@ -13,7 +13,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -63,12 +62,8 @@ public abstract class StatueStyleScreen<T extends LivingEntity> extends StatueTi
     }
 
     @Override
-    protected @Nullable String getNameValue() {
-        if (this.holder.getEntity().hasCustomName()) {
-            return this.holder.getEntity().getCustomName().getString();
-        } else {
-            return null;
-        }
+    protected String getNameValue() {
+        return this.holder.getEntity().hasCustomName() ? this.holder.getEntity().getCustomName().getString() : "";
     }
 
     @Override

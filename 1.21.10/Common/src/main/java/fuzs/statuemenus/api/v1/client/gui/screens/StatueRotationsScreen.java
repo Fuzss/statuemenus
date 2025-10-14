@@ -184,7 +184,9 @@ public class StatueRotationsScreen extends AbstractStatueScreen {
                 124,
                 getArmorStandWidgetsLocation(),
                 (Button button) -> {
-                    if (clipboard != null) this.setCurrentPose(clipboard);
+                    if (clipboard != null) {
+                        this.setCurrentPose(clipboard);
+                    }
                 })), (FlatTickButton widget) -> {
             widget.setTooltip(Tooltip.create(Component.translatable(PASTE_TRANSLATION_KEY)));
             widget.active = clipboard != null;

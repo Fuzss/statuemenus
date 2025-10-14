@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Rework parts of `StatueWidgetsScreen`
+
+## [v21.10.4-1.21.10] - 2025-10-14
+
+### Changed
+
 - Rework some `StatueStyleOptions`
 
 ## [v21.10.2-1.21.10] - 2025-10-13

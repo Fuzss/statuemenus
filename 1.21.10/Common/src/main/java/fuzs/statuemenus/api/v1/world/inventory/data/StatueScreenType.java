@@ -9,7 +9,7 @@ import java.util.List;
 
 public record StatueScreenType(ResourceLocation id, ItemStack item, boolean requiresServer) {
     public static final StatueScreenType EQUIPMENT = new StatueScreenType(StatueMenus.id("equipment"),
-            new ItemStack(Items.IRON_CHESTPLATE),
+            new ItemStack(Items.CHEST),
             true);
     public static final StatueScreenType ROTATIONS = new StatueScreenType(StatueMenus.id("rotations"),
             new ItemStack(Items.COMPASS));

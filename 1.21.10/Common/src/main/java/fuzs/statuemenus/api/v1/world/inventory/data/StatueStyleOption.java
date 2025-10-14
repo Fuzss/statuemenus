@@ -37,7 +37,7 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
     public static final StatueStyleOption<ArmorStand> NO_BASE_PLATE = create(StatueMenus.id("no_base_plate"),
             "NoBasePlate",
             ArmorStand.CLIENT_FLAG_NO_BASEPLATE);
-    public static final StatueStyleOption<LivingEntity> NO_GRAVITY = create(StatueMenus.id("no_gravity"),
+    public static final StatueStyleOption<LivingEntity> IMMOVABLE = create(StatueMenus.id("immovable"),
             "NoGravity",
             Entity::setNoGravity,
             Entity::isNoGravity);
@@ -70,7 +70,7 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
             SMALL,
             INVISIBLE,
             NO_BASE_PLATE,
-            NO_GRAVITY,
+            IMMOVABLE,
             INVULNERABLE,
             SEALED);
 
@@ -197,7 +197,7 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
         register(SMALL);
         register(INVISIBLE);
         register(NO_BASE_PLATE);
-        register(NO_GRAVITY);
+        register(IMMOVABLE);
         register(INVULNERABLE);
         register(SEALED);
     }

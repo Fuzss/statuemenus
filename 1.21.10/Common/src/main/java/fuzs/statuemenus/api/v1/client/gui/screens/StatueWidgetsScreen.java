@@ -1,11 +1,16 @@
 package fuzs.statuemenus.api.v1.client.gui.screens;
 
-import com.google.common.collect.Lists;
+import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
 import fuzs.statuemenus.api.v1.client.gui.components.FlatButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -13,6 +18,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -37,12 +44,16 @@ public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
 
     private Collection<ArmorStandWidget> getActivePositionComponentWidgets() {
         if (this.activeWidget != null) {
-            List<ArmorStandWidget> activeWidgets = Lists.newArrayList(this.activeWidget);
+            List<ArmorStandWidget> activeWidgets = new ArrayList<>(Arrays.asList(this.activeWidget));
             for (ArmorStandWidget widget : this.widgets) {
-                if (widget.alwaysVisible(this.activeWidget)) activeWidgets.add(widget);
+                if (widget.alwaysVisible(this.activeWidget)) {
+                    activeWidgets.add(widget);
+                }
             }
+
             return activeWidgets;
         }
+
         return this.widgets;
     }
 
@@ -107,6 +118,7 @@ public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
         for (ArmorStandWidget widget : this.getActivePositionComponentWidgets()) {
             widget.render(guiGraphics, mouseX, mouseY, partialTick);
         }
+
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
@@ -115,39 +127,29 @@ public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
 
     }
 
-    protected interface ArmorStandWidget {
-
-        void tick();
-
-        void reset();
-
-        void init(int posX, int posY);
-
-        void setVisible(boolean visible);
-
-        void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick);
-
-        boolean alwaysVisible(@Nullable StatueWidgetsScreen.ArmorStandWidget activeWidget);
-    }
-
-    protected abstract class AbstractArmorStandWidget implements ArmorStandWidget {
+    protected abstract class ArmorStandWidget extends AbstractContainerEventHandler implements Renderable {
+        private final List<GuiEventListener> children = new ArrayList<>();
         protected final Component title;
         protected int posX;
         protected int posY;
-        protected List<AbstractWidget> children;
+        protected Button toggleButton;
 
-        protected AbstractArmorStandWidget() {
+        protected ArmorStandWidget() {
             this(CommonComponents.EMPTY);
         }
 
-        protected AbstractArmorStandWidget(Component title) {
+        protected ArmorStandWidget(Component title) {
             this.title = title;
         }
 
         @Override
+        public List<? extends GuiEventListener> children() {
+            return this.children;
+        }
+
         public void tick() {
             if (this.shouldTick()) {
-                for (AbstractWidget widget : this.children) {
+                for (GuiEventListener widget : this.children()) {
                     if (widget instanceof Tickable tickButton) {
                         tickButton.tick();
                     }
@@ -159,27 +161,37 @@ public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
             return false;
         }
 
-        @Override
         public void reset() {
             // NO-OP
         }
 
-        @Override
         public void init(int posX, int posY) {
+            this.children().clear();
             this.posX = posX;
             this.posY = posY;
-            this.children = Lists.newArrayList();
+            this.toggleButton = new SpritelessImageButton(posX + 174,
+                    posY + 1,
+                    20,
+                    20,
+                    236,
+                    64,
+                    getArmorStandWidgetsLocation(),
+                    (Button button) -> {
+                        StatueWidgetsScreen.this.setActiveWidget(this);
+                    });
         }
 
-        @Override
         public final void setVisible(boolean visible) {
-            for (AbstractWidget widget : this.children) {
-                widget.visible = visible;
+            for (GuiEventListener widget : this.children()) {
+                if (widget instanceof AbstractWidget abstractWidget) {
+                    abstractWidget.visible = visible;
+                }
             }
         }
 
-        protected <T extends AbstractWidget> T addChildren(T widget) {
+        protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
             this.children.add(widget);
+            StatueWidgetsScreen.this.addRenderableWidget(widget);
             return widget;
         }
 
@@ -204,7 +216,6 @@ public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
             }
         }
 
-        @Override
         public boolean alwaysVisible(@Nullable StatueWidgetsScreen.ArmorStandWidget activeWidget) {
             return activeWidget == this;
         }

@@ -68,7 +68,7 @@ public interface DataSyncHandler {
         }
 
         if (!this.getEntity().isNoGravity()) {
-            this.sendStyleOption(StatueStyleOption.NO_GRAVITY, true, false);
+            this.sendStyleOption(StatueStyleOption.IMMOVABLE, true, false);
         }
 
         this.sendPose(alignment.getPose(), false);

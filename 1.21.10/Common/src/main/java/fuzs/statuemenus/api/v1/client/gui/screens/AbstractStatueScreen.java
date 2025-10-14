@@ -411,7 +411,7 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
                     26,
                     256,
                     256);
-            guiGraphics.renderItem(tabType.item(), tabX + 10, tabY + 5);
+            guiGraphics.renderFakeItem(tabType.item(), tabX + 10, tabY + 5);
         }
     }
 

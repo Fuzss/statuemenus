@@ -70,11 +70,12 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
                 "Hide the stone base plate at the statue's feet.");
         builder.add(StatueStyleOption.SHOW_NAME.getTranslationKey(), "Show Name");
         builder.add(StatueStyleOption.SHOW_NAME.getDescriptionKey(), "Render the statue's name tag above it's head.");
-        builder.add(StatueStyleOption.NO_GRAVITY.getTranslationKey(), "No Gravity");
-        builder.add(StatueStyleOption.NO_GRAVITY.getDescriptionKey(),
-                "Prevents the statue from falling down, so it may float freely.");
+        builder.add(StatueStyleOption.IMMOVABLE.getTranslationKey(), "Immovable");
+        builder.add(StatueStyleOption.IMMOVABLE.getDescriptionKey(),
+                "Makes the statue have no physics in the world, so it may float freely.");
         builder.add(StatueStyleOption.INVULNERABLE.getTranslationKey(), "Invulnerable");
-        builder.add(StatueStyleOption.INVULNERABLE.getDescriptionKey(), "The statue can neither be broken nor killed.");
+        builder.add(StatueStyleOption.INVULNERABLE.getDescriptionKey(),
+                "The statue can neither be broken nor killed in survival mode.");
         builder.add(StatueStyleOption.SEALED.getTranslationKey(), "Sealed");
         builder.add(StatueStyleOption.SEALED.getDescriptionKey(),
                 "Disallows changing equipment and opening this menu in survival mode.");

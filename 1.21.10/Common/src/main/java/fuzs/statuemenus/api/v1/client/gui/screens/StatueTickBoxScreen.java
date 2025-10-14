@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 public abstract class StatueTickBoxScreen<T> extends AbstractStatueScreen {
     protected EditBox name;
@@ -38,7 +39,7 @@ public abstract class StatueTickBoxScreen<T> extends AbstractStatueScreen {
     private void testNameInputChanged(boolean testEquality) {
         if (this.inputUpdateTicks == 0 || !testEquality && this.inputUpdateTicks != -1) {
             String name = this.name.getValue().trim();
-            if (!name.equals(this.getNameValue())) {
+            if (!Objects.equals(name, this.getNameValue())) {
                 this.syncNameChange(name);
             }
 
@@ -60,11 +61,7 @@ public abstract class StatueTickBoxScreen<T> extends AbstractStatueScreen {
         this.name.setTextColor(-1);
         this.name.setBordered(false);
         this.name.setMaxLength(this.getNameMaxLength());
-        String nameValue = this.getNameValue();
-        if (nameValue != null) {
-            this.name.setValue(nameValue);
-        }
-
+        this.name.setValue(this.getNameValue());
         Component nameHint = this.getNameHint();
         if (nameHint != null) {
             this.name.setHint(nameHint);
@@ -89,7 +86,7 @@ public abstract class StatueTickBoxScreen<T> extends AbstractStatueScreen {
 
     protected abstract int getNameMaxLength();
 
-    protected abstract @Nullable String getNameValue();
+    protected abstract String getNameValue();
 
     protected abstract @Nullable Component getNameHint();
 
