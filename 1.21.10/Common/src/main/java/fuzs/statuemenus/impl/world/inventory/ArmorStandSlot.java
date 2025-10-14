@@ -1,6 +1,7 @@
 package fuzs.statuemenus.impl.world.inventory;
 
 import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -30,7 +31,7 @@ public class ArmorStandSlot extends ArmorSlot {
     public void setByPlayer(ItemStack newItemStack, ItemStack oldItemStack) {
         this.set(newItemStack);
         if (!newItemStack.isEmpty() && this.slot.getType() == EquipmentSlot.Type.HAND) {
-            StatueStyleOption.setArmorStandData(this.armorStand, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
+            StatueStyleOption.setArmorStandClientFlag(this.armorStand, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
         }
     }
 
@@ -44,8 +45,13 @@ public class ArmorStandSlot extends ArmorSlot {
             }
         }
 
-        return this.slot == EquipmentSlot.HEAD || this.slot.getType() == EquipmentSlot.Type.HAND || super.mayPlace(
-                itemStack);
+        if (this.slot.getType() == EquipmentSlot.Type.HAND) {
+            return true;
+        } else if (this.slot == EquipmentSlot.HEAD && itemStack.get(DataComponents.EQUIPPABLE) == null) {
+            return true;
+        } else {
+            return super.mayPlace(itemStack);
+        }
     }
 
     @Override

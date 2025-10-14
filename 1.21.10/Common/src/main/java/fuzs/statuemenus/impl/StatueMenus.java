@@ -15,6 +15,7 @@ import fuzs.statuemenus.impl.network.client.*;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -60,30 +61,26 @@ public class StatueMenus implements ModConstructor {
 
     private static PlayerInteractEvents.UseEntityAt onUseEntityAt(Holder<MenuType<?>> menuType) {
         return (Player player, Level level, InteractionHand interactionHand, Entity entity, Vec3 hitVector) -> {
-            if (player.getAbilities().mayBuild && entity.getType() == EntityType.ARMOR_STAND
-                    && entity instanceof ArmorStand armorStand) {
-                if (player.getItemInHand(interactionHand).is(Items.DEBUG_STICK)) {
-                    return ArmorStandInteractHelper.tryOpenArmorStatueMenu(player,
+            if (entity.getType() == EntityType.ARMOR_STAND && entity instanceof ArmorStand armorStand) {
+                if (player.isShiftKeyDown() && player.getItemInHand(interactionHand).is(Items.DEBUG_STICK)) {
+                    InteractionResult interactionResult = ArmorStandInteractHelper.openStatueMenu(player,
                             level,
                             armorStand,
                             menuType.value(),
                             (ArmorStandStatue) () -> armorStand);
+                    if (interactionResult.consumesAction()) {
+                        return EventResultHolder.interrupt(interactionResult);
+                    }
                 }
             }
+
             return EventResultHolder.pass();
         };
     }
 
     @Override
     public void onCommonSetup() {
-        // do this here instead of in enum constructor to avoid potential issues with the enum class not having been loaded yet on server-side, therefore, nothing being registered
-        StatueStyleOption.register(StatueStyleOption.SHOW_NAME);
-        StatueStyleOption.register(StatueStyleOption.SHOW_ARMS);
-        StatueStyleOption.register(StatueStyleOption.SMALL);
-        StatueStyleOption.register(StatueStyleOption.INVISIBLE);
-        StatueStyleOption.register(StatueStyleOption.NO_BASE_PLATE);
-        StatueStyleOption.register(StatueStyleOption.NO_GRAVITY);
-        StatueStyleOption.register(StatueStyleOption.SEALED);
+        StatueStyleOption.bootstrap();
     }
 
     @Override

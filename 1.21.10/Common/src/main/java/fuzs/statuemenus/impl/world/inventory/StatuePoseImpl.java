@@ -261,6 +261,7 @@ public record StatuePoseImpl(@Nullable ResourceLocation name,
         if (lastSentPose == null || !Objects.equals(this.headPose, lastSentPose.headPose())) {
             compoundTag.storeNullable("Head", Rotations.CODEC, this.headPose);
         }
+
         if (lastSentPose == null || !Objects.equals(this.bodyPose, lastSentPose.bodyPose())) {
             compoundTag.storeNullable("Body", Rotations.CODEC, this.bodyPose);
         }
@@ -271,6 +272,7 @@ public record StatuePoseImpl(@Nullable ResourceLocation name,
         if (lastSentPose == null || !Objects.equals(this.leftArmPose, lastSentPose.leftArmPose())) {
             compoundTag.storeNullable("LeftArm", Rotations.CODEC, this.leftArmPose);
         }
+
         if (lastSentPose == null || !Objects.equals(this.rightArmPose, lastSentPose.rightArmPose())) {
             compoundTag.storeNullable("RightArm", Rotations.CODEC, this.rightArmPose);
         }
@@ -281,6 +283,7 @@ public record StatuePoseImpl(@Nullable ResourceLocation name,
         if (lastSentPose == null || !Objects.equals(this.leftLegPose, lastSentPose.leftLegPose())) {
             compoundTag.storeNullable("LeftLeg", Rotations.CODEC, this.leftLegPose);
         }
+
         if (lastSentPose == null || !Objects.equals(this.rightLegPose, lastSentPose.rightLegPose())) {
             compoundTag.storeNullable("RightLeg", Rotations.CODEC, this.rightLegPose);
         }
@@ -295,14 +298,14 @@ public record StatuePoseImpl(@Nullable ResourceLocation name,
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
-        } else if (obj == null || obj.getClass() != this.getClass()) {
+        } else if (!(obj instanceof StatuePose statuePose)) {
             return false;
         } else {
-            StatuePoseImpl that = (StatuePoseImpl) obj;
-            return Objects.equals(this.headPose, that.headPose) && Objects.equals(this.bodyPose, that.bodyPose)
-                    && Objects.equals(this.leftArmPose, that.leftArmPose) && Objects.equals(this.rightArmPose,
-                    that.rightArmPose) && Objects.equals(this.leftLegPose, that.leftLegPose)
-                    && Objects.equals(this.rightLegPose, that.rightLegPose);
+            return Objects.equals(this.headPose(), statuePose.headPose()) && Objects.equals(this.bodyPose(),
+                    statuePose.bodyPose()) && Objects.equals(this.leftArmPose(), statuePose.leftArmPose())
+                    && Objects.equals(this.rightArmPose(), statuePose.rightArmPose())
+                    && Objects.equals(this.leftLegPose(), statuePose.leftLegPose())
+                    && Objects.equals(this.rightLegPose(), statuePose.rightLegPose());
         }
     }
 

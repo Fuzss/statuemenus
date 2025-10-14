@@ -16,7 +16,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public interface DataSyncHandler {
 
@@ -128,9 +127,8 @@ public interface DataSyncHandler {
     static void setCustomArmorStandName(LivingEntity livingEntity, String name) {
         name = StringUtil.filterText(name);
         if (name.length() <= 50) {
-            boolean remove =
-                    name.isBlank() || Objects.equals(name, livingEntity.getType().getDescription().getString());
-            livingEntity.setCustomName(remove ? null : Component.literal(name));
+            livingEntity.setCustomName(name.isBlank() ? null : Component.literal(name));
+            livingEntity.setCustomNameVisible(livingEntity.hasCustomName());
         }
     }
 }

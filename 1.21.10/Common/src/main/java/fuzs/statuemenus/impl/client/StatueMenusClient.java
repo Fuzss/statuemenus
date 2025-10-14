@@ -66,7 +66,6 @@ public class StatueMenusClient implements ClientModConstructor {
             return;
         }
 
-        // compiler doesn't like method reference :(
         context.registerMenuScreen((MenuType<StatueMenu>) BuiltInRegistries.MENU.getValue(StatueMenus.ARMOR_STAND_IDENTIFIER),
                 (StatueMenu menu, Inventory inventory, Component component) -> {
                     return StatueScreenFactory.createLastScreenType(menu, inventory, component);

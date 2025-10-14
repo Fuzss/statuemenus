@@ -54,6 +54,8 @@ public interface StatueEntity {
                 this.getRightLegPose());
     }
 
+    boolean isSealed();
+
     default List<StatueScreenType> getScreenTypes() {
         return StatueScreenType.TYPES;
     }

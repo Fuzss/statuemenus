@@ -5,66 +5,72 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 
 @FunctionalInterface
 public interface ArmorStandStatue extends StatueEntity {
+    int ALL_SLOTS_DISABLED = 0b1111110011111100111111;
 
-    ArmorStand getArmorStand();
+    ArmorStand armorStand();
 
     @Override
     default Rotations getHeadPose() {
-        return this.getArmorStand().getHeadPose();
+        return this.armorStand().getHeadPose();
     }
 
     @Override
     default Rotations getBodyPose() {
-        return this.getArmorStand().getBodyPose();
+        return this.armorStand().getBodyPose();
     }
 
     @Override
     default Rotations getLeftArmPose() {
-        return this.getArmorStand().getLeftArmPose();
+        return this.armorStand().getLeftArmPose();
     }
 
     @Override
     default Rotations getRightArmPose() {
-        return this.getArmorStand().getRightArmPose();
+        return this.armorStand().getRightArmPose();
     }
 
     @Override
     default Rotations getLeftLegPose() {
-        return this.getArmorStand().getLeftLegPose();
+        return this.armorStand().getLeftLegPose();
     }
 
     @Override
     default Rotations getRightLegPose() {
-        return this.getArmorStand().getRightLegPose();
+        return this.armorStand().getRightLegPose();
     }
 
     @Override
     default void setHeadPose(Rotations headPose) {
-        this.getArmorStand().setHeadPose(headPose);
+        this.armorStand().setHeadPose(headPose);
     }
 
     @Override
     default void setBodyPose(Rotations bodyPose) {
-        this.getArmorStand().setBodyPose(bodyPose);
+        this.armorStand().setBodyPose(bodyPose);
     }
 
     @Override
     default void setLeftArmPose(Rotations leftArmPose) {
-        this.getArmorStand().setLeftArmPose(leftArmPose);
+        this.armorStand().setLeftArmPose(leftArmPose);
     }
 
     @Override
     default void setRightArmPose(Rotations rightArmPose) {
-        this.getArmorStand().setRightArmPose(rightArmPose);
+        this.armorStand().setRightArmPose(rightArmPose);
     }
 
     @Override
     default void setLeftLegPose(Rotations leftLegPose) {
-        this.getArmorStand().setLeftLegPose(leftLegPose);
+        this.armorStand().setLeftLegPose(leftLegPose);
     }
 
     @Override
     default void setRightLegPose(Rotations rightLegPose) {
-        this.getArmorStand().setRightLegPose(rightLegPose);
+        this.armorStand().setRightLegPose(rightLegPose);
+    }
+
+    @Override
+    default boolean isSealed() {
+        return this.armorStand().disabledSlots == ALL_SLOTS_DISABLED;
     }
 }

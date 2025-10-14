@@ -8,15 +8,20 @@ import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public abstract class StatueStyleScreen<T extends LivingEntity> extends StatueTickBoxScreen<StatueStyleOption<? super T>> {
-    public static final String TEXT_BOX_TRANSLATION_KEY = StatueScreenType.STYLE.id().toLanguageKey("screen", "name");
+    public static final Component TEXT_BOX_HINT_TRANSLATION_KEY = Component.translatable(StatueScreenType.STYLE.id()
+            .toLanguageKey("screen", "hint")).withStyle(EditBox.SEARCH_HINT_STYLE);
+    public static final Component TEXT_BOX_TOOLTIP_TRANSLATION_KEY = Component.translatable(StatueScreenType.STYLE.id()
+            .toLanguageKey("screen", "tooltip"));
 
     public StatueStyleScreen(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
@@ -58,12 +63,21 @@ public abstract class StatueStyleScreen<T extends LivingEntity> extends StatueTi
     }
 
     @Override
-    protected String getNameDefaultValue() {
-        return this.holder.getEntity().getName().getString();
+    protected @Nullable String getNameValue() {
+        if (this.holder.getEntity().hasCustomName()) {
+            return this.holder.getEntity().getCustomName().getString();
+        } else {
+            return null;
+        }
     }
 
     @Override
-    protected Component getNameComponent() {
-        return Component.translatable(TEXT_BOX_TRANSLATION_KEY);
+    protected Component getNameHint() {
+        return TEXT_BOX_HINT_TRANSLATION_KEY;
+    }
+
+    @Override
+    protected Component getNameTooltip() {
+        return TEXT_BOX_TOOLTIP_TRANSLATION_KEY;
     }
 }

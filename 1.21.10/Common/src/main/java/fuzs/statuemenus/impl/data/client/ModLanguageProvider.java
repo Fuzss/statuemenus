@@ -55,10 +55,11 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(StatueScreenType.STYLE.getTranslationKey(), "Style");
         builder.add(StatueScreenType.POSES.getTranslationKey(), "Poses");
         builder.add(StatueScreenType.POSITION.getTranslationKey(), "Position");
-        builder.add(StatueStyleScreen.TEXT_BOX_TRANSLATION_KEY, "Set a name to display above the entity if enabled.");
+        builder.add(StatueStyleScreen.TEXT_BOX_HINT_TRANSLATION_KEY, "Custom Name");
+        builder.add(StatueStyleScreen.TEXT_BOX_TOOLTIP_TRANSLATION_KEY, "Set a name to display above the statue.");
         builder.add(StatueStyleOption.SHOW_ARMS.getTranslationKey(), "Show Arms");
         builder.add(StatueStyleOption.SHOW_ARMS.getDescriptionKey(),
-                "Shows the statue's arms, so it may hold items in both hands.");
+                "Shows the statue's arms, so it may hold items in either hand.");
         builder.add(StatueStyleOption.SMALL.getTranslationKey(), "Small");
         builder.add(StatueStyleOption.SMALL.getDescriptionKey(), "Makes the statue half it's size like a baby mob.");
         builder.add(StatueStyleOption.INVISIBLE.getTranslationKey(), "Invisible");
@@ -72,9 +73,11 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(StatueStyleOption.NO_GRAVITY.getTranslationKey(), "No Gravity");
         builder.add(StatueStyleOption.NO_GRAVITY.getDescriptionKey(),
                 "Prevents the statue from falling down, so it may float freely.");
+        builder.add(StatueStyleOption.INVULNERABLE.getTranslationKey(), "Invulnerable");
+        builder.add(StatueStyleOption.INVULNERABLE.getDescriptionKey(), "The statue can neither be broken nor killed.");
         builder.add(StatueStyleOption.SEALED.getTranslationKey(), "Sealed");
         builder.add(StatueStyleOption.SEALED.getDescriptionKey(),
-                "The statue can no longer be broken, equipment cannot be changed. Disallows opening this menu in survival mode.");
+                "Disallows changing equipment and opening this menu in survival mode.");
         builder.add(StatuePositionScreen.SCALE_TRANSLATION_KEY, "Scale:");
         builder.add(StatuePositionScreen.ROTATION_TRANSLATION_KEY, "Rotation:");
         builder.add(StatuePositionScreen.POSITION_X_TRANSLATION_KEY, "X-Position:");
