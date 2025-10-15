@@ -62,7 +62,7 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
         }
 
         @Override
-        public boolean mayEdit(Player player) {
+        public boolean mayEdit(ArmorStand armorStand, Player player) {
             return player.getAbilities().instabuild;
         }
     };
@@ -109,7 +109,7 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
         }
     }
 
-    public boolean mayEdit(Player player) {
+    public boolean mayEdit(T livingEntity, Player player) {
         return true;
     }
 

@@ -24,7 +24,6 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -118,11 +117,6 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
     @Override
     public void tick() {
         this.dataSyncHandler.tick();
-        for (GuiEventListener child : this.children()) {
-            if (child instanceof Tickable button) {
-                button.tick();
-            }
-        }
     }
 
     @Override

@@ -32,7 +32,8 @@ public abstract class StatueStyleScreen<T extends LivingEntity> extends StatueTi
     protected List<StatueStyleOption<? super T>> getAllTickBoxValues() {
         return this.getStyleOptions()
                 .stream()
-                .filter((StatueStyleOption<? super T> option) -> option.mayEdit(this.minecraft.player))
+                .filter((StatueStyleOption<? super T> option) -> option.mayEdit((T) this.holder.getEntity(),
+                        this.minecraft.player))
                 .toList();
     }
 

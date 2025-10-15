@@ -4,10 +4,12 @@ import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
 import fuzs.statuemenus.api.v1.client.gui.components.FlatButton;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -19,12 +21,15 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 
 public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
+    public static final Component FOCUS_COMPONENT = Component.translatable(StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "focus"));
+    public static final Component SAVE_COMPONENT = Component.translatable(StatueScreenType.POSITION.id()
+            .toLanguageKey("screen", "save"));
     protected static final int WIDGET_HEIGHT = 22;
 
     protected final List<ArmorStandWidget> widgets;
@@ -44,7 +49,7 @@ public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
 
     private Collection<ArmorStandWidget> getActivePositionComponentWidgets() {
         if (this.activeWidget != null) {
-            List<ArmorStandWidget> activeWidgets = new ArrayList<>(Arrays.asList(this.activeWidget));
+            List<ArmorStandWidget> activeWidgets = new ArrayList<>(List.of(this.activeWidget));
             for (ArmorStandWidget widget : this.widgets) {
                 if (widget.alwaysVisible(this.activeWidget)) {
                     activeWidgets.add(widget);
@@ -127,11 +132,12 @@ public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
 
     }
 
-    protected abstract class ArmorStandWidget extends AbstractContainerEventHandler implements Renderable {
+    protected abstract class ArmorStandWidget extends AbstractContainerEventHandler implements Renderable, Tickable {
         private final List<GuiEventListener> children = new ArrayList<>();
         protected final Component title;
         protected int posX;
         protected int posY;
+        @Nullable
         protected Button toggleButton;
 
         protected ArmorStandWidget() {
@@ -147,41 +153,40 @@ public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
             return this.children;
         }
 
+        @Override
         public void tick() {
-            if (this.shouldTick()) {
-                for (GuiEventListener widget : this.children()) {
-                    if (widget instanceof Tickable tickButton) {
-                        tickButton.tick();
-                    }
-                }
-            }
-        }
-
-        protected boolean shouldTick() {
-            return false;
+            // NO-OP
         }
 
         public void reset() {
             // NO-OP
         }
 
+        protected boolean supportsToggleButton() {
+            return false;
+        }
+
         public void init(int posX, int posY) {
             this.children().clear();
             this.posX = posX;
             this.posY = posY;
-            this.toggleButton = new SpritelessImageButton(posX + 174,
-                    posY + 1,
-                    20,
-                    20,
-                    236,
-                    64,
-                    getArmorStandWidgetsLocation(),
-                    (Button button) -> {
-                        StatueWidgetsScreen.this.setActiveWidget(this);
-                    });
+            if (this.supportsToggleButton()) {
+                this.toggleButton = new SpritelessImageButton(posX + 174,
+                        posY + 1,
+                        20,
+                        20,
+                        236,
+                        64,
+                        getArmorStandWidgetsLocation(),
+                        (Button button) -> {
+                            StatueWidgetsScreen.this.setActiveWidget(this);
+                        });
+                this.toggleButton.setTooltip(Tooltip.create(FOCUS_COMPONENT));
+                this.addRenderableWidget(this.toggleButton);
+            }
         }
 
-        public final void setVisible(boolean visible) {
+        public void setVisible(boolean visible) {
             for (GuiEventListener widget : this.children()) {
                 if (widget instanceof AbstractWidget abstractWidget) {
                     abstractWidget.visible = visible;
@@ -197,20 +202,29 @@ public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
 
         @Override
         public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            int x = this.posX + 36;
+            int y = this.posY + 6;
             if (StatueWidgetsScreen.this.disableMenuRendering()) {
+                int backgroundColor = StatueWidgetsScreen.this.minecraft.options.getBackgroundColor(0.25F);
+                int textWidth = StatueWidgetsScreen.this.font.width(this.title);
+                guiGraphics.fill(x - textWidth / 2 - 2,
+                        y - 2,
+                        x + textWidth / 2 + 2,
+                        y + StatueWidgetsScreen.this.font.lineHeight + 2,
+                        backgroundColor);
                 FlatButton.drawCenteredStringWithShadow(guiGraphics,
                         StatueWidgetsScreen.this.font,
                         this.title,
-                        this.posX + 36,
-                        this.posY + 6,
+                        x,
+                        y,
                         -1,
                         true);
             } else {
                 FlatButton.drawCenteredStringWithShadow(guiGraphics,
                         StatueWidgetsScreen.this.font,
                         this.title,
-                        this.posX + 36,
-                        this.posY + 6,
+                        x,
+                        y,
                         0xFF404040,
                         false);
             }

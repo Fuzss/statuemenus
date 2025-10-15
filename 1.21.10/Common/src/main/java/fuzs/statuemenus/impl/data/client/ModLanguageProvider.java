@@ -2,10 +2,7 @@ package fuzs.statuemenus.impl.data.client;
 
 import fuzs.puzzleslib.api.client.data.v2.AbstractLanguageProvider;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
-import fuzs.statuemenus.api.v1.client.gui.screens.StatuePosesScreen;
-import fuzs.statuemenus.api.v1.client.gui.screens.StatuePositionScreen;
-import fuzs.statuemenus.api.v1.client.gui.screens.StatueRotationsScreen;
-import fuzs.statuemenus.api.v1.client.gui.screens.StatueStyleScreen;
+import fuzs.statuemenus.api.v1.client.gui.screens.*;
 import fuzs.statuemenus.api.v1.helper.ArmorStandInteractHelper;
 import fuzs.statuemenus.api.v1.world.inventory.data.*;
 import fuzs.statuemenus.impl.world.inventory.StatuePoseImpl;
@@ -84,8 +81,8 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(StatuePositionScreen.POSITION_X_TRANSLATION_KEY, "X-Position:");
         builder.add(StatuePositionScreen.POSITION_Y_TRANSLATION_KEY, "Y-Position:");
         builder.add(StatuePositionScreen.POSITION_Z_TRANSLATION_KEY, "Z-Position:");
-        builder.add(StatuePositionScreen.INCREMENT_TRANSLATION_KEY, "Increment by %s");
-        builder.add(StatuePositionScreen.DECREMENT_TRANSLATION_KEY, "Decrement by %s");
+        builder.add(StatuePositionScreen.INCREMENT_TRANSLATION_KEY, "+%s");
+        builder.add(StatuePositionScreen.DECREMENT_TRANSLATION_KEY, "-%s");
         builder.add(StatuePositionScreen.DEGREES_TRANSLATION_KEY, "%s\u00B0");
         builder.add(StatuePositionScreen.MOVE_BY_TRANSLATION_KEY, "Move By:");
         builder.add(StatuePositionScreen.PIXELS_TRANSLATION_KEY, "%s Pixel(s)");
@@ -97,6 +94,8 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(StatuePositionScreen.CORNERED_DESCRIPTION_TRANSLATION_KEY,
                 "Align an armor stand at the corner of the block position it is placed on.");
         builder.add(StatuePositionScreen.ALIGNED_TRANSLATION_KEY, "Aligned!");
+        builder.add(StatueWidgetsScreen.FOCUS_COMPONENT, "Focus");
+        builder.add(StatueWidgetsScreen.SAVE_COMPONENT, "Save");
         builder.add(PosePartMutator.HEAD.getTranslationKey(), "Head");
         builder.add(PosePartMutator.BODY.getTranslationKey(), "Body");
         builder.add(PosePartMutator.LEFT_ARM.getTranslationKey(), "Left Arm");

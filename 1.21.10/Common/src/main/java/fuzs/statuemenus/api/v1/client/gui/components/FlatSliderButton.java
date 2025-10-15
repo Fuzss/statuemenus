@@ -15,17 +15,23 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 public abstract class FlatSliderButton extends AbstractSliderButton implements UnboundedSliderButton {
+    public static final double NO_SNAP_INTERVAL = -1.0;
+
     private final int textureX;
     private final int textureY;
     protected final ResourceLocation textureLocation;
     private boolean canChangeValue;
-    public double snapInterval = -1.0;
+    public double snapInterval = NO_SNAP_INTERVAL;
 
     public FlatSliderButton(int x, int y, int width, int height, int textureX, int textureY, ResourceLocation textureLocation, Component component, double value) {
         super(x, y, width, height, component, value);
         this.textureX = textureX;
         this.textureY = textureY;
         this.textureLocation = textureLocation;
+    }
+
+    public void setSliderValue(double sliderValue) {
+        this.value = sliderValue;
     }
 
     protected int getYImage() {

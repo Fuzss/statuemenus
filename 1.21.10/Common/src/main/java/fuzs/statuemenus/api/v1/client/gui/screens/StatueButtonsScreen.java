@@ -28,11 +28,6 @@ public abstract class StatueButtonsScreen extends StatueWidgetsScreen {
         }
 
         @Override
-        protected boolean shouldTick() {
-            return true;
-        }
-
-        @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
             this.addRenderableWidget(new TickButton(posX,
@@ -75,11 +70,6 @@ public abstract class StatueButtonsScreen extends StatueWidgetsScreen {
             this.clickedTitleRight = clickedTitleRight;
             this.onPressLeft = onPressLeft;
             this.onPressRight = onPressRight;
-        }
-
-        @Override
-        protected boolean shouldTick() {
-            return true;
         }
 
         @Override

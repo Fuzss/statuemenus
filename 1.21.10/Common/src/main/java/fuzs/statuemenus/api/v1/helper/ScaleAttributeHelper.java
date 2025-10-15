@@ -18,10 +18,6 @@ public final class ScaleAttributeHelper {
         // NO-OP
     }
 
-    public static void resetScale(LivingEntity livingEntity) {
-        setScale(livingEntity, DEFAULT_SCALE);
-    }
-
     public static void setScale(LivingEntity livingEntity, float scaleValue) {
         AttributeInstance attribute = livingEntity.getAttribute(Attributes.SCALE);
         if (scaleValue == DEFAULT_SCALE) {

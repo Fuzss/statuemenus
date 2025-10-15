@@ -2,8 +2,10 @@ package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import fuzs.puzzleslib.api.client.gui.v2.components.SpritelessImageButton;
 import fuzs.puzzleslib.api.client.gui.v2.tooltip.TooltipBuilder;
+import fuzs.puzzleslib.api.util.v1.CommonHelper;
 import fuzs.statuemenus.api.v1.client.gui.components.FlatButton;
 import fuzs.statuemenus.api.v1.client.gui.components.FlatSliderButton;
+import fuzs.statuemenus.api.v1.client.gui.components.FlatTickButton;
 import fuzs.statuemenus.api.v1.helper.ScaleAttributeHelper;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
@@ -29,6 +31,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.OptionalDouble;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
@@ -65,7 +68,12 @@ public class StatuePositionScreen extends StatueButtonsScreen {
     protected static final ArmorStandWidgetFactory<StatuePositionScreen> SCALE_WIDGET_FACTORY = (StatuePositionScreen screen, LivingEntity livingEntity) -> {
         return screen.new ScaleWidget(Component.translatable(SCALE_TRANSLATION_KEY),
                 livingEntity::getScale,
-                screen.dataSyncHandler::sendScale);
+                screen.dataSyncHandler::sendScale) {
+            @Override
+            protected OptionalDouble getDefaultValue() {
+                return OptionalDouble.of(fromLogarithmicValue(ScaleAttributeHelper.DEFAULT_SCALE));
+            }
+        };
     };
     protected static final ArmorStandWidgetFactory<StatuePositionScreen> ROTATION_WIDGET_FACTORY = (StatuePositionScreen screen, LivingEntity livingEntity) -> {
         return screen.new RotationWidget(Component.translatable(ROTATION_TRANSLATION_KEY),
@@ -141,25 +149,22 @@ public class StatuePositionScreen extends StatueButtonsScreen {
         static final double LOGARITHMIC_SCALE_POW = Math.pow(10.0, -LOGARITHMIC_SCALE);
 
         public ScaleWidget(Component title, DoubleSupplier currentValue, Consumer<Float> newValue) {
-            super(title, currentValue, newValue, -1.0);
+            super(title, currentValue, newValue, FlatSliderButton.NO_SNAP_INTERVAL);
         }
 
         @Override
         protected double getCurrentValue() {
-            double value = Mth.inverseLerp(this.currentValue.getAsDouble(),
-                    ScaleAttributeHelper.MIN_SCALE,
-                    ScaleAttributeHelper.MAX_SCALE);
-            return (Math.log10(value + LOGARITHMIC_SCALE_POW) + LOGARITHMIC_SCALE) / LOGARITHMIC_SCALE;
+            return fromLogarithmicValue(this.valueGetter.getAsDouble());
         }
 
         @Override
         protected void setNewValue(double newValue) {
-            this.newValue.accept(getScaledValue(newValue));
+            this.valueSetter.accept(toLogarithmicValue(newValue));
         }
 
         @Override
         protected Component getTooltipComponent(double mouseValue) {
-            mouseValue = getScaledValue(mouseValue);
+            mouseValue = toLogarithmicValue(mouseValue);
             mouseValue = (int) (mouseValue * 100.0F) / 100.0F;
             mouseValue = Mth.clamp(mouseValue, ScaleAttributeHelper.MIN_SCALE, ScaleAttributeHelper.MAX_SCALE);
             return Component.literal(StatuePoses.ROTATION_FORMAT.format(mouseValue));
@@ -167,39 +172,52 @@ public class StatuePositionScreen extends StatueButtonsScreen {
 
         @Override
         protected void applyClientValue(double newValue) {
-            ScaleAttributeHelper.setScale(StatuePositionScreen.this.getHolder().getEntity(), getScaledValue(newValue));
+            ScaleAttributeHelper.setScale(StatuePositionScreen.this.getHolder().getEntity(), toLogarithmicValue(newValue));
         }
 
-        public static float getScaledValue(double value) {
+        public static double fromLogarithmicValue(double value) {
+            value = Mth.inverseLerp(value,
+                    ScaleAttributeHelper.MIN_SCALE,
+                    ScaleAttributeHelper.MAX_SCALE);
+            return (Math.log10(value + LOGARITHMIC_SCALE_POW) + LOGARITHMIC_SCALE) / LOGARITHMIC_SCALE;
+        }
+
+        public static float toLogarithmicValue(double value) {
             value = Math.pow(10.0, value * LOGARITHMIC_SCALE - LOGARITHMIC_SCALE) - LOGARITHMIC_SCALE_POW;
             return (float) Mth.lerp(value, ScaleAttributeHelper.MIN_SCALE, ScaleAttributeHelper.MAX_SCALE);
         }
     }
 
     protected class RotationWidget extends ArmorStandWidget {
-        protected final DoubleSupplier currentValue;
-        protected final Consumer<Float> newValue;
+        protected final DoubleSupplier valueGetter;
+        protected final Consumer<Float> valueSetter;
         private final double snapInterval;
         @Nullable
-        private Runnable reset;
+        protected FlatSliderButton sliderButton;
+        @Nullable
+        protected Button resetButton;
 
-        public RotationWidget(Component title, DoubleSupplier currentValue, Consumer<Float> newValue) {
-            this(title, currentValue, newValue, StatuePoses.DEGREES_SNAP_INTERVAL);
+        public RotationWidget(Component title, DoubleSupplier valueGetter, Consumer<Float> valueSetter) {
+            this(title, valueGetter, valueSetter, StatuePoses.DEGREES_SNAP_INTERVAL);
         }
 
-        public RotationWidget(Component title, DoubleSupplier currentValue, Consumer<Float> newValue, double snapInterval) {
+        public RotationWidget(Component title, DoubleSupplier valueGetter, Consumer<Float> valueSetter, double snapInterval) {
             super(title);
-            this.currentValue = currentValue;
-            this.newValue = newValue;
+            this.valueGetter = valueGetter;
+            this.valueSetter = valueSetter;
             this.snapInterval = snapInterval;
         }
 
         protected double getCurrentValue() {
-            return fromWrappedDegrees(this.currentValue.getAsDouble());
+            return fromWrappedDegrees(this.valueGetter.getAsDouble());
         }
 
         protected void setNewValue(double newValue) {
-            this.newValue.accept(toWrappedDegrees(newValue));
+            this.valueSetter.accept(toWrappedDegrees(newValue));
+        }
+
+        protected OptionalDouble getDefaultValue() {
+            return OptionalDouble.empty();
         }
 
         protected Component getTooltipComponent(double mouseValue) {
@@ -207,11 +225,11 @@ public class StatuePositionScreen extends StatueButtonsScreen {
                     StatuePoses.ROTATION_FORMAT.format(toWrappedDegrees(mouseValue)));
         }
 
-        protected static double fromWrappedDegrees(double value) {
+        public static double fromWrappedDegrees(double value) {
             return (Mth.wrapDegrees(value) + 180.0) / 360.0;
         }
 
-        protected static float toWrappedDegrees(double value) {
+        public static float toWrappedDegrees(double value) {
             return (float) Mth.wrapDegrees(value * 360.0 - 180.0);
         }
 
@@ -221,13 +239,36 @@ public class StatuePositionScreen extends StatueButtonsScreen {
 
         @Override
         public void reset() {
-            if (this.reset != null) this.reset.run();
+            if (this.sliderButton != null) {
+                this.sliderButton.setSliderValue(this.getCurrentValue());
+            }
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            this.setupButtonVisibility();
+        }
+
+        @Override
+        public void setVisible(boolean visible) {
+            super.setVisible(visible);
+            if (visible) {
+                this.setupButtonVisibility();
+            }
+        }
+
+        private void setupButtonVisibility() {
+            if (this.toggleButton != null && this.resetButton != null) {
+                this.resetButton.visible = CommonHelper.hasAltDown();
+                this.toggleButton.visible = !this.resetButton.visible;
+            }
         }
 
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            var sliderButton = new FlatSliderButton(posX + 76,
+            this.sliderButton = new FlatSliderButton(posX + 76,
                     posY + 1,
                     90,
                     20,
@@ -249,10 +290,6 @@ public class StatuePositionScreen extends StatueButtonsScreen {
                 @Override
                 protected void updateMessage() {
                     // NO-OP
-                }
-
-                public void reset() {
-                    this.value = RotationWidget.this.getCurrentValue();
                 }
 
                 @Override
@@ -281,10 +318,31 @@ public class StatuePositionScreen extends StatueButtonsScreen {
                     }
                 }
             };
-            sliderButton.snapInterval = this.snapInterval;
-            this.reset = sliderButton::reset;
-            this.addRenderableWidget(sliderButton);
-            this.addRenderableWidget(this.toggleButton);
+            this.sliderButton.snapInterval = this.snapInterval;
+            this.addRenderableWidget(this.sliderButton);
+            if (this.getDefaultValue().isPresent()) {
+                this.resetButton = this.addRenderableWidget(new FlatTickButton(posX + 174,
+                        posY + 1,
+                        20,
+                        20,
+                        240,
+                        124,
+                        getArmorStandWidgetsLocation(),
+                        (Button button) -> {
+                            this.getDefaultValue().ifPresent((double value) -> {
+                                this.setNewValue(value);
+                                this.applyClientValue(value);
+                                this.reset();
+                            });
+                        }));
+                this.resetButton.setTooltip(Tooltip.create(Component.translatable(StatueRotationsScreen.RESET_TRANSLATION_KEY)));
+                this.setupButtonVisibility();
+            }
+        }
+
+        @Override
+        protected boolean supportsToggleButton() {
+            return true;
         }
     }
 
@@ -316,8 +374,11 @@ public class StatuePositionScreen extends StatueButtonsScreen {
                     widget.active = false;
                 }
             }
+        }
 
-            this.addRenderableWidget(this.toggleButton);
+        @Override
+        protected boolean supportsToggleButton() {
+            return true;
         }
 
         private void setActiveIncrement(AbstractWidget source, double increment) {
@@ -406,7 +467,11 @@ public class StatuePositionScreen extends StatueButtonsScreen {
                     .setLines(() -> Collections.singletonList(Component.translatable(DECREMENT_TRANSLATION_KEY,
                             getPixelIncrementComponent(currentIncrement))))
                     .build(decrementButton);
-            this.addRenderableWidget(this.toggleButton);
+        }
+
+        @Override
+        protected boolean supportsToggleButton() {
+            return true;
         }
 
         private double getPositionValue() {

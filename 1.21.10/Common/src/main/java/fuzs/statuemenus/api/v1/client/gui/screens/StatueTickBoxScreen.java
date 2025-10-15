@@ -33,6 +33,7 @@ public abstract class StatueTickBoxScreen<T> extends AbstractStatueScreen {
         if (this.inputUpdateTicks > 0) {
             this.inputUpdateTicks--;
         }
+
         this.testNameInputChanged(true);
     }
 
