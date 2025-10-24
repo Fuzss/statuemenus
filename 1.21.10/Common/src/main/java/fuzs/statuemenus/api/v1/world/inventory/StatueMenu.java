@@ -6,6 +6,7 @@ import fuzs.statuemenus.api.v1.world.entity.decoration.StatueEntity;
 import fuzs.statuemenus.impl.StatueMenus;
 import fuzs.statuemenus.impl.world.inventory.ArmorStandSlot;
 import fuzs.statuemenus.impl.world.inventory.EquipmentContainer;
+import fuzs.statuemenus.impl.world.inventory.StatueSlot;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -16,7 +17,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -64,7 +68,7 @@ public class StatueMenu extends AbstractContainerMenu implements StatueHolder {
         for (int i = 0; i < SLOT_IDS.length; ++i) {
             EquipmentSlot equipmentSlot = SLOT_IDS[i];
             if (equipmentSlot != null) {
-                this.addSlot(this.createArmorSlot(container,
+                this.addSlot(this.createEquipmentSlot(container,
                         livingEntity,
                         equipmentSlot,
                         equipmentSlot.ordinal(),
@@ -78,11 +82,11 @@ public class StatueMenu extends AbstractContainerMenu implements StatueHolder {
         this.addStandardInventorySlots(inventory, 25, 96);
     }
 
-    protected Slot createArmorSlot(Container container, LivingEntity owner, EquipmentSlot slot, int slotIndex, int x, int y, ResourceLocation emptyIcon, Player player) {
+    protected Slot createEquipmentSlot(Container container, LivingEntity owner, EquipmentSlot slot, int slotIndex, int x, int y, ResourceLocation emptyIcon, Player player) {
         if (owner instanceof ArmorStand armorStand) {
             return new ArmorStandSlot(container, armorStand, slot, slotIndex, x, y, emptyIcon, player);
         } else {
-            return new ArmorSlot(container, owner, slot, slotIndex, x, y, emptyIcon);
+            return new StatueSlot(container, owner, slot, slotIndex, x, y, emptyIcon);
         }
     }
 

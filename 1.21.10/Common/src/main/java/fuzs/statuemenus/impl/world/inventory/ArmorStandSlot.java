@@ -1,17 +1,15 @@
 package fuzs.statuemenus.impl.world.inventory;
 
 import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ArmorSlot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class ArmorStandSlot extends ArmorSlot {
+public class ArmorStandSlot extends StatueSlot {
     public static final int DISABLE_ALL_OFFSET = 0;
     public static final int DISABLE_TAKING_OFFSET = ArmorStand.DISABLE_TAKING_OFFSET;
     public static final int DISABLE_PUTTING_OFFSET = ArmorStand.DISABLE_PUTTING_OFFSET;
@@ -29,7 +27,7 @@ public class ArmorStandSlot extends ArmorSlot {
 
     @Override
     public void setByPlayer(ItemStack newItemStack, ItemStack oldItemStack) {
-        this.set(newItemStack);
+        super.setByPlayer(newItemStack, oldItemStack);
         if (!newItemStack.isEmpty() && this.slot.getType() == EquipmentSlot.Type.HAND) {
             StatueStyleOption.setArmorStandClientFlag(this.armorStand, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
         }
@@ -45,13 +43,7 @@ public class ArmorStandSlot extends ArmorSlot {
             }
         }
 
-        if (this.slot.getType() == EquipmentSlot.Type.HAND) {
-            return true;
-        } else if (this.slot == EquipmentSlot.HEAD && itemStack.get(DataComponents.EQUIPPABLE) == null) {
-            return true;
-        } else {
-            return super.mayPlace(itemStack);
-        }
+        return super.mayPlace(itemStack);
     }
 
     @Override
