@@ -1,7 +1,7 @@
 package fuzs.statuemenus.api.v1.client.gui.components;
 
 import fuzs.statuemenus.api.v1.client.gui.screens.AbstractStatueScreen;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.InputWithModifiers;

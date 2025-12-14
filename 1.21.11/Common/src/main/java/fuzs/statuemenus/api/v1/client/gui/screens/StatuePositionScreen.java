@@ -11,7 +11,7 @@ import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
 import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
 import fuzs.statuemenus.impl.world.inventory.StatuePoses;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -24,7 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -192,10 +192,8 @@ public class StatuePositionScreen extends StatueButtonsScreen {
         protected final DoubleSupplier valueGetter;
         protected final Consumer<Float> valueSetter;
         private final double snapInterval;
-        @Nullable
-        protected FlatSliderButton sliderButton;
-        @Nullable
-        protected Button resetButton;
+        @Nullable protected FlatSliderButton sliderButton;
+        @Nullable protected Button resetButton;
 
         public RotationWidget(Component title, DoubleSupplier valueGetter, Consumer<Float> valueSetter) {
             this(title, valueGetter, valueSetter, StatuePoses.DEGREES_SNAP_INTERVAL);

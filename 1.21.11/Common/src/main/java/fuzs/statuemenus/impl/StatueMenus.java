@@ -3,7 +3,6 @@ package fuzs.statuemenus.impl;
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.api.core.v1.context.PayloadTypesContext;
-import fuzs.puzzleslib.api.core.v1.utility.ResourceLocationHelper;
 import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
 import fuzs.puzzleslib.api.event.v1.entity.player.PlayerInteractEvents;
 import fuzs.puzzleslib.api.init.v3.registry.RegistryManager;
@@ -13,7 +12,7 @@ import fuzs.statuemenus.api.v1.world.inventory.StatueMenu;
 import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
 import fuzs.statuemenus.impl.network.client.*;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -33,7 +32,7 @@ public class StatueMenus implements ModConstructor {
     public static final String MOD_NAME = "Statue Menus";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
-    public static final ResourceLocation ARMOR_STAND_IDENTIFIER = id("armor_stand");
+    public static final Identifier ARMOR_STAND_IDENTIFIER = id("armor_stand");
 
     @Override
     public void onConstructMod() {
@@ -93,7 +92,7 @@ public class StatueMenus implements ModConstructor {
         context.playToServer(ServerboundStatuePropertyMessage.class, ServerboundStatuePropertyMessage.STREAM_CODEC);
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocationHelper.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 }

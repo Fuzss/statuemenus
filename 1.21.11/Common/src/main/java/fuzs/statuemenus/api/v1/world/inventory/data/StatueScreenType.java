@@ -1,13 +1,13 @@
 package fuzs.statuemenus.api.v1.world.inventory.data;
 
 import fuzs.statuemenus.impl.StatueMenus;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import java.util.List;
 
-public record StatueScreenType(ResourceLocation id, ItemStack item, boolean requiresServer) {
+public record StatueScreenType(Identifier id, ItemStack item, boolean requiresServer) {
     public static final StatueScreenType EQUIPMENT = new StatueScreenType(StatueMenus.id("equipment"),
             new ItemStack(Items.CHEST),
             true);
@@ -21,7 +21,7 @@ public record StatueScreenType(ResourceLocation id, ItemStack item, boolean requ
             new ItemStack(Items.GRASS_BLOCK));
     public static final List<StatueScreenType> TYPES = List.of(ROTATIONS, POSES, STYLE, POSITION, EQUIPMENT);
 
-    public StatueScreenType(ResourceLocation id, ItemStack item) {
+    public StatueScreenType(Identifier id, ItemStack item) {
         this(id, item, false);
     }
 

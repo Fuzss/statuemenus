@@ -13,12 +13,12 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.renderer.texture.Tickable;
+import net.minecraft.client.renderer.texture.TickableTexture;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -132,7 +132,7 @@ public abstract class StatueWidgetsScreen extends AbstractStatueScreen {
 
     }
 
-    protected abstract class ArmorStandWidget extends AbstractContainerEventHandler implements Renderable, Tickable {
+    protected abstract class ArmorStandWidget extends AbstractContainerEventHandler implements Renderable, TickableTexture {
         private final List<GuiEventListener> children = new ArrayList<>();
         protected final Component title;
         protected int posX;

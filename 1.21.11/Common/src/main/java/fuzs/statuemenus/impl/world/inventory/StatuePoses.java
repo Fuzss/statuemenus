@@ -1,7 +1,7 @@
 package fuzs.statuemenus.impl.world.inventory;
 
 import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

@@ -11,7 +11,7 @@ import fuzs.statuemenus.api.v1.world.inventory.data.PosePartMutator;
 import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
 import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
 import fuzs.statuemenus.impl.client.gui.components.TooltipFactories;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -25,7 +25,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,8 +47,7 @@ public class StatueRotationsScreen extends AbstractStatueScreen {
             .toLanguageKey("screen", "mirror");
 
     private static boolean clampRotations = true;
-    @Nullable
-    private static StatuePose clipboard;
+    @Nullable private static StatuePose clipboard;
     private final AbstractWidget[] lockButtons = new AbstractWidget[2];
     private StatuePose currentPose;
 
@@ -121,8 +120,7 @@ public class StatueRotationsScreen extends AbstractStatueScreen {
                     256,
                     Function.identity()::apply) {
 
-                @Nullable
-                @Override
+                @Nullable @Override
                 public ComponentPath nextFocusPath(FocusNavigationEvent event) {
                     return null;
                 }
@@ -293,8 +291,7 @@ public class StatueRotationsScreen extends AbstractStatueScreen {
         }
     }
 
-    @Nullable
-    private Tooltip getTipComponent() {
+    @Nullable private Tooltip getTipComponent() {
         List<Component> components = new ArrayList<>();
         for (int i = 1; Language.getInstance().has(TIP_TRANSLATION_KEY + i); i++) {
             components.add(Component.translatable(TIP_TRANSLATION_KEY + i));

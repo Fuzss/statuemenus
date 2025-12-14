@@ -13,7 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -33,8 +33,7 @@ public interface DataSyncHandler {
         this.sendPose(pose, true);
     }
 
-    @Nullable
-    default StatuePose getLastSyncedPose() {
+    @Nullable default StatuePose getLastSyncedPose() {
         return null;
     }
 

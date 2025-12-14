@@ -2,7 +2,7 @@ package fuzs.statuemenus.api.v1.world.inventory.data;
 
 import fuzs.statuemenus.impl.StatueMenus;
 import net.minecraft.core.Rotations;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.phys.Vec3;
 
@@ -17,9 +17,9 @@ public enum StatueAlignment implements StringRepresentable {
     FLAT_ITEM(new Rotations(0.0f, 0.0f, 0.0f), new Vec3(0.385, -0.78, -0.295), new Vec3(0.1925, -0.39, -0.1475)),
     TOOL(new Rotations(-10.0f, 0.0f, -90.0f), new Vec3(-0.17, -1.285, -0.44), new Vec3(-0.085, -0.6425, -0.22));
 
-    public static final ResourceLocation TYPE_LOCATION = StatueMenus.id("alignments");
+    public static final Identifier TYPE_LOCATION = StatueMenus.id("alignments");
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private final StatuePose pose;
     private final Vec3 offset;
     private final Vec3 offsetIfSmall;

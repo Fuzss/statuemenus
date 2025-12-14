@@ -22,7 +22,7 @@ public class TickBoxButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                 AbstractStatueScreen.getArmorStandWidgetsLocation(),

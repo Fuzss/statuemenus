@@ -1,6 +1,6 @@
 package fuzs.statuemenus.impl.world.inventory;
 
-import fuzs.puzzleslib.api.core.v1.utility.ResourceLocationHelper;
+import net.minecraft.resources.Identifier;
 import fuzs.statuemenus.api.v1.world.entity.decoration.StatueEntity;
 import fuzs.statuemenus.api.v1.world.inventory.data.PosePartMutator;
 import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
@@ -9,12 +9,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
-public record StatuePoseImpl(@Nullable ResourceLocation name,
+public record StatuePoseImpl(@Nullable Identifier name,
                              @Nullable SourceType sourceType,
                              boolean isMirrored,
                              @Nullable Rotations headPose,
@@ -221,8 +221,7 @@ public record StatuePoseImpl(@Nullable ResourceLocation name,
                 mirrorRotations(this.leftLegPose));
     }
 
-    @Nullable
-    private static Rotations mirrorRotations(@Nullable Rotations rotations) {
+    @Nullable private static Rotations mirrorRotations(@Nullable Rotations rotations) {
         return rotations != null ? new Rotations(rotations.x(), -rotations.y(), -rotations.z()) : null;
     }
 
@@ -322,9 +321,9 @@ public record StatuePoseImpl(@Nullable ResourceLocation name,
             this.component = Component.translatable(translationKey, displayName).withStyle(ChatFormatting.BLUE);
         }
 
-        public ResourceLocation id(String path) {
+        public Identifier id(String path) {
             Objects.requireNonNull(path, "path is null");
-            return ResourceLocationHelper.fromNamespaceAndPath(this.id, path);
+            return Identifier.fromNamespaceAndPath(this.id, path);
         }
     }
 }

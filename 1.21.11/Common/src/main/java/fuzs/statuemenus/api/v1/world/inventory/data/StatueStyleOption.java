@@ -5,13 +5,13 @@ import com.google.common.collect.HashBiMap;
 import fuzs.statuemenus.api.v1.world.entity.decoration.ArmorStandStatue;
 import fuzs.statuemenus.impl.StatueMenus;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,7 +19,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public abstract class StatueStyleOption<T extends LivingEntity> implements StringRepresentable {
-    private static final BiMap<ResourceLocation, StatueStyleOption<?>> OPTIONS_REGISTRY = HashBiMap.create();
+    private static final BiMap<Identifier, StatueStyleOption<?>> OPTIONS_REGISTRY = HashBiMap.create();
     public static final StatueStyleOption<LivingEntity> SHOW_NAME = create(StatueMenus.id("show_name"),
             "CustomNameVisible",
             Entity::setCustomNameVisible,
@@ -74,20 +74,19 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
             INVULNERABLE,
             SEALED);
 
-    private final ResourceLocation id;
-    @Nullable
-    private final String key;
+    private final Identifier id;
+    @Nullable private final String key;
 
-    public StatueStyleOption(ResourceLocation id) {
+    public StatueStyleOption(Identifier id) {
         this(id, null);
     }
 
-    public StatueStyleOption(ResourceLocation id, @Nullable String key) {
+    public StatueStyleOption(Identifier id, @Nullable String key) {
         this.id = id;
         this.key = key;
     }
 
-    public ResourceLocation getName() {
+    public Identifier getName() {
         return this.id;
     }
 
@@ -123,11 +122,11 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
         return this.getSerializedName();
     }
 
-    public static <T extends LivingEntity> StatueStyleOption<T> create(ResourceLocation id, BiConsumer<T, Boolean> valueSetter, Function<T, Boolean> valueGetter) {
+    public static <T extends LivingEntity> StatueStyleOption<T> create(Identifier id, BiConsumer<T, Boolean> valueSetter, Function<T, Boolean> valueGetter) {
         return create(id, null, valueSetter, valueGetter);
     }
 
-    public static <T extends LivingEntity> StatueStyleOption<T> create(ResourceLocation id, @Nullable String key, BiConsumer<T, Boolean> valueSetter, Function<T, Boolean> valueGetter) {
+    public static <T extends LivingEntity> StatueStyleOption<T> create(Identifier id, @Nullable String key, BiConsumer<T, Boolean> valueSetter, Function<T, Boolean> valueGetter) {
         return new StatueStyleOption<>(id, key) {
             @Override
             public void setOption(T livingEntity, boolean value) {
@@ -141,7 +140,7 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
         };
     }
 
-    public static StatueStyleOption<ArmorStand> create(ResourceLocation id, String key, int offset) {
+    public static StatueStyleOption<ArmorStand> create(Identifier id, String key, int offset) {
         return new StatueStyleOption<>(id, key) {
             @Override
             public void setOption(ArmorStand armorStand, boolean value) {
@@ -162,9 +161,9 @@ public abstract class StatueStyleOption<T extends LivingEntity> implements Strin
         }
     }
 
-    public static StatueStyleOption<?> get(ResourceLocation resourceLocation) {
-        StatueStyleOption<?> styleOption = OPTIONS_REGISTRY.get(resourceLocation);
-        Objects.requireNonNull(styleOption, "style option is null for: " + resourceLocation);
+    public static StatueStyleOption<?> get(Identifier identifier) {
+        StatueStyleOption<?> styleOption = OPTIONS_REGISTRY.get(identifier);
+        Objects.requireNonNull(styleOption, "style option is null for: " + identifier);
         return styleOption;
     }
 

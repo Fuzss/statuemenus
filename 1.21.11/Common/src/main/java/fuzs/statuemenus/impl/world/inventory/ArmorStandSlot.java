@@ -1,13 +1,13 @@
 package fuzs.statuemenus.impl.world.inventory;
 
 import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ArmorStandSlot extends StatueSlot {
     public static final int DISABLE_ALL_OFFSET = 0;
@@ -18,7 +18,7 @@ public class ArmorStandSlot extends StatueSlot {
     private final EquipmentSlot slot;
     private final Player player;
 
-    public ArmorStandSlot(Container container, ArmorStand owner, EquipmentSlot slot, int slotIndex, int x, int y, @Nullable ResourceLocation emptyIcon, Player player) {
+    public ArmorStandSlot(Container container, ArmorStand owner, EquipmentSlot slot, int slotIndex, int x, int y, @Nullable Identifier emptyIcon, Player player) {
         super(container, owner, slot, slotIndex, x, y, emptyIcon);
         this.armorStand = owner;
         this.slot = slot;

@@ -10,7 +10,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
@@ -19,11 +19,11 @@ public abstract class FlatSliderButton extends AbstractSliderButton implements U
 
     private final int textureX;
     private final int textureY;
-    protected final ResourceLocation textureLocation;
+    protected final Identifier textureLocation;
     private boolean canChangeValue;
     public double snapInterval = NO_SNAP_INTERVAL;
 
-    public FlatSliderButton(int x, int y, int width, int height, int textureX, int textureY, ResourceLocation textureLocation, Component component, double value) {
+    public FlatSliderButton(int x, int y, int width, int height, int textureX, int textureY, Identifier textureLocation, Component component, double value) {
         super(x, y, width, height, component, value);
         this.textureX = textureX;
         this.textureY = textureY;
@@ -83,8 +83,8 @@ public abstract class FlatSliderButton extends AbstractSliderButton implements U
                 256,
                 256,
                 ARGB.white(this.alpha));
-        int textColor = this.active ? -1 : 0XA0A0A0;
-        this.renderScrollingString(guiGraphics, minecraft.font, 2, ARGB.color(this.alpha, textColor));
+        this.renderScrollingStringOverContents(guiGraphics.textRendererForWidget(this,
+                GuiGraphics.HoveredTextEffects.NONE), this.getMessage(), 2);
     }
 
     @Override

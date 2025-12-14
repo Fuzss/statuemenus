@@ -5,7 +5,7 @@ import fuzs.statuemenus.impl.world.inventory.StatuePoses;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public record PosePartMutator(ResourceLocation id,
+public record PosePartMutator(Identifier id,
                               Function<StatuePose, Rotations> rotationsGetter,
                               BiFunction<StatuePose, Rotations, StatuePose> rotationsSetter,
                               List<PosePartAxisRange> axisRanges,
@@ -65,7 +65,7 @@ public record PosePartMutator(ResourceLocation id,
             PosePartMutator.RIGHT_LEG,
             PosePartMutator.LEFT_LEG);
 
-    public PosePartMutator(ResourceLocation id, Function<StatuePose, Rotations> rotationsGetter, BiFunction<StatuePose, Rotations, StatuePose> rotationsSetter, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ) {
+    public PosePartMutator(Identifier id, Function<StatuePose, Rotations> rotationsGetter, BiFunction<StatuePose, Rotations, StatuePose> rotationsSetter, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ) {
         this(id,
                 rotationsGetter,
                 rotationsSetter,
@@ -76,7 +76,7 @@ public record PosePartMutator(ResourceLocation id,
                 Direction.Axis.Y);
     }
 
-    public PosePartMutator(ResourceLocation id, Function<StatuePose, Rotations> rotationsGetter, BiFunction<StatuePose, Rotations, StatuePose> rotationsSetter, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ, List<Direction.Axis> axisOrder, Direction.Axis... invertedAxes) {
+    public PosePartMutator(Identifier id, Function<StatuePose, Rotations> rotationsGetter, BiFunction<StatuePose, Rotations, StatuePose> rotationsSetter, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ, List<Direction.Axis> axisOrder, Direction.Axis... invertedAxes) {
         this(id,
                 rotationsGetter,
                 rotationsSetter,

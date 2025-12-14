@@ -1,7 +1,7 @@
 package fuzs.statuemenus.api.v1.helper;
 
 import fuzs.statuemenus.impl.StatueMenus;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -12,7 +12,7 @@ public final class ScaleAttributeHelper {
     public static final float DEFAULT_SCALE = (float) Attributes.SCALE.value().getDefaultValue();
     public static final float MIN_SCALE = (float) ((RangedAttribute) Attributes.SCALE.value()).getMinValue();
     public static final float MAX_SCALE = (float) ((RangedAttribute) Attributes.SCALE.value()).getMaxValue();
-    public static final ResourceLocation SCALE_BONUS_ID = StatueMenus.id("scale_bonus");
+    public static final Identifier SCALE_BONUS_ID = StatueMenus.id("scale_bonus");
 
     private ScaleAttributeHelper() {
         // NO-OP

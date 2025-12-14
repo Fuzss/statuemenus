@@ -11,7 +11,7 @@ import fuzs.statuemenus.api.v1.world.inventory.StatueMenu;
 import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
 import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
 import fuzs.statuemenus.impl.StatueMenus;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -27,11 +27,11 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,15 +39,14 @@ import java.util.Optional;
 public abstract class AbstractStatueScreen extends Screen implements MenuAccess<StatueMenu>, StatueScreen {
     public static final String VANILLA_TWEAKS_HOMEPAGE = "https://vanillatweaks.net/";
     public static final String CREDITS_TRANSLATION_KEY = StatueScreenType.POSES.id().toLanguageKey("screen", "credits");
-    private static final ResourceLocation ARMOR_STAND_BACKGROUND_LOCATION = StatueMenus.id(
+    private static final Identifier ARMOR_STAND_BACKGROUND_LOCATION = StatueMenus.id(
             "textures/gui/container/statue/background.png");
-    private static final ResourceLocation ARMOR_STAND_WIDGETS_LOCATION = StatueMenus.id(
+    private static final Identifier ARMOR_STAND_WIDGETS_LOCATION = StatueMenus.id(
             "textures/gui/container/statue/widgets.png");
-    private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = StatueMenus.id(
+    private static final Identifier ARMOR_STAND_EQUIPMENT_LOCATION = StatueMenus.id(
             "textures/gui/container/statue/equipment.png");
 
-    @Nullable
-    static StatueScreenType lastScreenType;
+    @Nullable static StatueScreenType lastScreenType;
     protected final int imageWidth = 210;
     protected final int imageHeight = 188;
     protected final StatueHolder holder;
@@ -60,8 +59,7 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
     protected boolean smallInventoryEntity;
     protected int mouseX;
     protected int mouseY;
-    @Nullable
-    private AbstractWidget closeButton;
+    @Nullable private AbstractWidget closeButton;
 
     public AbstractStatueScreen(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(component);
@@ -70,15 +68,15 @@ public abstract class AbstractStatueScreen extends Screen implements MenuAccess<
         this.dataSyncHandler = dataSyncHandler;
     }
 
-    public static ResourceLocation getArmorStandBackgroundLocation() {
+    public static Identifier getArmorStandBackgroundLocation() {
         return ARMOR_STAND_BACKGROUND_LOCATION;
     }
 
-    public static ResourceLocation getArmorStandWidgetsLocation() {
+    public static Identifier getArmorStandWidgetsLocation() {
         return ARMOR_STAND_WIDGETS_LOCATION;
     }
 
-    public static ResourceLocation getArmorStandEquipmentLocation() {
+    public static Identifier getArmorStandEquipmentLocation() {
         return ARMOR_STAND_EQUIPMENT_LOCATION;
     }
 

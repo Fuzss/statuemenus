@@ -27,7 +27,7 @@ public class EquipmentContainer implements SimpleContainerImpl {
 
     @Override
     public boolean stillValid(Player player) {
-        return player.canInteractWithEntity(this.livingEntity, 4.0);
+        return player.isWithinEntityInteractionRange(this.livingEntity, 4.0);
     }
 
     @Override

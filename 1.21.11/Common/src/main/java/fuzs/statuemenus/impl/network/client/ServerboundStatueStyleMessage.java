@@ -7,13 +7,13 @@ import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 
 public record ServerboundStatueStyleMessage(StatueStyleOption<?> styleOption,
                                             boolean value) implements ServerboundPlayMessage {
     public static final StreamCodec<ByteBuf, ServerboundStatueStyleMessage> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC.map(StatueStyleOption::get, StatueStyleOption::getName),
+            Identifier.STREAM_CODEC.map(StatueStyleOption::get, StatueStyleOption::getName),
             ServerboundStatueStyleMessage::styleOption,
             ByteBufCodecs.BOOL,
             ServerboundStatueStyleMessage::value,

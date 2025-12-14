@@ -7,15 +7,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 public class FlatButton extends Button {
     private final int textureX;
     private final int textureY;
-    protected final ResourceLocation textureLocation;
+    protected final Identifier textureLocation;
 
-    public FlatButton(int x, int y, int width, int height, int textureX, int textureY, ResourceLocation textureLocation, Component component, OnPress onPress) {
+    public FlatButton(int x, int y, int width, int height, int textureX, int textureY, Identifier textureLocation, Component component, OnPress onPress) {
         super(x, y, width, height, component, onPress, Button.DEFAULT_NARRATION);
         this.textureX = textureX;
         this.textureY = textureY;
@@ -27,7 +27,7 @@ public class FlatButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         int yImage = this.getYImage();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
@@ -61,6 +61,11 @@ public class FlatButton extends Button {
                 this.getY() + (this.height - 8) / 2,
                 ARGB.color(this.alpha, textColor),
                 false);
+    }
+
+    @Override
+    public Component getMessage() {
+        return this.message;
     }
 
     protected void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY) {

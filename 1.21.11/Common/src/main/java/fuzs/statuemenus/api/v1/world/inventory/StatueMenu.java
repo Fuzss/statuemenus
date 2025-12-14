@@ -10,7 +10,7 @@ import fuzs.statuemenus.impl.world.inventory.StatueSlot;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,8 +29,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class StatueMenu extends AbstractContainerMenu implements StatueHolder {
-    public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = StatueMenus.id("container/slot/sword");
-    public static final Map<EquipmentSlot, ResourceLocation> TEXTURE_EMPTY_SLOTS = ImmutableMap.<EquipmentSlot, ResourceLocation>builder()
+    public static final Identifier EMPTY_ARMOR_SLOT_SWORD = StatueMenus.id("container/slot/sword");
+    public static final Map<EquipmentSlot, Identifier> TEXTURE_EMPTY_SLOTS = ImmutableMap.<EquipmentSlot, Identifier>builder()
             .putAll(InventoryMenu.TEXTURE_EMPTY_SLOTS)
             .put(EquipmentSlot.OFFHAND, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD)
             .put(EquipmentSlot.MAINHAND, EMPTY_ARMOR_SLOT_SWORD)
@@ -82,7 +82,7 @@ public class StatueMenu extends AbstractContainerMenu implements StatueHolder {
         this.addStandardInventorySlots(inventory, 25, 96);
     }
 
-    protected Slot createEquipmentSlot(Container container, LivingEntity owner, EquipmentSlot slot, int slotIndex, int x, int y, ResourceLocation emptyIcon, Player player) {
+    protected Slot createEquipmentSlot(Container container, LivingEntity owner, EquipmentSlot slot, int slotIndex, int x, int y, Identifier emptyIcon, Player player) {
         if (owner instanceof ArmorStand armorStand) {
             return new ArmorStandSlot(container, armorStand, slot, slotIndex, x, y, emptyIcon, player);
         } else {

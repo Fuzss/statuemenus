@@ -2,7 +2,6 @@ package fuzs.statuemenus.api.v1.client.gui.screens;
 
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
@@ -12,7 +11,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -98,10 +97,10 @@ public abstract class StatueTickBoxScreen<T> extends AbstractStatueScreen {
     protected abstract AbstractWidget makeTickBoxWidget(LivingEntity livingEntity, int buttonStartY, int index, T option);
 
     @Override
-    public void resize(Minecraft minecraft, int width, int height) {
+    public void resize(int width, int height) {
         this.testNameInputChanged(false);
         String s = this.name.getValue();
-        this.init(minecraft, width, height);
+        this.init(width, height);
         this.name.setValue(s);
     }
 
