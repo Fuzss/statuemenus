@@ -7,6 +7,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
@@ -20,10 +22,18 @@ public class FlatButton extends Button {
         this.textureX = textureX;
         this.textureY = textureY;
         this.textureLocation = textureLocation;
+        this.setMessage(component);
     }
 
-    protected int getYImage() {
-        return !this.active || this.isHoveredOrFocused() ? 2 : 1;
+    @Override
+    public Component getMessage() {
+        return this.active && this.isHoveredOrFocused() ? this.message : this.inactiveMessage;
+    }
+
+    @Override
+    public void setMessage(Component message) {
+        this.message = ComponentUtils.mergeStyles(message, Style.EMPTY.withColor(ChatFormatting.YELLOW));
+        this.inactiveMessage = ComponentUtils.mergeStyles(message, Style.EMPTY.withColor(0x404040));
     }
 
     @Override
@@ -53,19 +63,17 @@ public class FlatButton extends Button {
                 256,
                 ARGB.white(this.alpha));
         this.renderBg(guiGraphics, minecraft, mouseX, mouseY);
-        int textColor = this.active && this.isHoveredOrFocused() ? ChatFormatting.YELLOW.getColor() : 0x404040;
         drawCenteredStringWithShadow(guiGraphics,
                 minecraft.font,
                 this.getMessage(),
                 this.getX() + this.width / 2 + this.getMessageXOffset(),
                 this.getY() + (this.height - 8) / 2,
-                ARGB.color(this.alpha, textColor),
+                -1,
                 false);
     }
 
-    @Override
-    public Component getMessage() {
-        return this.message;
+    protected int getYImage() {
+        return !this.active || this.isHoveredOrFocused() ? 2 : 1;
     }
 
     protected void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY) {
