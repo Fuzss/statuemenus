@@ -20,17 +20,20 @@ import net.minecraft.world.inventory.MenuType;
 
 import java.util.List;
 
+/**
+ * Some lambdas / method references in this class are problematic for javac and / or Mercury. They need to be kept as
+ * they are.
+ */
 public class StatueMenusClient implements ClientModConstructor {
 
+    @SuppressWarnings("Convert2Lambda")
     @Override
     public void onClientSetup() {
         StatueScreenFactory.register(StatueScreenType.EQUIPMENT, StatueEquipmentScreen::new);
-        StatueScreenFactory.register(StatueScreenType.ROTATIONS,
-                (StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) -> new StatueRotationsScreen(
-                        holder,
-                        inventory,
-                        component,
-                        dataSyncHandler) {
+        StatueScreenFactory.register(StatueScreenType.ROTATIONS, new StatueScreenFactory<AbstractStatueScreen>() {
+            @Override
+            public AbstractStatueScreen create(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+                return new StatueRotationsScreen(holder, inventory, component, dataSyncHandler) {
                     @Override
                     protected boolean isPosePartMutatorActive(PosePartMutator posePartMutator, LivingEntity livingEntity) {
                         if (posePartMutator == PosePartMutator.LEFT_ARM
@@ -40,21 +43,25 @@ public class StatueMenusClient implements ClientModConstructor {
                             return super.isPosePartMutatorActive(posePartMutator, livingEntity);
                         }
                     }
-                });
-        StatueScreenFactory.register(StatueScreenType.STYLE,
-                (StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) -> {
-                    return new StatueStyleScreen<ArmorStand>(holder, inventory, component, dataSyncHandler) {
-                        @Override
-                        protected List<StatueStyleOption<? super ArmorStand>> getStyleOptions() {
-                            return StatueStyleOption.TYPES;
-                        }
+                };
+            }
+        });
+        StatueScreenFactory.register(StatueScreenType.STYLE, new StatueScreenFactory<AbstractStatueScreen>() {
+            @Override
+            public AbstractStatueScreen create(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+                return new StatueStyleScreen<ArmorStand>(holder, inventory, component, dataSyncHandler) {
+                    @Override
+                    protected List<StatueStyleOption<? super ArmorStand>> getStyleOptions() {
+                        return StatueStyleOption.TYPES;
+                    }
 
-                        @Override
-                        public StatueScreenType getScreenType() {
-                            return StatueScreenType.STYLE;
-                        }
-                    };
-                });
+                    @Override
+                    public StatueScreenType getScreenType() {
+                        return StatueScreenType.STYLE;
+                    }
+                };
+            }
+        });
         StatueScreenFactory.register(StatueScreenType.POSES, StatuePosesScreen::new);
         StatueScreenFactory.register(StatueScreenType.POSITION, StatuePositionScreen::new);
     }
