@@ -68,12 +68,14 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
     public static ArmorStandMenu create(MenuType<?> menuType, int containerId, Inventory inventory, ArmorStand armorStand, @Nullable ArmorStandDataProvider dataProvider) {
         // we could also copy all items from the armor stand to a SimpleContainer, then update the armor stand using a listener using LivingEntity::setItemSlot
         // problem is that way we miss out on anything changing with the armor stand entity itself, therefore this approach
-        SimpleContainer handItemsContainer = ContainerMenuHelper.createListBackedContainer(armorStand.handItems, (Container container) -> {
-            if (container.hasAnyMatching(stack -> !stack.isEmpty())) {
-                ArmorStandStyleOption.setArmorStandData(armorStand, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
-            }
-        });
-        CompoundContainer container = new CompoundContainer(ListBackedContainer.of(armorStand.armorItems), handItemsContainer);
+        SimpleContainer handItemsContainer = ContainerMenuHelper.createListBackedContainer(armorStand.handItems,
+                (Container container) -> {
+                    if (container.hasAnyMatching(stack -> !stack.isEmpty())) {
+                        ArmorStandStyleOption.setArmorStandData(armorStand, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
+                    }
+                });
+        CompoundContainer container = new CompoundContainer(ListBackedContainer.of(armorStand.armorItems),
+                handItemsContainer);
         return new ArmorStandMenu(menuType, containerId, inventory, container, armorStand, dataProvider);
     }
 
@@ -105,8 +107,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
                         if (isSlotDisabled(armorStand, equipmentslot, 0)) {
                             return false;
                         }
-                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_PUTTING_OFFSET) &&
-                                !this.hasItem()) {
+                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_PUTTING_OFFSET)
+                                && !this.hasItem()) {
                             return false;
                         }
                     }
@@ -144,8 +146,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
                         if (isSlotDisabled(armorStand, equipmentslot, 0)) {
                             return false;
                         }
-                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_PUTTING_OFFSET) &&
-                                !this.hasItem()) {
+                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_PUTTING_OFFSET)
+                                && !this.hasItem()) {
                             return false;
                         }
                     }
@@ -188,8 +190,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
                 if (!this.moveItemStackTo(itemStack2, 6, 42, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (equipmentSlot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR &&
-                    !this.slots.get(3 - equipmentSlot.getIndex()).hasItem()) {
+            } else if (equipmentSlot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR && !this.slots.get(
+                    3 - equipmentSlot.getIndex()).hasItem()) {
                 int i = 3 - equipmentSlot.getIndex();
                 if (!this.moveItemStackTo(itemStack2, i, i + 1, false)) {
                     return ItemStack.EMPTY;
@@ -228,8 +230,7 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
 
     @Override
     public boolean stillValid(Player player) {
-        // no distance check to avoid annoying issues when moving armor stand from configuration screen
-        return this.armorStand.isAlive();
+        return this.armorStand.isAlive() && player.canInteractWithEntity(this.armorStand, 4.0);
     }
 
     @Override

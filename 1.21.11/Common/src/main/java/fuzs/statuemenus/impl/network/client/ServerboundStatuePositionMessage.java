@@ -32,8 +32,7 @@ public record ServerboundStatuePositionMessage(double posX,
                                         ServerboundStatuePositionMessage.this.posY,
                                         ServerboundStatuePositionMessage.this.posZ);
                     } else {
-                        StatueMenus.LOGGER.warn("Player {} attempted to move armor stand further than allowed",
-                                context.player());
+                        StatueMenus.LOGGER.warn("{} attempted to move statue further than allowed!", context.player());
                     }
                 }
             }

@@ -4,7 +4,6 @@ import fuzs.puzzleslib.api.network.v2.MessageV2;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandMenu;
 import fuzs.statuemenus.impl.StatueMenus;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 
 public class C2SArmorStandPositionMessage implements MessageV2<C2SArmorStandPositionMessage> {
@@ -13,23 +12,13 @@ public class C2SArmorStandPositionMessage implements MessageV2<C2SArmorStandPosi
     private double posZ;
 
     public C2SArmorStandPositionMessage() {
-
+        // NO-OP
     }
 
     public C2SArmorStandPositionMessage(double posX, double posY, double posZ) {
         this.posX = posX;
         this.posY = posY;
         this.posZ = posZ;
-    }
-
-    private static boolean tryMoveArmorStandTo(ArmorStand armorStand, double posX, double posY, double posZ) {
-        if (!testDistance(armorStand, posX, posY, posZ)) return false;
-        armorStand.moveTo(posX, posY, posZ);
-        return true;
-    }
-
-    private static boolean testDistance(ArmorStand armorStand, double posX, double posY, double posZ) {
-        return armorStand.distanceToSqr(posX, posY, posZ) < 64.0;
     }
 
     @Override
@@ -53,8 +42,10 @@ public class C2SArmorStandPositionMessage implements MessageV2<C2SArmorStandPosi
             @Override
             public void handle(C2SArmorStandPositionMessage message, Player player, Object gameInstance) {
                 if (player.containerMenu instanceof ArmorStandMenu menu && menu.stillValid(player)) {
-                    if (!tryMoveArmorStandTo(menu.getArmorStand(), message.posX, message.posY, message.posZ)) {
-                        StatueMenus.LOGGER.warn("Player {} attempted to move armor stand further than allowed", player);
+                    if (player.canInteractWithEntity(menu.getArmorStand(), 3.0)) {
+                        menu.getArmorStand().moveTo(message.posX, message.posY, message.posZ);
+                    } else {
+                        StatueMenus.LOGGER.warn("{} attempted to move statue further than allowed!", player);
                     }
                 }
             }
