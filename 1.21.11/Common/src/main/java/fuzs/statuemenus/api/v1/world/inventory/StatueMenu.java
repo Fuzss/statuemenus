@@ -110,8 +110,7 @@ public class StatueMenu extends AbstractContainerMenu implements StatueHolder {
 
     @Override
     public boolean stillValid(Player player) {
-        // no distance check to avoid annoying issues when moving armor stand far away from configuration screen
-        return this.getEntity().isAlive();
+        return this.getEntity().isAlive() && player.isWithinEntityInteractionRange(this.getEntity(), 4.0);
     }
 
     @Override
